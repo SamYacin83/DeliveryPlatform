@@ -110,11 +110,8 @@ export default function AuthPage() {
                form.watch("address.postalCode") &&
                form.watch("address.country");
       } else if (form.watch("role") === "delivery") {
-        return form.watch("documents.identityCard")?.[0] &&
-               form.watch("documents.driversLicense")?.[0] &&
-               form.watch("documents.vehicleRegistration")?.[0] &&
-               form.watch("documents.insurance")?.[0] &&
-               form.watch("address.street") &&
+        return form.watch("address.street") &&
+               form.watch("address.streetNumber") &&
                form.watch("address.city") &&
                form.watch("address.postalCode") &&
                form.watch("address.country");
@@ -127,12 +124,14 @@ export default function AuthPage() {
   const nextStep = () => {
     if (step < steps.length - 1) {
       setStep(step + 1);
+      setUploadProgress({}); // Reset upload progress when moving to next step
     }
   };
 
   const prevStep = () => {
     if (step > 0) {
       setStep(step - 1);
+      setUploadProgress({}); // Reset upload progress when moving to previous step
     }
   };
 
@@ -653,6 +652,7 @@ export default function AuthPage() {
                   onClick={() => {
                     setIsLogin(!isLogin);
                     setStep(0);
+                    setUploadProgress({});
                     form.reset();
                   }}
                 >
