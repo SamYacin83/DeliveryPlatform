@@ -32,9 +32,15 @@ interface AuthForm {
   role: UserRole;
   address?: {
     street: string;
+    streetNumber: string;
+    apartment?: string;
+    building?: string;
+    floor?: string;
+    additionalInfo?: string;
     city: string;
     postalCode: string;
     country: string;
+    region?: string;
   };
   documents?: {
     identityCard?: File[];
@@ -290,31 +296,109 @@ export default function AuthPage() {
 
                         {step === 2 && form.watch("role") === "delivery" && (
                           <div className="space-y-4">
-                            <div className="space-y-2">
-                              <h3 className="text-sm font-medium">Adresse</h3>
-                              <Input
-                                placeholder="Rue"
-                                {...form.register("address.street", { required: true })}
-                                className="h-9"
-                              />
-                              <Input
-                                placeholder="Ville"
-                                {...form.register("address.city", { required: true })}
-                                className="h-9"
-                              />
-                              <div className="grid grid-cols-2 gap-2">
-                                <Input
-                                  placeholder="Code postal"
-                                  {...form.register("address.postalCode", { required: true })}
-                                  className="h-9"
-                                />
-                                <Input
-                                  placeholder="Pays"
-                                  {...form.register("address.country", { required: true })}
-                                  className="h-9"
-                                />
+                            <fieldset className="space-y-4 border rounded-lg p-4">
+                              <legend className="text-sm font-medium px-2">Adresse</legend>
+                              
+                              <div className="space-y-4">
+                                {/* Rue et numéro */}
+                                <div className="grid grid-cols-3 gap-2">
+                                  <div className="col-span-2">
+                                    <label className="text-sm mb-1 block">Rue</label>
+                                    <Input
+                                      placeholder="Nom de la rue"
+                                      {...form.register("address.street", { required: true })}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-sm mb-1 block">Numéro</label>
+                                    <Input
+                                      placeholder="N°"
+                                      {...form.register("address.streetNumber", { required: true })}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Détails du bâtiment */}
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-sm mb-1 block">Bâtiment</label>
+                                    <Input
+                                      placeholder="Bâtiment"
+                                      {...form.register("address.building")}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-sm mb-1 block">Étage</label>
+                                    <Input
+                                      placeholder="Étage"
+                                      {...form.register("address.floor")}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="text-sm mb-1 block">Appartement</label>
+                                  <Input
+                                    placeholder="N° d'appartement"
+                                    {...form.register("address.apartment")}
+                                    className="h-9"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="text-sm mb-1 block">Informations complémentaires</label>
+                                  <Input
+                                    placeholder="Digicode, instructions de livraison..."
+                                    {...form.register("address.additionalInfo")}
+                                    className="h-9"
+                                  />
+                                </div>
+
+                                {/* Ville et code postal */}
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-sm mb-1 block">Ville</label>
+                                    <Input
+                                      placeholder="Ville"
+                                      {...form.register("address.city", { required: true })}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-sm mb-1 block">Code postal</label>
+                                    <Input
+                                      placeholder="Code postal"
+                                      {...form.register("address.postalCode", { required: true })}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Région et pays */}
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-sm mb-1 block">Région</label>
+                                    <Input
+                                      placeholder="Région"
+                                      {...form.register("address.region")}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-sm mb-1 block">Pays</label>
+                                    <Input
+                                      placeholder="Pays"
+                                      {...form.register("address.country", { required: true })}
+                                      className="h-9"
+                                    />
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                            </fieldset>
 
                             <fieldset className="space-y-3 border rounded-lg p-4">
                               <legend className="text-sm font-medium px-2">Documents requis</legend>
