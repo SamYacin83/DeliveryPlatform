@@ -1,5 +1,6 @@
 import { Trash2, ShoppingCart } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,14 +27,30 @@ export default function CartDropdown() {
           className="relative hover:bg-primary/5"
         >
           <ShoppingCart className="h-5 w-5" />
-          {getItemCount() > 0 && (
-            <Badge 
-              variant="default"
-              className="absolute -top-1.5 -right-1.5 h-[18px] min-w-[18px] rounded-full p-0.5 text-xs"
-            >
-              {getItemCount()}
-            </Badge>
-          )}
+          <AnimatePresence>
+            {getItemCount() > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="absolute -top-1.5 -right-1.5"
+              >
+                <Badge 
+                  variant="default"
+                  className="h-[18px] min-w-[18px] rounded-full p-0.5 text-xs flex items-center justify-center"
+                >
+                  <motion.span
+                    key={getItemCount()}
+                    initial={{ scale: 0.5 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  >
+                    {getItemCount()}
+                  </motion.span>
+                </Badge>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
