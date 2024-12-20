@@ -15,69 +15,137 @@ export default function DeliveryIllustration() {
         {/* Fond avec dégradé */}
         <rect width="800" height="600" fill="url(#gradient)" />
         
-        {/* Route */}
-        <path
-          d="M100,300 Q400,100 700,300"
-          stroke="#CBD5E1"
-          strokeWidth="8"
-          strokeDasharray="8,8"
+        {/* Route principale avec effet de perspective */}
+        <motion.path
+          d="M50,400 C200,380 600,420 750,400"
+          stroke="#94A3B8"
+          strokeWidth="100"
           strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
         />
         
-        {/* Point de départ */}
+        {/* Ligne centrale de la route */}
+        <motion.path
+          d="M50,400 C200,380 600,420 750,400"
+          stroke="#E2E8F0"
+          strokeWidth="6"
+          strokeDasharray="20,20"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+        />
+
+        {/* Marqueur de départ avec animation */}
         <motion.g
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
+          initial={{ scale: 0, y: 50 }}
+          animate={{ scale: 1, y: 0 }}
+          transition={{ delay: 0.5, type: "spring" }}
         >
-          <circle cx="100" cy="300" r="20" fill="#22C55E" />
-          <text x="85" y="340" fill="#1F2937" className="text-sm font-medium">Départ</text>
+          <circle cx="100" cy="400" r="30" fill="#22C55E" />
+          <circle cx="100" cy="400" r="35" stroke="#22C55E" strokeWidth="2" strokeDasharray="6,3" />
+          <path
+            d="M100,385 L100,415 M85,400 L115,400"
+            stroke="white"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <text x="70" y="450" fill="#1F2937" className="text-sm font-semibold">
+            Point de départ
+          </text>
         </motion.g>
-        
-        {/* Point d'arrivée */}
+
+        {/* Marqueur d'arrivée avec animation */}
         <motion.g
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.4, type: "spring" }}
+          initial={{ scale: 0, y: 50 }}
+          animate={{ scale: 1, y: 0 }}
+          transition={{ delay: 0.7, type: "spring" }}
         >
-          <circle cx="700" cy="300" r="20" fill="#EF4444" />
-          <text x="680" y="340" fill="#1F2937" className="text-sm font-medium">Arrivée</text>
+          <circle cx="700" cy="400" r="30" fill="#EF4444" />
+          <circle cx="700" cy="400" r="35" stroke="#EF4444" strokeWidth="2" strokeDasharray="6,3" />
+          <path
+            d="M700,385 L700,415"
+            stroke="white"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <circle cx="700" cy="400" r="8" fill="white" />
+          <text x="670" y="450" fill="#1F2937" className="text-sm font-semibold">
+            Destination
+          </text>
         </motion.g>
-        
-        {/* Livreur */}
+
+        {/* Livreur à moto avec animation */}
         <motion.g
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          <circle cx="400" cy="220" r="40" fill="#3B82F6" /> {/* Tête */}
-          <rect x="380" y="260" width="40" height="60" fill="#3B82F6" rx="20" /> {/* Corps */}
-          <rect x="360" y="280" width="80" height="20" fill="#2563EB" rx="10" /> {/* Bras */}
-          <rect x="380" y="320" width="15" height="40" fill="#1D4ED8" /> {/* Jambe gauche */}
-          <rect x="405" y="320" width="15" height="40" fill="#1D4ED8" /> {/* Jambe droite */}
-          
-          {/* Colis */}
-          <rect x="350" y="270" width="30" height="30" fill="#92400E" rx="5" />
-        </motion.g>
-        
-        {/* Pins de localisation animés */}
-        <motion.g
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ 
-            repeat: Infinity,
-            repeatType: "reverse",
-            duration: 1,
-            delay: 0.8
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ 
+            x: 0,
+            opacity: 1,
+            y: [0, -10, 0],
+          }}
+          transition={{
+            x: { duration: 0.8, ease: "easeOut" },
+            opacity: { duration: 0.3 },
+            y: { 
+              repeat: Infinity,
+              duration: 1.5,
+              ease: "easeInOut",
+            }
           }}
         >
-          <circle cx="400" cy="180" r="8" fill="#EF4444" />
+          {/* Moto */}
           <path
-            d="M400,180 L400,160 L410,170 Z"
-            fill="#EF4444"
+            d="M380,390 L450,390 C460,390 470,380 470,370 L470,360 C470,350 460,340 450,340 L420,340"
+            stroke="#3B82F6"
+            strokeWidth="8"
+            fill="none"
+          />
+          <circle cx="380" cy="400" r="20" fill="#2563EB" /> {/* Roue arrière */}
+          <circle cx="470" cy="400" r="20" fill="#2563EB" /> {/* Roue avant */}
+          
+          {/* Livreur */}
+          <path
+            d="M410,320 C420,310 440,310 450,320"
+            stroke="#1D4ED8"
+            strokeWidth="15"
+            strokeLinecap="round"
+          />
+          <circle cx="430" cy="290" r="25" fill="#3B82F6" /> {/* Tête avec casque */}
+          <path
+            d="M420,285 L440,285"
+            stroke="#1D4ED8"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          
+          {/* Sac de livraison */}
+          <rect x="380" y="330" width="40" height="40" fill="#DC2626" rx="5" />
+          <path
+            d="M390,340 L410,340"
+            stroke="white"
+            strokeWidth="2"
           />
         </motion.g>
-        
+
+        {/* GPS Ping animé */}
+        <motion.g
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ 
+            scale: [1, 1.5, 1],
+            opacity: [0.8, 0.2, 0],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 2,
+            ease: "easeOut",
+          }}
+        >
+          <circle cx="430" cy="400" r="40" fill="#3B82F6" fillOpacity="0.2" />
+          <circle cx="430" cy="400" r="20" fill="#3B82F6" fillOpacity="0.4" />
+        </motion.g>
+
         {/* Dégradé de fond */}
         <defs>
           <linearGradient id="gradient" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
