@@ -5,6 +5,7 @@ const routes: Record<string, string> = {
   '/': 'Accueil',
   '/about': 'À propos',
   '/auth': 'Authentification',
+  '/auth/forgot-password': 'Mot de passe oublié',
   '/dashboard': 'Tableau de bord',
   '/articles': 'Articles',
 };
