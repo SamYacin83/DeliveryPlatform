@@ -14,6 +14,7 @@ import Navigation from "./components/Navigation";
 import NotificationProvider from "./components/NotificationProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "./components/Footer";
+import { CartProvider } from "./contexts/CartContext";
 
 function App() {
   const { user, isLoading } = useUser();
@@ -27,8 +28,9 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {user ? (
+    <CartProvider>
+      <div className="min-h-screen bg-background">
+        {user ? (
         <>
           <Navigation user={user} />
           <NotificationProvider />
@@ -66,6 +68,7 @@ function App() {
       <Footer />
       <Toaster />
     </div>
+    </CartProvider>
   );
 }
 
