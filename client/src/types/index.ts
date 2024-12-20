@@ -23,6 +23,7 @@ export interface Order {
   items: Article[];
   total: number;
   createdAt: string;
+  location?: DeliveryLocation;  // Optional car toutes les commandes n'ont pas forcément une localisation
 }
 
 export interface DeliveryLocation {
