@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../hooks/use-user";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -239,13 +240,18 @@ export default function AuthPage() {
                       className="h-9"
                     />
                     {form.formState.errors.username && <p className="text-red-500 text-xs mt-1">{form.formState.errors.username.message}</p>}
-                    <Input
-                      type="password"
-                      placeholder="Mot de passe"
-                      {...form.register("password")}
-                      className="h-9"
-                    />
-                    {form.formState.errors.password && <p className="text-red-500 text-xs mt-1">{form.formState.errors.password.message}</p>}
+                    <div className="space-y-1">
+                      <Input
+                        type="password"
+                        placeholder="Mot de passe"
+                        {...form.register("password")}
+                        className="h-9"
+                      />
+                      {form.formState.errors.password && <p className="text-red-500 text-xs mt-1">{form.formState.errors.password.message}</p>}
+                      <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline block text-right">
+                        Mot de passe oublié ?
+                      </Link>
+                    </div>
                   </motion.div>
                 ) : (
                   <motion.div

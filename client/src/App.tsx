@@ -16,6 +16,7 @@ import TestimonialsPage from "./pages/TestimonialsPage";
 import ServicesPage from "./pages/ServicesPage";
 import Navigation from "./components/Navigation";
 import NotificationProvider from "./components/NotificationProvider";
+import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "./components/Footer";
 import { CartProvider } from "./contexts/CartContext";
@@ -77,6 +78,7 @@ function App() {
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
+          <Route path="/auth/forgot-password" component={ForgotPasswordForm} />
           <Route path="/about" component={AboutPage} />
           <Route path="/services" component={ServicesPage} />
           <Route path="/how-it-works" component={HowItWorksPage} />
