@@ -46,18 +46,18 @@ export default function Navigation({ user }: NavigationProps) {
 
   return (
     <nav className="bg-white border-b">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
             RapidLivre
           </Link>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <Link 
               href="/dashboard" 
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
-              Tableau de bord
+              Mes commandes
             </Link>
             
             <DropdownMenu>
@@ -101,10 +101,10 @@ export default function Navigation({ user }: NavigationProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{user.username}</span>
-                <Badge variant="secondary" className="font-normal">
+            <div className="flex items-center gap-4 border-l pl-4">
+              <div className="flex flex-col items-end">
+                <span className="font-medium text-sm">{user.username}</span>
+                <Badge variant="secondary" className="font-normal text-xs">
                   {user.role === 'client' ? 'Client' : 
                    user.role === 'delivery' ? 'Livreur' : 'Fournisseur'}
                 </Badge>
@@ -114,7 +114,7 @@ export default function Navigation({ user }: NavigationProps) {
                 onClick={() => logout()}
                 className="hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-colors"
               >
-                Déconnexion
+                Se déconnecter
               </Button>
             </div>
           </div>
