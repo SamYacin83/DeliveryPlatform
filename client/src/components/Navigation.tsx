@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import type { User as UserType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useUser } from "../hooks/use-user";
-import { Bell, User as UserIcon, LogOut } from "lucide-react";
+import { Bell, User as UserIcon, LogOut, ShoppingCart } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,22 +60,40 @@ export default function Navigation({ user }: NavigationProps) {
               Mes commandes
             </Link>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative hover:bg-primary/5 transition-colors"
-                >
-                  <Bell className="h-5 w-5 text-foreground/80" />
-                  {hasUnread && (
-                    <Badge 
-                      variant="default"
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
-                    />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative hover:bg-primary/5 transition-colors"
+                asChild
+              >
+                <Link href="/cart">
+                  <ShoppingCart className="h-5 w-5 text-foreground/80" />
+                  <Badge 
+                    variant="default"
+                    className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
+                  >
+                    0
+                  </Badge>
+                </Link>
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative hover:bg-primary/5 transition-colors"
+                  >
+                    <Bell className="h-5 w-5 text-foreground/80" />
+                    {hasUnread && (
+                      <Badge 
+                        variant="default"
+                        className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
+                      />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-80">
                 <DropdownMenuGroup>
                   {notifications.length === 0 ? (
@@ -100,6 +118,7 @@ export default function Navigation({ user }: NavigationProps) {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
