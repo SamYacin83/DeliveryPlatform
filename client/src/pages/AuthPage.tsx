@@ -202,10 +202,20 @@ export default function AuthPage() {
     
     setIsLoading(true);
     try {
-      // Simuler un délai pour démontrer l'animation
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const result = isLogin ? await login(data) : await register(data);
+      const authData = {
+        username: data.username,
+        password: data.password,
+        email: data.email,
+        role: data.role,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone
+      };
+
+      const result = isLogin 
+        ? await login({ username: data.username, password: data.password })
+        : await register(authData);
+
       if (!result.ok) {
         toast({
           title: "Erreur",
@@ -225,10 +235,9 @@ export default function AuthPage() {
         });
         
         if (!isLogin) {
-          // Reset form after successful registration
           form.reset();
           setStep(0);
-          setIsLogin(true); // Switch to login view after successful registration
+          setIsLogin(true);
         }
       }
     } catch (error: any) {

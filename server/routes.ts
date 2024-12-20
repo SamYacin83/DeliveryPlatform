@@ -7,8 +7,10 @@ import { articles, orders, deliveries } from "@db/schema";
 import { eq } from "drizzle-orm";
 
 export function registerRoutes(app: Express): Server {
+  // Set up authentication first
   setupAuth(app);
 
+  // Create HTTP server
   const httpServer = createServer(app);
   setupSocket(httpServer);
 
