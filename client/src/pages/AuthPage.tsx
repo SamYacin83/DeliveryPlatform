@@ -96,6 +96,7 @@ const authSchema = z.object({
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
   const { login, register } = useUser();
