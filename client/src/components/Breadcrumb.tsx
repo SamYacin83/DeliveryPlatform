@@ -8,6 +8,9 @@ const routes: Record<string, string> = {
   '/auth/forgot-password': 'Mot de passe oublié',
   '/dashboard': 'Tableau de bord',
   '/articles': 'Articles',
+  '/how-it-works': 'Comment ça marche',
+  '/services': 'Services',
+  '/testimonials': 'Témoignages',
 };
 
 export default function Breadcrumb() {
