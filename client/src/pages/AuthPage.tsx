@@ -198,6 +198,8 @@ export default function AuthPage() {
   };
 
   const onSubmit = async (data: AuthForm) => {
+    if (isLoading) return;
+    
     setIsLoading(true);
     try {
       // Simuler un délai pour démontrer l'animation
@@ -206,7 +208,7 @@ export default function AuthPage() {
       const result = isLogin ? await login(data) : await register(data);
       if (!result.ok) {
         toast({
-          title: "Error",
+          title: "Erreur",
           description: result.message,
           variant: "destructive",
         });
@@ -214,12 +216,19 @@ export default function AuthPage() {
         toast({
           title: "Succès",
           description: isLogin ? "Connexion réussie" : "Inscription réussie",
+          variant: "default",
         });
+        
+        if (!isLogin) {
+          // Reset form after successful registration
+          form.reset();
+          setStep(0);
+        }
       }
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Erreur",
+        description: error.message || "Une erreur s'est produite",
         variant: "destructive",
       });
     } finally {
