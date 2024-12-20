@@ -4,7 +4,8 @@ import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
+import ArticleCardSkeleton from "../components/ArticleCardSkeleton";
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,9 +70,10 @@ export default function HomePage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-              <p className="mt-4 text-muted-foreground">Chargement des articles...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ArticleCardSkeleton key={index} />
+              ))}
             </div>
           ) : filteredArticles?.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
