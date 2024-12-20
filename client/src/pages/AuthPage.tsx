@@ -267,6 +267,8 @@ export default function AuthPage() {
                                     <p className="text-sm font-medium">Prénom</p>
                                     <p className="text-sm">{form.watch("firstName")}</p>
                                   </div>
+                                  </div>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
                                   <div>
                                     <p className="text-sm font-medium">Email</p>
                                     <p className="text-sm">{form.watch("email")}</p>
