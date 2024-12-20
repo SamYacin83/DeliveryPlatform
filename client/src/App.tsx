@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./hooks/use-user";
 import { Button } from "@/components/ui/button";
+import Breadcrumb from "./components/Breadcrumb";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
@@ -47,6 +48,7 @@ function App() {
           </div>
         </nav>
       )}
+      <Breadcrumb />
       <main className="container mx-auto px-4 py-8">
         <Switch>
           <Route path="/" component={HomePage} />
