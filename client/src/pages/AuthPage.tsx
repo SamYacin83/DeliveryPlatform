@@ -140,13 +140,13 @@ export default function AuthPage() {
                   </div>
                 )}
 
-                {form.watch("role") === "delivery" && (
+                {!isLogin && form.watch("role") === "delivery" && (
                   <div className="space-y-2 border-t pt-2">
                     <h3 className="text-sm font-medium">Documents requis</h3>
                     <Input
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
-                      {...form.register("documents", { required: true })}
+                      {...form.register("documents", { required: !isLogin })}
                       className="h-9"
                       multiple
                     />
@@ -167,7 +167,10 @@ export default function AuthPage() {
                   type="button"
                   variant="ghost"
                   className="w-full text-sm text-muted-foreground hover:text-[hsl(252,85%,60%)]"
-                  onClick={() => setIsLogin(!isLogin)}
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    form.reset();
+                  }}
                 >
                   {isLogin ? "Créer un compte" : "Déjà inscrit ?"}
                 </Button>
