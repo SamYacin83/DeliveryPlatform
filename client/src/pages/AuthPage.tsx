@@ -72,13 +72,16 @@ export default function AuthPage() {
                 </select>
               </div>
               <div className="pt-2">
-                <Button type="submit" className="w-full mb-2">
+                <Button 
+                  type="submit" 
+                  className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                >
                   {isLogin ? "Se connecter" : "S'inscrire"}
                 </Button>
                 <Button
                   type="button"
                   variant="ghost"
-                  className="w-full text-sm text-muted-foreground hover:text-primary"
+                  className="w-full text-sm text-muted-foreground hover:text-[hsl(252,85%,60%)]"
                   onClick={() => setIsLogin(!isLogin)}
                 >
                   {isLogin ? "Créer un compte" : "Déjà inscrit ?"}
