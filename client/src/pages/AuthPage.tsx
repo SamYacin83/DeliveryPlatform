@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { UserRole } from "../types";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface FileProgress {
   progress: number;
@@ -50,13 +52,62 @@ interface AuthForm {
   };
 }
 
+const addressSchema = z.object({
+  street: z.string().min(1, "La rue est requise"),
+  streetNumber: z.string().min(1, "Le numéro est requis"),
+  apartment: z.string().optional(),
+  building: z.string().optional(),
+  floor: z.string().optional(),
+  additionalInfo: z.string().optional(),
+  city: z.string().min(1, "La ville est requise"),
+  postalCode: z.string().min(1, "Le code postal est requis"),
+  country: z.string().min(1, "Le pays est requis"),
+  region: z.string().optional(),
+});
+
+const documentSchema = z.object({
+  identityCard: z.any().refine((files) => files?.[0] instanceof File, "La pièce d'identité est requise"),
+  driversLicense: z.any().refine((files) => files?.[0] instanceof File, "Le permis de conduire est requis"),
+  vehicleRegistration: z.any().refine((files) => files?.[0] instanceof File, "La carte grise est requise"),
+  insurance: z.any().refine((files) => files?.[0] instanceof File, "L'assurance est requise"),
+});
+
+const authSchema = z.object({
+  username: z.string()
+    .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères")
+    .max(20, "Le nom d'utilisateur ne doit pas dépasser 20 caractères"),
+  password: z.string()
+    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+    .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
+    .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
+    .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre"),
+  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  email: z.string().email("L'email est invalide"),
+  phone: z.string().regex(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/, "Le numéro de téléphone est invalide"),
+  role: z.enum(["client", "delivery", "supplier"], {
+    required_error: "Le rôle est requis",
+    invalid_type_error: "Le rôle sélectionné est invalide",
+  }),
+  address: addressSchema.optional(),
+  documents: documentSchema.optional(),
+});
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState(0);
   const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
   const { login, register } = useUser();
   const { toast } = useToast();
-  const form = useForm<AuthForm>();
+  const form = useForm<AuthForm>({
+    resolver: zodResolver(authSchema),
+    mode: "onChange",
+    defaultValues: {
+      role: '',
+      address: {},
+      documents: {}
+    }
+  });
 
   const handleFileChange = (documentType: keyof DocumentProgress) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -86,7 +137,7 @@ export default function AuthPage() {
   };
   
   const steps = [
-    { title: "Informations personnelles", fields: ["firstName", "lastName", "email", "phone"] },
+    { title: "Informations personnelles", fields: ["firstName", "lastName", "email", "phone", "username", "password"] },
     { title: "Choisir votre rôle", fields: ["role"] },
     { title: "Détails supplémentaires", fields: ["address", "documents"] },
     { title: "Confirmation", fields: [] }
@@ -94,31 +145,8 @@ export default function AuthPage() {
 
   const canProceed = () => {
     const currentFields = steps[step].fields;
-    if (step === 0) {
-      return form.watch("firstName") && 
-             form.watch("lastName") && 
-             form.watch("email") && 
-             form.watch("phone") &&
-             form.watch("username") &&
-             form.watch("password");
-    } else if (step === 1) {
-      return form.watch("role");
-    } else if (step === 2) {
-      if (form.watch("role") === "client") {
-        return form.watch("address.street") &&
-               form.watch("address.city") &&
-               form.watch("address.postalCode") &&
-               form.watch("address.country");
-      } else if (form.watch("role") === "delivery") {
-        return form.watch("address.street") &&
-               form.watch("address.streetNumber") &&
-               form.watch("address.city") &&
-               form.watch("address.postalCode") &&
-               form.watch("address.country");
-      }
-      return true;
-    }
-    return true;
+    //Simplified canProceed function, relying on react-hook-form validation.
+    return form.formState.isValid;
   };
 
   const nextStep = () => {
@@ -175,15 +203,17 @@ export default function AuthPage() {
                   >
                     <Input
                       placeholder="Nom d'utilisateur"
-                      {...form.register("username", { required: true })}
+                      {...form.register("username")}
                       className="h-9"
                     />
+                    {form.formState.errors.username && <p className="text-red-500 text-xs mt-1">{form.formState.errors.username.message}</p>}
                     <Input
                       type="password"
                       placeholder="Mot de passe"
-                      {...form.register("password", { required: true })}
+                      {...form.register("password")}
                       className="h-9"
                     />
+                    {form.formState.errors.password && <p className="text-red-500 text-xs mt-1">{form.formState.errors.password.message}</p>}
                   </motion.div>
                 ) : (
                   <motion.div
@@ -218,44 +248,50 @@ export default function AuthPage() {
                             <div className="grid grid-cols-2 gap-2">
                               <Input
                                 placeholder="Prénom"
-                                {...form.register("firstName", { required: !isLogin })}
+                                {...form.register("firstName")}
                                 className="h-9"
                               />
+                              {form.formState.errors.firstName && <p className="text-red-500 text-xs mt-1">{form.formState.errors.firstName.message}</p>}
                               <Input
                                 placeholder="Nom"
-                                {...form.register("lastName", { required: !isLogin })}
+                                {...form.register("lastName")}
                                 className="h-9"
                               />
+                              {form.formState.errors.lastName && <p className="text-red-500 text-xs mt-1">{form.formState.errors.lastName.message}</p>}
                             </div>
                             <Input
                               type="email"
                               placeholder="Email"
-                              {...form.register("email", { required: !isLogin })}
+                              {...form.register("email")}
                               className="h-9"
                             />
+                            {form.formState.errors.email && <p className="text-red-500 text-xs mt-1">{form.formState.errors.email.message}</p>}
                             <Input
                               type="tel"
                               placeholder="Téléphone"
-                              {...form.register("phone", { required: !isLogin })}
+                              {...form.register("phone")}
                               className="h-9"
                             />
+                            {form.formState.errors.phone && <p className="text-red-500 text-xs mt-1">{form.formState.errors.phone.message}</p>}
                             <Input
                               placeholder="Nom d'utilisateur"
-                              {...form.register("username", { required: true })}
+                              {...form.register("username")}
                               className="h-9"
                             />
+                             {form.formState.errors.username && <p className="text-red-500 text-xs mt-1">{form.formState.errors.username.message}</p>}
                             <Input
                               type="password"
                               placeholder="Mot de passe"
-                              {...form.register("password", { required: true })}
+                              {...form.register("password")}
                               className="h-9"
                             />
+                             {form.formState.errors.password && <p className="text-red-500 text-xs mt-1">{form.formState.errors.password.message}</p>}
                           </>
                         )}
 
                         {step === 1 && (
                           <select 
-                            {...form.register("role", { required: !isLogin })}
+                            {...form.register("role")}
                             className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                           >
                             <option value="">Sélectionnez votre rôle</option>
@@ -270,25 +306,29 @@ export default function AuthPage() {
                             <h3 className="text-sm font-medium">Adresse</h3>
                             <Input
                               placeholder="Rue"
-                              {...form.register("address.street", { required: true })}
+                              {...form.register("address.street")}
                               className="h-9"
                             />
+                            {form.formState.errors.address?.street && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.street.message}</p>}
                             <Input
                               placeholder="Ville"
-                              {...form.register("address.city", { required: true })}
+                              {...form.register("address.city")}
                               className="h-9"
                             />
+                            {form.formState.errors.address?.city && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.city.message}</p>}
                             <div className="grid grid-cols-2 gap-2">
                               <Input
                                 placeholder="Code postal"
-                                {...form.register("address.postalCode", { required: true })}
+                                {...form.register("address.postalCode")}
                                 className="h-9"
                               />
+                              {form.formState.errors.address?.postalCode && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.postalCode.message}</p>}
                               <Input
                                 placeholder="Pays"
-                                {...form.register("address.country", { required: true })}
+                                {...form.register("address.country")}
                                 className="h-9"
                               />
+                              {form.formState.errors.address?.country && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.country.message}</p>}
                             </div>
                           </div>
                         )}
@@ -305,17 +345,19 @@ export default function AuthPage() {
                                     <label className="text-sm mb-1 block">Rue</label>
                                     <Input
                                       placeholder="Nom de la rue"
-                                      {...form.register("address.street", { required: true })}
+                                      {...form.register("address.street")}
                                       className="h-9"
                                     />
+                                    {form.formState.errors.address?.street && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.street.message}</p>}
                                   </div>
                                   <div>
                                     <label className="text-sm mb-1 block">Numéro</label>
                                     <Input
                                       placeholder="N°"
-                                      {...form.register("address.streetNumber", { required: true })}
+                                      {...form.register("address.streetNumber")}
                                       className="h-9"
                                     />
+                                    {form.formState.errors.address?.streetNumber && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.streetNumber.message}</p>}
                                   </div>
                                 </div>
 
@@ -363,17 +405,19 @@ export default function AuthPage() {
                                     <label className="text-sm mb-1 block">Ville</label>
                                     <Input
                                       placeholder="Ville"
-                                      {...form.register("address.city", { required: true })}
+                                      {...form.register("address.city")}
                                       className="h-9"
                                     />
+                                    {form.formState.errors.address?.city && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.city.message}</p>}
                                   </div>
                                   <div>
                                     <label className="text-sm mb-1 block">Code postal</label>
                                     <Input
                                       placeholder="Code postal"
-                                      {...form.register("address.postalCode", { required: true })}
+                                      {...form.register("address.postalCode")}
                                       className="h-9"
                                     />
+                                    {form.formState.errors.address?.postalCode && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.postalCode.message}</p>}
                                   </div>
                                 </div>
 
@@ -391,9 +435,10 @@ export default function AuthPage() {
                                     <label className="text-sm mb-1 block">Pays</label>
                                     <Input
                                       placeholder="Pays"
-                                      {...form.register("address.country", { required: true })}
+                                      {...form.register("address.country")}
                                       className="h-9"
                                     />
+                                    {form.formState.errors.address?.country && <p className="text-red-500 text-xs mt-1">{form.formState.errors.address.country.message}</p>}
                                   </div>
                                 </div>
                               </div>
@@ -408,10 +453,11 @@ export default function AuthPage() {
                                   <Input
                                     type="file"
                                     accept=".pdf,.jpg,.jpeg,.png"
-                                    {...form.register("documents.identityCard", { required: true })}
+                                    {...form.register("documents.identityCard")}
                                     className="h-9"
                                     onChange={handleFileChange('identityCard')}
                                   />
+                                  {form.formState.errors.documents?.identityCard && <p className="text-red-500 text-xs mt-1">{form.formState.errors.documents.identityCard.message}</p>}
                                   {uploadProgress.identityCard && (
                                     <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
                                       <motion.div
@@ -431,10 +477,11 @@ export default function AuthPage() {
                                   <Input
                                     type="file"
                                     accept=".pdf,.jpg,.jpeg,.png"
-                                    {...form.register("documents.driversLicense", { required: true })}
+                                    {...form.register("documents.driversLicense")}
                                     className="h-9"
                                     onChange={handleFileChange('driversLicense')}
                                   />
+                                  {form.formState.errors.documents?.driversLicense && <p className="text-red-500 text-xs mt-1">{form.formState.errors.documents.driversLicense.message}</p>}
                                   {uploadProgress.driversLicense && (
                                     <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
                                       <motion.div
@@ -454,10 +501,11 @@ export default function AuthPage() {
                                   <Input
                                     type="file"
                                     accept=".pdf,.jpg,.jpeg,.png"
-                                    {...form.register("documents.vehicleRegistration", { required: true })}
+                                    {...form.register("documents.vehicleRegistration")}
                                     className="h-9"
                                     onChange={handleFileChange('vehicleRegistration')}
                                   />
+                                  {form.formState.errors.documents?.vehicleRegistration && <p className="text-red-500 text-xs mt-1">{form.formState.errors.documents.vehicleRegistration.message}</p>}
                                   {uploadProgress.vehicleRegistration && (
                                     <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
                                       <motion.div
@@ -477,10 +525,11 @@ export default function AuthPage() {
                                   <Input
                                     type="file"
                                     accept=".pdf,.jpg,.jpeg,.png"
-                                    {...form.register("documents.insurance", { required: true })}
+                                    {...form.register("documents.insurance")}
                                     className="h-9"
                                     onChange={handleFileChange('insurance')}
                                   />
+                                  {form.formState.errors.documents?.insurance && <p className="text-red-500 text-xs mt-1">{form.formState.errors.documents.insurance.message}</p>}
                                   {uploadProgress.insurance && (
                                     <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
                                       <motion.div
