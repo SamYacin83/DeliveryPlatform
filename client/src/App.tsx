@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
+import AboutPage from "./pages/AboutPage";
 import Navigation from "./components/Navigation";
 import NotificationProvider from "./components/NotificationProvider";
 import { Toaster } from "@/components/ui/toaster";
@@ -50,6 +51,7 @@ function App() {
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
+          <Route path="/about" component={AboutPage} />
           {user && <Route path="/dashboard" component={DashboardPage} />}
         </Switch>
       </main>

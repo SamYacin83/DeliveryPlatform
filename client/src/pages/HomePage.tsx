@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types";
 import { Input } from "@/components/ui/input";
@@ -37,8 +38,8 @@ export default function HomePage() {
                 <Button size="lg" className="px-8">
                   Commencer
                 </Button>
-                <Button size="lg" variant="outline" className="px-8">
-                  En savoir plus
+                <Button size="lg" variant="outline" className="px-8" asChild>
+                  <Link href="/about">En savoir plus</Link>
                 </Button>
               </div>
             </div>
