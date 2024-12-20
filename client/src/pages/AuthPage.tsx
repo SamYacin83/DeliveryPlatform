@@ -211,18 +211,24 @@ export default function AuthPage() {
           title: "Erreur",
           description: result.message,
           variant: "destructive",
+          duration: 3000,
         });
       } else {
         toast({
-          title: "Succès",
-          description: isLogin ? "Connexion réussie" : "Inscription réussie",
+          title: isLogin ? "🎉 Bienvenue !" : "✨ Félicitations !",
+          description: isLogin 
+            ? `Ravi de vous revoir, ${data.username} !`
+            : "Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.",
           variant: "default",
+          duration: 5000,
+          className: "bg-primary text-primary-foreground",
         });
         
         if (!isLogin) {
           // Reset form after successful registration
           form.reset();
           setStep(0);
+          setIsLogin(true); // Switch to login view after successful registration
         }
       }
     } catch (error: any) {
