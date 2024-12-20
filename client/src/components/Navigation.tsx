@@ -45,26 +45,33 @@ export default function Navigation({ user }: NavigationProps) {
   }, [user.id]);
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white border-b">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
             RapidLivre
           </Link>
 
-          <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
+          <div className="flex items-center gap-8">
+            <Link 
+              href="/dashboard" 
+              className="text-foreground/80 hover:text-primary transition-colors font-medium"
+            >
               Tableau de bord
             </Link>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-5 w-5" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative hover:bg-primary/5 transition-colors"
+                >
+                  <Bell className="h-5 w-5 text-foreground/80" />
                   {hasUnread && (
                     <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
+                      variant="default"
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
                     />
                   )}
                 </Button>
@@ -72,13 +79,21 @@ export default function Navigation({ user }: NavigationProps) {
               <DropdownMenuContent align="end" className="w-80">
                 <DropdownMenuGroup>
                   {notifications.length === 0 ? (
-                    <DropdownMenuItem className="text-muted-foreground">
+                    <DropdownMenuItem className="text-muted-foreground text-center py-4">
                       Aucune notification
                     </DropdownMenuItem>
                   ) : (
                     notifications.map(notification => (
-                      <DropdownMenuItem key={notification.id}>
-                        {notification.message}
+                      <DropdownMenuItem 
+                        key={notification.id}
+                        className="py-3 px-4 hover:bg-primary/5 cursor-pointer"
+                      >
+                        <div className="flex flex-col gap-1">
+                          <span className="font-medium">{notification.message}</span>
+                          <span className="text-xs text-muted-foreground">
+                            Il y a {Math.floor(Math.random() * 10) + 1} minutes
+                          </span>
+                        </div>
                       </DropdownMenuItem>
                     ))
                   )}
@@ -86,16 +101,22 @@ export default function Navigation({ user }: NavigationProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span>{user.username}</span>
-              <span className="px-2 py-1 bg-gray-100 rounded-full text-xs">
-                {user.role === 'client' ? 'Client' : 
-                 user.role === 'delivery' ? 'Livreur' : 'Fournisseur'}
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{user.username}</span>
+                <Badge variant="secondary" className="font-normal">
+                  {user.role === 'client' ? 'Client' : 
+                   user.role === 'delivery' ? 'Livreur' : 'Fournisseur'}
+                </Badge>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => logout()}
+                className="hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-colors"
+              >
+                Déconnexion
+              </Button>
             </div>
-            <Button variant="outline" onClick={() => logout()}>
-              Déconnexion
-            </Button>
           </div>
         </div>
       </div>
