@@ -45,12 +45,58 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex-1">
-              <div className="relative h-[400px] w-full rounded-lg overflow-hidden shadow-xl bg-white">
-                <img
-                  src="/image.png"
-                  alt="Livreur avec application de géolocalisation"
-                  className="w-full h-full object-contain"
-                />
+              <div className="relative h-[400px] w-full flex items-center justify-center">
+                <div className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
+                  <svg
+                    viewBox="0 0 800 600"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-full h-auto drop-shadow-xl"
+                  >
+                    {/* Fond avec gradient */}
+                    <rect width="800" height="600" fill="url(#gradient)" rx="20" />
+                    
+                    {/* Smartphone */}
+                    <rect x="100" y="100" width="300" height="500" rx="20" fill="#1F2937" />
+                    <rect x="110" y="110" width="280" height="480" rx="15" fill="#F8FAFC" />
+                    
+                    {/* Carte sur l'écran */}
+                    <rect x="120" y="120" width="260" height="400" rx="10" fill="#E5E7EB" />
+                    
+                    {/* Route */}
+                    <path
+                      d="M150,300 Q250,200 350,300"
+                      stroke="hsl(252,85%,60%)"
+                      strokeWidth="4"
+                      strokeDasharray="8,8"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Points de départ et d'arrivée */}
+                    <circle cx="150" cy="300" r="8" fill="hsl(252,85%,60%)" />
+                    <circle cx="350" cy="300" r="8" fill="hsl(252,85%,60%)" />
+                    
+                    {/* Scooter et livreur */}
+                    <g transform="translate(450, 250)">
+                      {/* Scooter */}
+                      <rect x="0" y="100" width="200" height="80" rx="20" fill="hsl(252,85%,60%)" />
+                      <circle cx="50" cy="180" r="30" fill="#1F2937" />
+                      <circle cx="150" cy="180" r="30" fill="#1F2937" />
+                      
+                      {/* Livreur */}
+                      <circle cx="100" cy="80" r="40" fill="#1F2937" />
+                      <rect x="60" y="120" width="80" height="100" rx="20" fill="hsl(252,85%,60%)" />
+                    </g>
+                    
+                    {/* Gradient définition */}
+                    <defs>
+                      <linearGradient id="gradient" x1="0" y1="0" x2="800" y2="600">
+                        <stop offset="0%" stopColor="#F8FAFC" />
+                        <stop offset="100%" stopColor="#F1F5F9" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
