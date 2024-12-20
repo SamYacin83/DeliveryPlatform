@@ -26,7 +26,19 @@ export function setupSocket(server: Server) {
           .returning();
 
         if (delivery) {
-          io.emit(`delivery_updated_${delivery.orderId}`, delivery);
+          // First fetch the order to get the user ID
+          const order = await db.query.orders.findFirst({
+            where: eq(orders.id, delivery.orderId),
+          });
+
+          if (order) {
+            // Emit to specific user
+            io.emit(`delivery_updated_${order.userId}`, {
+              orderId: delivery.orderId,
+              status: order.status,
+              location: delivery.location,
+            });
+          }
         }
       } catch (error) {
         console.error("Failed to update delivery location:", error);

@@ -33,6 +33,7 @@ function App() {
           <Route path="/dashboard" component={DashboardPage} />
         </Switch>
       </main>
+      <NotificationProvider />
       <Toaster />
     </div>
   );
