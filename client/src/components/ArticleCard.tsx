@@ -58,7 +58,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       </CardContent>
       <CardFooter className="flex justify-between items-center pt-4 border-t">
         <div className="flex flex-col">
-          <span className="text-2xl font-bold">{article.price.toFixed(2)} €</span>
+          <span className="text-2xl font-bold">{Number(article.price).toFixed(2)} €</span>
           <span className="text-xs text-muted-foreground">TTC, livraison incluse</span>
         </div>
         <Button
