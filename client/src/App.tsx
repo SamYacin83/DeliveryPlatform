@@ -10,6 +10,7 @@ import DashboardPage from "./pages/DashboardPage";
 import Navigation from "./components/Navigation";
 import NotificationProvider from "./components/NotificationProvider";
 import { Toaster } from "@/components/ui/toaster";
+import Footer from "./components/Footer";
 
 function App() {
   const { user, isLoading } = useUser();
@@ -50,6 +51,7 @@ function App() {
           {user && <Route path="/dashboard" component={DashboardPage} />}
         </Switch>
       </main>
+      <Footer />
       <Toaster />
     </div>
   );

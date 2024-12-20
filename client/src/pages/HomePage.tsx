@@ -43,7 +43,7 @@ export default function HomePage() {
             <div className="flex-1 relative">
               <div className="relative h-[400px] w-full rounded-lg overflow-hidden shadow-xl">
                 <img
-                  src="/hero-image.jpg"
+                  src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?q=80&w=1200&height=400&fit=crop"
                   alt="Livraison rapide"
                   className="object-cover w-full h-full"
                 />
