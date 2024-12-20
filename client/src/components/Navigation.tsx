@@ -50,17 +50,27 @@ export default function Navigation({ user }: NavigationProps) {
     <nav className="bg-white border-b">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
-            RapidLivre
-          </Link>
-
-          <div className="flex items-center gap-6">
-            <Link 
-              href="/dashboard" 
-              className="text-foreground/80 hover:text-primary transition-colors font-medium"
-            >
-              Mes commandes
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
+              RapidLivre
             </Link>
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/services" className="text-foreground/80 hover:text-primary transition-colors">
+                Services
+              </Link>
+              <Link href="/how-it-works" className="text-foreground/80 hover:text-primary transition-colors">
+                Comment ça marche
+              </Link>
+              <Link href="/testimonials" className="text-foreground/80 hover:text-primary transition-colors">
+                Témoignages
+              </Link>
+              <Link 
+                href="/dashboard" 
+                className="text-foreground/80 hover:text-primary transition-colors"
+              >
+                Mes commandes
+              </Link>
+            </div>
             
             <div className="flex items-center gap-2">
               <CartDropdown />
