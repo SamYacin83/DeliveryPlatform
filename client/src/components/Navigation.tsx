@@ -3,6 +3,7 @@ import type { User as UserType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useUser } from "../hooks/use-user";
 import { Bell, User as UserIcon, LogOut, ShoppingCart } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -122,29 +123,37 @@ export default function Navigation({ user }: NavigationProps) {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-4 border-l pl-4 cursor-pointer">
-                  <div className="flex flex-col items-end">
-                    <span className="text-sm text-muted-foreground">
-                      {new Date().getHours() >= 18 ? "Bonsoir" : "Bonjour"},
-                    </span>
-                    <span className="font-medium">{user.username}</span>
-                  </div>
-                </div>
+                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {user.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    Mon profil
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => logout()}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Se déconnecter
-                </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <div className="px-2 py-1.5 text-sm font-semibold">Profile</div>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center cursor-pointer">
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <span className="flex items-center">
+                      <i className="mr-2 h-4 w-4">⌘</i>
+                      CLUI
+                    </span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => logout()}
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
