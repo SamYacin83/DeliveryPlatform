@@ -15,7 +15,8 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-sm shadow-sm">
+    <div className="min-h-[calc(100vh-8rem)] w-full flex items-center justify-center">
+      <Card className="w-full max-w-sm mx-4 shadow-sm">
       <CardHeader className="space-y-2">
         <CardTitle className="text-2xl text-center">Mot de passe oublié</CardTitle>
         <CardDescription className="text-center">
@@ -43,5 +44,6 @@ export default function ForgotPasswordForm() {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 }
