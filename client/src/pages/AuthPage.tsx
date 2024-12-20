@@ -40,40 +40,50 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{isLogin ? "Login" : "Register"}</CardTitle>
+    <div className="flex items-center justify-center py-8 px-4 bg-background">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl text-center">
+            {isLogin ? "Connexion" : "Inscription"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <Input
-                placeholder="Username"
-                {...form.register("username", { required: true })}
-              />
-              <Input
-                type="password"
-                placeholder="Password"
-                {...form.register("password", { required: true })}
-              />
-              <select {...form.register("role", { required: true })}
-                className="w-full p-2 border rounded">
-                <option value="client">Client</option>
-                <option value="delivery">Delivery</option>
-                <option value="supplier">Supplier</option>
-              </select>
-              <Button type="submit" className="w-full">
-                {isLogin ? "Login" : "Register"}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                className="w-full"
-                onClick={() => setIsLogin(!isLogin)}
-              >
-                {isLogin ? "Need an account?" : "Already have an account?"}
-              </Button>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+              <div className="space-y-2">
+                <Input
+                  placeholder="Nom d'utilisateur"
+                  {...form.register("username", { required: true })}
+                  className="h-9"
+                />
+                <Input
+                  type="password"
+                  placeholder="Mot de passe"
+                  {...form.register("password", { required: true })}
+                  className="h-9"
+                />
+                <select 
+                  {...form.register("role", { required: true })}
+                  className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <option value="client">Client</option>
+                  <option value="delivery">Livreur</option>
+                  <option value="supplier">Fournisseur</option>
+                </select>
+              </div>
+              <div className="pt-2">
+                <Button type="submit" className="w-full mb-2">
+                  {isLogin ? "Se connecter" : "S'inscrire"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full text-sm text-muted-foreground hover:text-primary"
+                  onClick={() => setIsLogin(!isLogin)}
+                >
+                  {isLogin ? "Créer un compte" : "Déjà inscrit ?"}
+                </Button>
+              </div>
             </form>
           </Form>
         </CardContent>
