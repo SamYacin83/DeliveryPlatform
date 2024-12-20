@@ -103,9 +103,20 @@ export default function AuthPage() {
     resolver: zodResolver(authSchema),
     mode: "onChange",
     defaultValues: {
-      role: '',
-      address: {},
-      documents: {}
+      username: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      role: "client" as UserRole,
+      address: {
+        street: "",
+        streetNumber: "",
+        city: "",
+        postalCode: "",
+        country: ""
+      }
     }
   });
 
@@ -145,8 +156,29 @@ export default function AuthPage() {
 
   const canProceed = () => {
     const currentFields = steps[step].fields;
-    //Simplified canProceed function, relying on react-hook-form validation.
-    return form.formState.isValid;
+    if (isLogin) return true;
+    
+    // Check validation only for fields in the current step
+    const errors = form.formState.errors;
+    const hasErrors = currentFields.some(field => {
+      if (field === "address") {
+        return form.watch("role") === "delivery" && errors.address;
+      }
+      if (field === "documents") {
+        return form.watch("role") === "delivery" && errors.documents;
+      }
+      return errors[field as keyof typeof errors];
+    });
+
+    // Check if required fields are filled
+    const isComplete = currentFields.every(field => {
+      if (field === "address" || field === "documents") {
+        return true; // These are checked separately based on role
+      }
+      return form.watch(field as keyof AuthForm);
+    });
+
+    return !hasErrors && isComplete;
   };
 
   const nextStep = () => {
