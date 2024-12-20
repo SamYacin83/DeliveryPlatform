@@ -255,10 +255,10 @@ export default function AuthPage() {
                         {step === 3 && (
                           <div className="space-y-4">
                             <h3 className="text-lg font-semibold text-center">Récapitulatif de vos informations</h3>
-                            <div className="space-y-3 bg-muted/30 p-4 rounded-lg">
-                              <div>
+                            <div className="space-y-4 bg-muted/30 p-4 rounded-lg">
+                              <div className="space-y-3">
                                 <h4 className="text-sm font-medium text-muted-foreground">Informations personnelles</h4>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                                   <div>
                                     <p className="text-sm font-medium">Nom</p>
                                     <p className="text-sm">{form.watch("lastName")}</p>
@@ -267,11 +267,9 @@ export default function AuthPage() {
                                     <p className="text-sm font-medium">Prénom</p>
                                     <p className="text-sm">{form.watch("firstName")}</p>
                                   </div>
-                                  </div>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
                                   <div>
                                     <p className="text-sm font-medium">Email</p>
-                                    <p className="text-sm">{form.watch("email")}</p>
+                                    <p className="text-sm overflow-ellipsis overflow-hidden">{form.watch("email")}</p>
                                   </div>
                                   <div>
                                     <p className="text-sm font-medium">Téléphone</p>
