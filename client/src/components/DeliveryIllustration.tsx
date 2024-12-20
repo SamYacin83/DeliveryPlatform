@@ -14,140 +14,83 @@ export default function DeliveryIllustration() {
       >
         {/* Fond avec dégradé */}
         <rect width="800" height="600" fill="url(#gradient)" />
-        
-        {/* Route principale avec effet de perspective */}
-        <motion.path
-          d="M50,400 C200,380 600,420 750,400"
-          stroke="#94A3B8"
-          strokeWidth="100"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-        />
-        
-        {/* Ligne centrale de la route */}
-        <motion.path
-          d="M50,400 C200,380 600,420 750,400"
-          stroke="#E2E8F0"
-          strokeWidth="6"
-          strokeDasharray="20,20"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-        />
 
-        {/* Marqueur de départ avec animation */}
+        {/* Téléphone */}
         <motion.g
-          initial={{ scale: 0, y: 50 }}
-          animate={{ scale: 1, y: 0 }}
-          transition={{ delay: 0.5, type: "spring" }}
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <circle cx="100" cy="400" r="30" fill="#22C55E" />
-          <circle cx="100" cy="400" r="35" stroke="#22C55E" strokeWidth="2" strokeDasharray="6,3" />
-          <path
-            d="M100,385 L100,415 M85,400 L115,400"
-            stroke="white"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <text x="70" y="450" fill="#1F2937" className="text-sm font-semibold">
-            Point de départ
-          </text>
-        </motion.g>
-
-        {/* Marqueur d'arrivée avec animation */}
-        <motion.g
-          initial={{ scale: 0, y: 50 }}
-          animate={{ scale: 1, y: 0 }}
-          transition={{ delay: 0.7, type: "spring" }}
-        >
-          <circle cx="700" cy="400" r="30" fill="#EF4444" />
-          <circle cx="700" cy="400" r="35" stroke="#EF4444" strokeWidth="2" strokeDasharray="6,3" />
-          <path
-            d="M700,385 L700,415"
-            stroke="white"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <circle cx="700" cy="400" r="8" fill="white" />
-          <text x="670" y="450" fill="#1F2937" className="text-sm font-semibold">
-            Destination
-          </text>
-        </motion.g>
-
-        {/* Livreur à moto avec animation */}
-        <motion.g
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ 
-            x: 0,
-            opacity: 1,
-            y: [0, -10, 0],
-          }}
-          transition={{
-            x: { duration: 0.8, ease: "easeOut" },
-            opacity: { duration: 0.3 },
-            y: { 
-              repeat: Infinity,
-              duration: 1.5,
-              ease: "easeInOut",
-            }
-          }}
-        >
-          {/* Moto */}
-          <path
-            d="M380,390 L450,390 C460,390 470,380 470,370 L470,360 C470,350 460,340 450,340 L420,340"
-            stroke="#3B82F6"
-            strokeWidth="8"
-            fill="none"
-          />
-          <circle cx="380" cy="400" r="20" fill="#2563EB" /> {/* Roue arrière */}
-          <circle cx="470" cy="400" r="20" fill="#2563EB" /> {/* Roue avant */}
+          <rect x="150" y="100" width="300" height="500" rx="20" fill="#1F2937" />
+          <rect x="160" y="110" width="280" height="480" rx="15" fill="#F8FAFC" />
           
-          {/* Livreur */}
-          <path
-            d="M410,320 C420,310 440,310 450,320"
-            stroke="#1D4ED8"
-            strokeWidth="15"
-            strokeLinecap="round"
-          />
-          <circle cx="430" cy="290" r="25" fill="#3B82F6" /> {/* Tête avec casque */}
-          <path
-            d="M420,285 L440,285"
-            stroke="#1D4ED8"
+          {/* Carte dans le téléphone */}
+          <rect x="170" y="120" width="260" height="400" rx="10" fill="#E5E7EB" />
+          
+          {/* Route sur la carte */}
+          <motion.path
+            d="M200,300 Q300,200 400,300"
+            stroke="#EF4444"
             strokeWidth="4"
+            strokeDasharray="8,8"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+          />
+
+          {/* Interface de distance */}
+          <rect x="200" y="440" width="200" height="60" rx="10" fill="white" filter="url(#shadow)" />
+          <text x="220" y="470" fill="#1F2937" className="text-sm font-medium">Distance</text>
+          <text x="220" y="490" fill="#EF4444" className="text-lg font-bold">1,100 m</text>
+        </motion.g>
+
+        {/* Scooter et Livreur */}
+        <motion.g
+          initial={{ x: 800 }}
+          animate={{ x: 500 }}
+          transition={{
+            duration: 2,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        >
+          {/* Scooter */}
+          <path
+            d="M0,400 C30,390 60,390 80,400"
+            stroke="#EF4444"
+            strokeWidth="20"
             strokeLinecap="round"
           />
+          <circle cx="-10" cy="420" r="15" fill="#1F2937" /> {/* Roue arrière */}
+          <circle cx="90" cy="420" r="15" fill="#1F2937" /> {/* Roue avant */}
+
+          {/* Livreur */}
+          <circle cx="40" cy="360" r="20" fill="#1F2937" /> {/* Tête avec casque */}
+          <rect x="30" y="380" width="20" height="30" fill="#EF4444" rx="5" /> {/* Corps */}
+          <rect x="20" y="370" width="40" height="10" fill="#EF4444" rx="5" /> {/* Épaules */}
           
           {/* Sac de livraison */}
-          <rect x="380" y="330" width="40" height="40" fill="#DC2626" rx="5" />
-          <path
-            d="M390,340 L410,340"
-            stroke="white"
-            strokeWidth="2"
-          />
+          <rect x="-20" y="370" width="30" height="30" fill="#EF4444" rx="5" />
         </motion.g>
 
-        {/* GPS Ping animé */}
-        <motion.g
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ 
-            scale: [1, 1.5, 1],
-            opacity: [0.8, 0.2, 0],
-          }}
-          transition={{
-            repeat: Infinity,
-            duration: 2,
-            ease: "easeOut",
-          }}
-        >
-          <circle cx="430" cy="400" r="40" fill="#3B82F6" fillOpacity="0.2" />
-          <circle cx="430" cy="400" r="20" fill="#3B82F6" fillOpacity="0.4" />
-        </motion.g>
+        {/* Éléments décoratifs */}
+        <motion.path
+          d="M600,100 C650,50 700,100 700,150"
+          stroke="#E5E7EB"
+          strokeWidth="2"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1 }}
+        />
 
-        {/* Dégradé de fond */}
+        {/* Effets d'ombre */}
         <defs>
+          <filter id="shadow" x="-4" y="0" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.1"/>
+          </filter>
+
           <linearGradient id="gradient" x1="0" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#F8FAFC" />
             <stop offset="100%" stopColor="#F1F5F9" />
