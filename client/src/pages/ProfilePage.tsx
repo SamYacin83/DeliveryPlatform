@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { User } from "@/components/ui/user";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -44,9 +44,11 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
-            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
+            <Avatar className="h-20 w-20">
+              <AvatarFallback className="text-2xl">
+                {user.username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <div>
               <h2 className="text-xl font-semibold">{user.username}</h2>
               <p className="text-muted-foreground">
