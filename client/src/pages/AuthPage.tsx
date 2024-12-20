@@ -216,7 +216,7 @@ export default function AuthPage() {
 
   return (
     <div className="flex items-center justify-center py-4 px-4 bg-background">
-      <Card className="w-full max-w-sm shadow-sm">
+      <Card className="w-full max-w-2xl shadow-sm">
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl text-center">
             {isLogin ? "Connexion" : "Inscription"}
@@ -271,9 +271,9 @@ export default function AuthPage() {
                         />
                       </div>
                       {/* Step indicators */}
-                      <div className="flex justify-between items-center relative">
+                      <div className="grid grid-cols-4 gap-4 md:gap-8 relative">
                         {steps.map((s, index) => (
-                          <div key={index} className="flex flex-col items-center">
+                          <div key={index} className="flex flex-col items-center text-center">
                             <div
                               className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${
                                 index < step
