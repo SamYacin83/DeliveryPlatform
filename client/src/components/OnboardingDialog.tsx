@@ -50,8 +50,27 @@ export default function OnboardingDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog 
+      open={open} 
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          document.body.style.pointerEvents = 'auto';
+        }
+        setOpen(isOpen);
+      }}
+    >
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        onOpenAutoFocus={(e) => {
+          if (!open) {
+            e.preventDefault();
+          }
+        }}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+          document.body.style.pointerEvents = 'auto';
+        }}
+      >
         <DialogHeader>
           <AnimatePresence mode="wait">
             <motion.div
