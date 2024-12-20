@@ -62,33 +62,37 @@ export default function AuthPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <Input
-                    placeholder="Prénom"
-                    {...form.register("firstName", { required: true })}
-                    className="h-9"
-                  />
-                  <Input
-                    placeholder="Nom"
-                    {...form.register("lastName", { required: true })}
-                    className="h-9"
-                  />
-                </div>
+                {!isLogin && (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        placeholder="Prénom"
+                        {...form.register("firstName", { required: !isLogin })}
+                        className="h-9"
+                      />
+                      <Input
+                        placeholder="Nom"
+                        {...form.register("lastName", { required: !isLogin })}
+                        className="h-9"
+                      />
+                    </div>
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      {...form.register("email", { required: !isLogin })}
+                      className="h-9"
+                    />
+                    <Input
+                      type="tel"
+                      placeholder="Téléphone"
+                      {...form.register("phone", { required: !isLogin })}
+                      className="h-9"
+                    />
+                  </>
+                )}
                 <Input
                   placeholder="Nom d'utilisateur"
                   {...form.register("username", { required: true })}
-                  className="h-9"
-                />
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  {...form.register("email", { required: true })}
-                  className="h-9"
-                />
-                <Input
-                  type="tel"
-                  placeholder="Téléphone"
-                  {...form.register("phone", { required: true })}
                   className="h-9"
                 />
                 <Input
@@ -97,14 +101,16 @@ export default function AuthPage() {
                   {...form.register("password", { required: true })}
                   className="h-9"
                 />
-                <select 
-                  {...form.register("role", { required: true })}
-                  className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <option value="client">Client</option>
-                  <option value="delivery">Livreur</option>
-                  <option value="supplier">Fournisseur</option>
-                </select>
+                {!isLogin && (
+                  <select 
+                    {...form.register("role", { required: !isLogin })}
+                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  >
+                    <option value="client">Client</option>
+                    <option value="delivery">Livreur</option>
+                    <option value="supplier">Fournisseur</option>
+                  </select>
+                )}
 
                 {form.watch("role") === "client" && (
                   <div className="space-y-2 border-t pt-2">
