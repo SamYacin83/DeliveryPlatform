@@ -21,22 +21,25 @@ export default function Breadcrumb() {
   });
 
   return (
-    <div className="bg-muted/30">
-      <div className="container mx-auto px-4 py-2">
-        <nav className="flex items-center text-sm text-muted-foreground">
-          <Link href="/" className="flex items-center hover:text-foreground transition-colors">
+    <div className="bg-gradient-to-r from-primary/5 to-background border-b">
+      <div className="container mx-auto px-4 py-3">
+        <nav className="flex items-center text-sm">
+          <Link 
+            href="/" 
+            className="flex items-center text-primary hover:text-primary/80 transition-colors font-medium"
+          >
             <Home className="h-4 w-4" />
-            <span className="ml-1">Accueil</span>
+            <span className="ml-1.5">Accueil</span>
           </Link>
           {breadcrumbItems.map((item, index) => (
             <div key={item.path} className="flex items-center">
-              <ChevronRight className="h-4 w-4 mx-2" />
+              <ChevronRight className="h-4 w-4 mx-2 text-muted-foreground" />
               {index === breadcrumbItems.length - 1 ? (
-                <span className="text-foreground">{item.label}</span>
+                <span className="font-medium text-foreground">{item.label}</span>
               ) : (
                 <Link
                   href={item.path}
-                  className="hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   {item.label}
                 </Link>
