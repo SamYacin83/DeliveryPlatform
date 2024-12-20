@@ -37,16 +37,33 @@ export default function AuthPage() {
   const steps = [
     { title: "Informations personnelles", fields: ["firstName", "lastName", "email", "phone"] },
     { title: "Choisir votre rôle", fields: ["role"] },
-    { title: "Détails supplémentaires", fields: ["address", "documents"] }
+    { title: "Détails supplémentaires", fields: ["address", "documents"] },
+    { title: "Confirmation", fields: [] }
   ];
 
   const canProceed = () => {
     const currentFields = steps[step].fields;
-    return currentFields.every(field => {
-      if (field === "address" && form.watch("role") !== "client") return true;
-      if (field === "documents" && form.watch("role") !== "delivery") return true;
-      return !form.formState.errors[field];
-    });
+    if (step === 0) {
+      return form.watch("firstName") && 
+             form.watch("lastName") && 
+             form.watch("email") && 
+             form.watch("phone") &&
+             form.watch("username") &&
+             form.watch("password");
+    } else if (step === 1) {
+      return form.watch("role");
+    } else if (step === 2) {
+      if (form.watch("role") === "client") {
+        return form.watch("address.street") &&
+               form.watch("address.city") &&
+               form.watch("address.postalCode") &&
+               form.watch("address.country");
+      } else if (form.watch("role") === "delivery") {
+        return form.watch("documents") && form.watch("documents").length > 0;
+      }
+      return true;
+    }
+    return true;
   };
 
   const nextStep = () => {
@@ -234,6 +251,75 @@ export default function AuthPage() {
                             </p>
                           </div>
                         )}
+
+                        {step === 3 && (
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-center">Récapitulatif de vos informations</h3>
+                            <div className="space-y-3 bg-muted/30 p-4 rounded-lg">
+                              <div>
+                                <h4 className="text-sm font-medium text-muted-foreground">Informations personnelles</h4>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                  <div>
+                                    <p className="text-sm font-medium">Nom</p>
+                                    <p className="text-sm">{form.watch("lastName")}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">Prénom</p>
+                                    <p className="text-sm">{form.watch("firstName")}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">Email</p>
+                                    <p className="text-sm">{form.watch("email")}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">Téléphone</p>
+                                    <p className="text-sm">{form.watch("phone")}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div>
+                                <h4 className="text-sm font-medium text-muted-foreground">Compte</h4>
+                                <div className="mt-2">
+                                  <div>
+                                    <p className="text-sm font-medium">Nom d'utilisateur</p>
+                                    <p className="text-sm">{form.watch("username")}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div>
+                                <h4 className="text-sm font-medium text-muted-foreground">Rôle</h4>
+                                <p className="text-sm mt-2 capitalize">
+                                  {form.watch("role") === "delivery" ? "Livreur" :
+                                   form.watch("role") === "supplier" ? "Fournisseur" : "Client"}
+                                </p>
+                              </div>
+
+                              {form.watch("role") === "client" && (
+                                <div>
+                                  <h4 className="text-sm font-medium text-muted-foreground">Adresse</h4>
+                                  <div className="mt-2">
+                                    <p className="text-sm">{form.watch("address.street")}</p>
+                                    <p className="text-sm">
+                                      {form.watch("address.postalCode")} {form.watch("address.city")}
+                                    </p>
+                                    <p className="text-sm">{form.watch("address.country")}</p>
+                                  </div>
+                                </div>
+                              )}
+
+                              {form.watch("role") === "delivery" && (
+                                <div>
+                                  <h4 className="text-sm font-medium text-muted-foreground">Documents fournis</h4>
+                                  <p className="text-sm mt-2">
+                                    {form.watch("documents")?.length} document(s) joint(s)
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     </AnimatePresence>
 
@@ -249,7 +335,7 @@ export default function AuthPage() {
                         <ChevronLeft className="w-4 h-4" />
                         Retour
                       </Button>
-                      {step < steps.length - 1 ? (
+                      {step < steps.length - 2 ? (
                         <Button
                           type="button"
                           onClick={nextStep}
@@ -259,12 +345,22 @@ export default function AuthPage() {
                           Suivant
                           <ChevronRight className="w-4 h-4" />
                         </Button>
+                      ) : step === steps.length - 2 ? (
+                        <Button
+                          type="button"
+                          onClick={nextStep}
+                          disabled={!canProceed()}
+                          className="flex items-center gap-2"
+                        >
+                          Vérifier
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
                       ) : (
                         <Button
                           type="submit"
                           className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                         >
-                          S'inscrire
+                          Confirmer l'inscription
                         </Button>
                       )}
                     </div>
