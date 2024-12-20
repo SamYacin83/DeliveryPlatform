@@ -216,7 +216,7 @@ export default function AuthPage() {
 
   return (
     <div className="flex items-center justify-center py-4 px-4 bg-background">
-      <Card className="w-full max-w-2xl shadow-sm">
+      <Card className={`w-full ${isLogin ? 'max-w-sm' : 'max-w-2xl'} shadow-sm`}>
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl text-center">
             {isLogin ? "Connexion" : "Inscription"}
