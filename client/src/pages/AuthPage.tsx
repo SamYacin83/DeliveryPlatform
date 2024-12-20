@@ -254,16 +254,41 @@ export default function AuthPage() {
                     exit={{ opacity: 0, y: -20 }}
                     className="space-y-4"
                   >
-                    {/* Step indicators */}
-                    <div className="flex justify-center gap-2 mb-4">
-                      {steps.map((_, index) => (
-                        <div
-                          key={index}
-                          className={`h-2 w-2 rounded-full transition-colors ${
-                            index === step ? "bg-primary" : "bg-muted"
-                          }`}
+                    {/* Progress bar and step indicators */}
+                    <div className="space-y-4 mb-6">
+                      {/* Progress percentage */}
+                      <div className="flex justify-between items-center text-sm text-muted-foreground">
+                        <span>Progression</span>
+                        <span>{Math.round((step / (steps.length - 1)) * 100)}%</span>
+                      </div>
+                      {/* Progress bar */}
+                      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                        <motion.div
+                          className="h-full bg-primary"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(step / (steps.length - 1)) * 100}%` }}
+                          transition={{ duration: 0.3 }}
                         />
-                      ))}
+                      </div>
+                      {/* Step indicators */}
+                      <div className="flex justify-between items-center relative">
+                        {steps.map((s, index) => (
+                          <div key={index} className="flex flex-col items-center">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${
+                                index < step
+                                  ? "bg-primary border-primary text-primary-foreground"
+                                  : index === step
+                                  ? "border-primary text-primary"
+                                  : "border-muted text-muted-foreground"
+                              }`}
+                            >
+                              {index + 1}
+                            </div>
+                            <span className="text-xs mt-1 text-muted-foreground">{s.title}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Step content */}
@@ -278,11 +303,30 @@ export default function AuthPage() {
                         {step === 0 && (
                           <>
                             <div className="grid grid-cols-2 gap-2">
-                              <Input
-                                placeholder="Prénom"
-                                {...form.register("firstName")}
-                                className="h-9"
-                              />
+                              <div className="relative">
+                                <Input
+                                  placeholder="Prénom"
+                                  {...form.register("firstName")}
+                                  className={`h-9 ${
+                                    form.formState.errors.firstName
+                                      ? "border-red-500 focus:ring-red-500"
+                                      : form.formState.touchedFields.firstName
+                                      ? "border-green-500 focus:ring-green-500"
+                                      : ""
+                                  }`}
+                                />
+                                {form.formState.touchedFields.firstName && !form.formState.errors.firstName && (
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-green-500"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </motion.div>
+                                )}
+                              </div>
                               {form.formState.errors.firstName && <p className="text-red-500 text-xs mt-1">{form.formState.errors.firstName.message}</p>}
                               <Input
                                 placeholder="Nom"
