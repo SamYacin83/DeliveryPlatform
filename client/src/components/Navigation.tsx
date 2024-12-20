@@ -14,13 +14,13 @@ export default function Navigation({ user }: NavigationProps) {
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link href="/">
-            <a className="text-xl font-bold">RapidLivre</a>
+          <Link href="/" className="text-xl font-bold">
+            RapidLivre
           </Link>
 
           <div className="flex items-center gap-6">
-            <Link href="/dashboard">
-              <a className="text-gray-600 hover:text-gray-900">Tableau de bord</a>
+            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
+              Tableau de bord
             </Link>
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <span>{user.username}</span>
