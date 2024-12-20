@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import type { User as UserType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useUser } from "../hooks/use-user";
-import { Bell, User as UserIcon } from "lucide-react";
+import { Bell, User as UserIcon, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -123,6 +123,7 @@ export default function Navigation({ user }: NavigationProps) {
                   className="text-destructive focus:text-destructive"
                   onClick={() => logout()}
                 >
+                  <LogOut className="mr-2 h-4 w-4" />
                   Se déconnecter
                 </DropdownMenuItem>
               </DropdownMenuContent>
