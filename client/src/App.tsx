@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 import AboutPage from "./pages/AboutPage";
 import ProfilePage from "./pages/ProfilePage";
+import HowItWorksPage from "./pages/HowItWorksPage";
 import Navigation from "./components/Navigation";
 import NotificationProvider from "./components/NotificationProvider";
 import { Toaster } from "@/components/ui/toaster";
@@ -70,6 +71,7 @@ function App() {
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/about" component={AboutPage} />
+          <Route path="/how-it-works" component={HowItWorksPage} />
           {user && (
             <>
               <Route path="/dashboard" component={DashboardPage} />
