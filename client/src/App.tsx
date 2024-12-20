@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useUser } from "./hooks/use-user";
 import { Button } from "@/components/ui/button";
 import Breadcrumb from "./components/Breadcrumb";
+import CartDropdown from "./components/CartDropdown";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
@@ -40,12 +41,12 @@ function App() {
         </>
       ) : (
         <nav className="bg-white shadow-sm">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-8">
-                <Link href="/" className="text-xl font-bold">
-                  RapidLivre
-                </Link>
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center h-16">
+              <Link href="/" className="text-2xl font-bold text-[hsl(252,85%,60%)] hover:text-[hsl(252,85%,55%)] transition-colors">
+                RapidLivre
+              </Link>
+              <div className="flex items-center gap-6">
                 <div className="hidden md:flex items-center gap-6">
                   <Link href="/services" className="text-foreground/80 hover:text-primary transition-colors">
                     Services
@@ -57,12 +58,13 @@ function App() {
                     Témoignages
                   </Link>
                 </div>
+                <CartDropdown />
+                <Button variant="outline" asChild>
+                  <Link href="/auth">
+                    Connexion
+                  </Link>
+                </Button>
               </div>
-              <Button variant="outline" asChild>
-                <Link href="/auth">
-                  Connexion
-                </Link>
-              </Button>
             </div>
           </div>
         </nav>
