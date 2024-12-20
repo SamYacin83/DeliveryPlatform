@@ -237,18 +237,76 @@ export default function AuthPage() {
                         )}
 
                         {step === 2 && form.watch("role") === "delivery" && (
-                          <div className="space-y-2">
-                            <h3 className="text-sm font-medium">Documents requis</h3>
-                            <Input
-                              type="file"
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              {...form.register("documents", { required: !isLogin })}
-                              className="h-9"
-                              multiple
-                            />
-                            <p className="text-xs text-muted-foreground">
-                              Pièce d'identité, permis de conduire, carte grise, assurance
-                            </p>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <h3 className="text-sm font-medium">Adresse</h3>
+                              <Input
+                                placeholder="Rue"
+                                {...form.register("address.street", { required: true })}
+                                className="h-9"
+                              />
+                              <Input
+                                placeholder="Ville"
+                                {...form.register("address.city", { required: true })}
+                                className="h-9"
+                              />
+                              <div className="grid grid-cols-2 gap-2">
+                                <Input
+                                  placeholder="Code postal"
+                                  {...form.register("address.postalCode", { required: true })}
+                                  className="h-9"
+                                />
+                                <Input
+                                  placeholder="Pays"
+                                  {...form.register("address.country", { required: true })}
+                                  className="h-9"
+                                />
+                              </div>
+                            </div>
+
+                            <fieldset className="space-y-3 border rounded-lg p-4">
+                              <legend className="text-sm font-medium px-2">Documents requis</legend>
+                              
+                              <div className="space-y-2">
+                                <label className="text-sm">Pièce d'identité</label>
+                                <Input
+                                  type="file"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  {...form.register("documents.identityCard", { required: true })}
+                                  className="h-9"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="text-sm">Permis de conduire</label>
+                                <Input
+                                  type="file"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  {...form.register("documents.driversLicense", { required: true })}
+                                  className="h-9"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="text-sm">Carte grise</label>
+                                <Input
+                                  type="file"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  {...form.register("documents.vehicleRegistration", { required: true })}
+                                  className="h-9"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <label className="text-sm">Assurance</label>
+                                <Input
+                                  type="file"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  {...form.register("documents.insurance", { required: true })}
+                                  className="h-9"
+                                />
+                              </div>
+                            </fieldset>
                           </div>
                         )}
 
@@ -310,12 +368,35 @@ export default function AuthPage() {
                               )}
 
                               {form.watch("role") === "delivery" && (
-                                <div>
-                                  <h4 className="text-sm font-medium text-muted-foreground">Documents fournis</h4>
-                                  <p className="text-sm mt-2">
-                                    {form.watch("documents")?.length} document(s) joint(s)
-                                  </p>
-                                </div>
+                                <>
+                                  <div>
+                                    <h4 className="text-sm font-medium text-muted-foreground">Adresse</h4>
+                                    <div className="mt-2">
+                                      <p className="text-sm">{form.watch("address.street")}</p>
+                                      <p className="text-sm">
+                                        {form.watch("address.postalCode")} {form.watch("address.city")}
+                                      </p>
+                                      <p className="text-sm">{form.watch("address.country")}</p>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <h4 className="text-sm font-medium text-muted-foreground">Documents fournis</h4>
+                                    <div className="mt-2 space-y-1">
+                                      <p className="text-sm">
+                                        • Pièce d'identité : {form.watch("documents.identityCard")?.[0]?.name || "Non fourni"}
+                                      </p>
+                                      <p className="text-sm">
+                                        • Permis de conduire : {form.watch("documents.driversLicense")?.[0]?.name || "Non fourni"}
+                                      </p>
+                                      <p className="text-sm">
+                                        • Carte grise : {form.watch("documents.vehicleRegistration")?.[0]?.name || "Non fourni"}
+                                      </p>
+                                      <p className="text-sm">
+                                        • Assurance : {form.watch("documents.insurance")?.[0]?.name || "Non fourni"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </>
                               )}
                             </div>
                           </div>
