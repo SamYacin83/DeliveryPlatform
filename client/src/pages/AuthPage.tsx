@@ -7,6 +7,8 @@ import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { UserRole } from "../types";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface AuthForm {
   username: string;
@@ -27,9 +29,37 @@ interface AuthForm {
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [step, setStep] = useState(0);
   const { login, register } = useUser();
   const { toast } = useToast();
   const form = useForm<AuthForm>();
+  
+  const steps = [
+    { title: "Informations personnelles", fields: ["firstName", "lastName", "email", "phone"] },
+    { title: "Choisir votre rôle", fields: ["role"] },
+    { title: "Détails supplémentaires", fields: ["address", "documents"] }
+  ];
+
+  const canProceed = () => {
+    const currentFields = steps[step].fields;
+    return currentFields.every(field => {
+      if (field === "address" && form.watch("role") !== "client") return true;
+      if (field === "documents" && form.watch("role") !== "delivery") return true;
+      return !form.formState.errors[field];
+    });
+  };
+
+  const nextStep = () => {
+    if (step < steps.length - 1) {
+      setStep(step + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (step > 0) {
+      setStep(step - 1);
+    }
+  };
 
   const onSubmit = async (data: AuthForm) => {
     try {
@@ -61,114 +91,203 @@ export default function AuthPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-              <div className="space-y-2">
-                {!isLogin && (
-                  <>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        placeholder="Prénom"
-                        {...form.register("firstName", { required: !isLogin })}
-                        className="h-9"
-                      />
-                      <Input
-                        placeholder="Nom"
-                        {...form.register("lastName", { required: !isLogin })}
-                        className="h-9"
-                      />
-                    </div>
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      {...form.register("email", { required: !isLogin })}
-                      className="h-9"
-                    />
-                    <Input
-                      type="tel"
-                      placeholder="Téléphone"
-                      {...form.register("phone", { required: !isLogin })}
-                      className="h-9"
-                    />
-                  </>
-                )}
-                <Input
-                  placeholder="Nom d'utilisateur"
-                  {...form.register("username", { required: true })}
-                  className="h-9"
-                />
-                <Input
-                  type="password"
-                  placeholder="Mot de passe"
-                  {...form.register("password", { required: true })}
-                  className="h-9"
-                />
-                {!isLogin && (
-                  <select 
-                    {...form.register("role", { required: !isLogin })}
-                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              <AnimatePresence mode="wait">
+                {isLogin ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-2"
                   >
-                    <option value="client">Client</option>
-                    <option value="delivery">Livreur</option>
-                    <option value="supplier">Fournisseur</option>
-                  </select>
-                )}
-
-                {form.watch("role") === "client" && (
-                  <div className="space-y-2 border-t pt-2">
-                    <h3 className="text-sm font-medium">Adresse</h3>
                     <Input
-                      placeholder="Rue"
-                      {...form.register("address.street", { required: true })}
+                      placeholder="Nom d'utilisateur"
+                      {...form.register("username", { required: true })}
                       className="h-9"
                     />
                     <Input
-                      placeholder="Ville"
-                      {...form.register("address.city", { required: true })}
+                      type="password"
+                      placeholder="Mot de passe"
+                      {...form.register("password", { required: true })}
                       className="h-9"
                     />
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        placeholder="Code postal"
-                        {...form.register("address.postalCode", { required: true })}
-                        className="h-9"
-                      />
-                      <Input
-                        placeholder="Pays"
-                        {...form.register("address.country", { required: true })}
-                        className="h-9"
-                      />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4"
+                  >
+                    {/* Step indicators */}
+                    <div className="flex justify-center gap-2 mb-4">
+                      {steps.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`h-2 w-2 rounded-full transition-colors ${
+                            index === step ? "bg-primary" : "bg-muted"
+                          }`}
+                        />
+                      ))}
                     </div>
-                  </div>
-                )}
 
-                {!isLogin && form.watch("role") === "delivery" && (
-                  <div className="space-y-2 border-t pt-2">
-                    <h3 className="text-sm font-medium">Documents requis</h3>
-                    <Input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      {...form.register("documents", { required: !isLogin })}
-                      className="h-9"
-                      multiple
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Pièce d'identité, permis de conduire, carte grise, assurance
-                    </p>
-                  </div>
+                    {/* Step content */}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={step}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-2"
+                      >
+                        {step === 0 && (
+                          <>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
+                                placeholder="Prénom"
+                                {...form.register("firstName", { required: !isLogin })}
+                                className="h-9"
+                              />
+                              <Input
+                                placeholder="Nom"
+                                {...form.register("lastName", { required: !isLogin })}
+                                className="h-9"
+                              />
+                            </div>
+                            <Input
+                              type="email"
+                              placeholder="Email"
+                              {...form.register("email", { required: !isLogin })}
+                              className="h-9"
+                            />
+                            <Input
+                              type="tel"
+                              placeholder="Téléphone"
+                              {...form.register("phone", { required: !isLogin })}
+                              className="h-9"
+                            />
+                            <Input
+                              placeholder="Nom d'utilisateur"
+                              {...form.register("username", { required: true })}
+                              className="h-9"
+                            />
+                            <Input
+                              type="password"
+                              placeholder="Mot de passe"
+                              {...form.register("password", { required: true })}
+                              className="h-9"
+                            />
+                          </>
+                        )}
+
+                        {step === 1 && (
+                          <select 
+                            {...form.register("role", { required: !isLogin })}
+                            className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          >
+                            <option value="">Sélectionnez votre rôle</option>
+                            <option value="client">Client</option>
+                            <option value="delivery">Livreur</option>
+                            <option value="supplier">Fournisseur</option>
+                          </select>
+                        )}
+
+                        {step === 2 && form.watch("role") === "client" && (
+                          <div className="space-y-2">
+                            <h3 className="text-sm font-medium">Adresse</h3>
+                            <Input
+                              placeholder="Rue"
+                              {...form.register("address.street", { required: true })}
+                              className="h-9"
+                            />
+                            <Input
+                              placeholder="Ville"
+                              {...form.register("address.city", { required: true })}
+                              className="h-9"
+                            />
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input
+                                placeholder="Code postal"
+                                {...form.register("address.postalCode", { required: true })}
+                                className="h-9"
+                              />
+                              <Input
+                                placeholder="Pays"
+                                {...form.register("address.country", { required: true })}
+                                className="h-9"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {step === 2 && form.watch("role") === "delivery" && (
+                          <div className="space-y-2">
+                            <h3 className="text-sm font-medium">Documents requis</h3>
+                            <Input
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              {...form.register("documents", { required: !isLogin })}
+                              className="h-9"
+                              multiple
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Pièce d'identité, permis de conduire, carte grise, assurance
+                            </p>
+                          </div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Navigation buttons */}
+                    <div className="flex justify-between pt-4">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={prevStep}
+                        disabled={step === 0}
+                        className="flex items-center gap-2"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Retour
+                      </Button>
+                      {step < steps.length - 1 ? (
+                        <Button
+                          type="button"
+                          onClick={nextStep}
+                          disabled={!canProceed()}
+                          className="flex items-center gap-2"
+                        >
+                          Suivant
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                        >
+                          S'inscrire
+                        </Button>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
+
               <div className="pt-2">
-                <Button 
-                  type="submit" 
-                  className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
-                >
-                  {isLogin ? "Se connecter" : "S'inscrire"}
-                </Button>
+                {isLogin && (
+                  <Button 
+                    type="submit" 
+                    className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                  >
+                    Se connecter
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="ghost"
                   className="w-full text-sm text-muted-foreground hover:text-[hsl(252,85%,60%)]"
                   onClick={() => {
                     setIsLogin(!isLogin);
+                    setStep(0);
                     form.reset();
                   }}
                 >
