@@ -10,6 +10,18 @@ import { UserRole } from "../types";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+interface FileProgress {
+  progress: number;
+  status: 'idle' | 'uploading' | 'completed' | 'error';
+}
+
+interface DocumentProgress {
+  identityCard?: FileProgress;
+  driversLicense?: FileProgress;
+  vehicleRegistration?: FileProgress;
+  insurance?: FileProgress;
+}
+
 interface AuthForm {
   username: string;
   password: string;
@@ -24,15 +36,48 @@ interface AuthForm {
     postalCode: string;
     country: string;
   };
-  documents?: File[];
+  documents?: {
+    identityCard?: File[];
+    driversLicense?: File[];
+    vehicleRegistration?: File[];
+    insurance?: File[];
+  };
 }
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
   const { login, register } = useUser();
   const { toast } = useToast();
   const form = useForm<AuthForm>();
+
+  const handleFileChange = (documentType: keyof DocumentProgress) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadProgress(prev => ({
+      ...prev,
+      [documentType]: { progress: 0, status: 'uploading' }
+    }));
+
+    // Simulate file upload progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(prev => ({
+        ...prev,
+        [documentType]: { 
+          progress: Math.min(progress, 100),
+          status: progress >= 100 ? 'completed' : 'uploading'
+        }
+      }));
+
+      if (progress >= 100) {
+        clearInterval(interval);
+      }
+    }, 200);
+  };
   
   const steps = [
     { title: "Informations personnelles", fields: ["firstName", "lastName", "email", "phone"] },
@@ -276,42 +321,94 @@ export default function AuthPage() {
                               
                               <div className="space-y-2">
                                 <label className="text-sm">Pièce d'identité</label>
-                                <Input
-                                  type="file"
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  {...form.register("documents.identityCard", { required: true })}
-                                  className="h-9"
-                                />
+                                <div className="space-y-1">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    {...form.register("documents.identityCard", { required: true })}
+                                    className="h-9"
+                                    onChange={handleFileChange('identityCard')}
+                                  />
+                                  {uploadProgress.identityCard && (
+                                    <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
+                                      <motion.div
+                                        className="h-full bg-primary"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${uploadProgress.identityCard.progress}%` }}
+                                        transition={{ duration: 0.2 }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                               </div>
 
                               <div className="space-y-2">
                                 <label className="text-sm">Permis de conduire</label>
-                                <Input
-                                  type="file"
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  {...form.register("documents.driversLicense", { required: true })}
-                                  className="h-9"
-                                />
+                                <div className="space-y-1">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    {...form.register("documents.driversLicense", { required: true })}
+                                    className="h-9"
+                                    onChange={handleFileChange('driversLicense')}
+                                  />
+                                  {uploadProgress.driversLicense && (
+                                    <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
+                                      <motion.div
+                                        className="h-full bg-primary"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${uploadProgress.driversLicense.progress}%` }}
+                                        transition={{ duration: 0.2 }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                               </div>
 
                               <div className="space-y-2">
                                 <label className="text-sm">Carte grise</label>
-                                <Input
-                                  type="file"
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  {...form.register("documents.vehicleRegistration", { required: true })}
-                                  className="h-9"
-                                />
+                                <div className="space-y-1">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    {...form.register("documents.vehicleRegistration", { required: true })}
+                                    className="h-9"
+                                    onChange={handleFileChange('vehicleRegistration')}
+                                  />
+                                  {uploadProgress.vehicleRegistration && (
+                                    <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
+                                      <motion.div
+                                        className="h-full bg-primary"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${uploadProgress.vehicleRegistration.progress}%` }}
+                                        transition={{ duration: 0.2 }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                               </div>
 
                               <div className="space-y-2">
                                 <label className="text-sm">Assurance</label>
-                                <Input
-                                  type="file"
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  {...form.register("documents.insurance", { required: true })}
-                                  className="h-9"
-                                />
+                                <div className="space-y-1">
+                                  <Input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    {...form.register("documents.insurance", { required: true })}
+                                    className="h-9"
+                                    onChange={handleFileChange('insurance')}
+                                  />
+                                  {uploadProgress.insurance && (
+                                    <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
+                                      <motion.div
+                                        className="h-full bg-primary"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${uploadProgress.insurance.progress}%` }}
+                                        transition={{ duration: 0.2 }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </fieldset>
                           </div>
