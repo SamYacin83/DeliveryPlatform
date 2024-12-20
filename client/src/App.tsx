@@ -7,6 +7,7 @@ import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 import Navigation from "./components/Navigation";
+import NotificationProvider from "./components/NotificationProvider";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
