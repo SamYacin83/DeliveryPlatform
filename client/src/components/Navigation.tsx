@@ -50,12 +50,9 @@ export default function Navigation({ user }: NavigationProps) {
     <nav className="bg-white border-b">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-2xl font-bold text-[hsl(252,85%,60%)] hover:text-[hsl(252,85%,55%)] transition-colors flex items-center gap-2">
-              <ShoppingCart className="h-6 w-6" />
-              RapidLivre
-            </Link>
-          </div>
+          <Link href="/" className="text-2xl font-bold text-[hsl(252,85%,60%)] hover:text-[hsl(252,85%,55%)] transition-colors">
+            RapidLivre
+          </Link>
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6">
               <Link href="/services" className="text-foreground/80 hover:text-primary transition-colors">
