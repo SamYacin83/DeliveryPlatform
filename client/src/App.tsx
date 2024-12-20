@@ -34,12 +34,14 @@ function App() {
         <nav className="bg-white shadow-sm">
           <div className="container mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
-              <Link href="/">
-                <a className="text-xl font-bold">RapidLivre</a>
+              <Link href="/" className="text-xl font-bold">
+                RapidLivre
               </Link>
-              <Link href="/auth">
-                <Button variant="outline">Connexion</Button>
-              </Link>
+              <Button variant="outline" asChild>
+                <Link href="/auth">
+                  Connexion
+                </Link>
+              </Button>
             </div>
           </div>
         </nav>
