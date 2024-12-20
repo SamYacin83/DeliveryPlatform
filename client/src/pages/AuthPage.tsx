@@ -59,7 +59,14 @@ export default function AuthPage() {
                form.watch("address.postalCode") &&
                form.watch("address.country");
       } else if (form.watch("role") === "delivery") {
-        return form.watch("documents") && form.watch("documents").length > 0;
+        return form.watch("documents.identityCard")?.[0] &&
+               form.watch("documents.driversLicense")?.[0] &&
+               form.watch("documents.vehicleRegistration")?.[0] &&
+               form.watch("documents.insurance")?.[0] &&
+               form.watch("address.street") &&
+               form.watch("address.city") &&
+               form.watch("address.postalCode") &&
+               form.watch("address.country");
       }
       return true;
     }
