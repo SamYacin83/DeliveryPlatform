@@ -59,7 +59,10 @@ function App() {
                   </Link>
                 </div>
                 <CartDropdown />
-                <Button variant="outline" asChild>
+                <Button 
+                  className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                  asChild
+                >
                   <Link href="/auth">
                     Connexion
                   </Link>

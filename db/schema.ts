@@ -15,9 +15,37 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").unique().notNull(),
   password: text("password").notNull(),
+  firstName: text("first_name").notNull().default(""),
+  lastName: text("last_name").notNull().default(""),
   email: text("email").unique().notNull(),
+  phone: text("phone").notNull().default(""),
   role: text("role", { enum: ["client", "delivery", "supplier"] }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const addresses = pgTable("addresses", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  street: text("street").notNull(),
+  city: text("city").notNull(),
+  postalCode: text("postal_code").notNull(),
+  country: text("country").notNull(),
+  isDefault: boolean("is_default").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const driverDocuments = pgTable("driver_documents", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  type: text("type", { 
+    enum: ["identity_card", "drivers_license", "vehicle_registration", "insurance"] 
+  }).notNull(),
+  documentUrl: text("document_url").notNull(),
+  status: text("status", { 
+    enum: ["pending", "approved", "rejected"] 
+  }).default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const articles = pgTable("articles", {
@@ -62,6 +90,22 @@ export const usersRelations = relations(users, ({ many }) => ({
   articles: many(articles),
   orders: many(orders),
   deliveries: many(deliveries),
+  addresses: many(addresses),
+  driverDocuments: many(driverDocuments),
+}));
+
+export const addressesRelations = relations(addresses, ({ one }) => ({
+  user: one(users, {
+    fields: [addresses.userId],
+    references: [users.id],
+  }),
+}));
+
+export const driverDocumentsRelations = relations(driverDocuments, ({ one }) => ({
+  user: one(users, {
+    fields: [driverDocuments.userId],
+    references: [users.id],
+  }),
 }));
 
 export const articlesRelations = relations(articles, ({ one }) => ({
