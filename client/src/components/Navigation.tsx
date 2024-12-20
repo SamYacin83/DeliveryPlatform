@@ -1,8 +1,8 @@
 import { Link } from "wouter";
-import { User } from "../types";
+import type { User as UserType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useUser } from "../hooks/use-user";
-import { Bell } from "lucide-react";
+import { Bell, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 
 interface NavigationProps {
-  user: User;
+  user: UserType;
 }
 
 export default function Navigation({ user }: NavigationProps) {
@@ -101,22 +101,32 @@ export default function Navigation({ user }: NavigationProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="flex items-center gap-4 border-l pl-4">
-              <div className="flex flex-col items-end">
-                <span className="font-medium text-sm">{user.username}</span>
-                <Badge variant="secondary" className="font-normal text-xs">
-                  {user.role === 'client' ? 'Client' : 
-                   user.role === 'delivery' ? 'Livreur' : 'Fournisseur'}
-                </Badge>
-              </div>
-              <Button 
-                variant="outline" 
-                onClick={() => logout()}
-                className="hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-colors"
-              >
-                Se déconnecter
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-4 border-l pl-4 cursor-pointer">
+                  <div className="flex flex-col items-end">
+                    <span className="text-sm text-muted-foreground">
+                      {new Date().getHours() >= 18 ? "Bonsoir" : "Bonjour"},
+                    </span>
+                    <span className="font-medium">{user.username}</span>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Mon profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="text-destructive focus:text-destructive"
+                  onClick={() => logout()}
+                >
+                  Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

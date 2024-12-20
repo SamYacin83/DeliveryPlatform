@@ -54,7 +54,12 @@ function App() {
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/about" component={AboutPage} />
-          {user && <Route path="/dashboard" component={DashboardPage} />}
+          {user && (
+            <>
+              <Route path="/dashboard" component={DashboardPage} />
+              <Route path="/profile" component={ProfilePage} />
+            </>
+          )}
         </Switch>
       </main>
       <Footer />
