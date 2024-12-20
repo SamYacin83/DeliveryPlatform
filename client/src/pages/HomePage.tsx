@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import ArticleCardSkeleton from "../components/ArticleCardSkeleton";
+import OnboardingDialog from "../components/OnboardingDialog";
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +21,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-16">
+      <OnboardingDialog />
       <section className="relative bg-gradient-to-b from-primary/5 to-background pb-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12 pt-12">
@@ -88,6 +90,7 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      <OnboardingDialog /> {/* Added OnboardingDialog here */}
     </div>
   );
 }
