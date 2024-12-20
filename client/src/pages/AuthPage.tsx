@@ -197,13 +197,22 @@ export default function AuthPage() {
   };
 
   const onSubmit = async (data: AuthForm) => {
+    setIsLoading(true);
     try {
+      // Simuler un délai pour démontrer l'animation
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       const result = isLogin ? await login(data) : await register(data);
       if (!result.ok) {
         toast({
           title: "Error",
           description: result.message,
           variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Succès",
+          description: isLogin ? "Connexion réussie" : "Inscription réussie",
         });
       }
     } catch (error: any) {
@@ -212,6 +221,8 @@ export default function AuthPage() {
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
