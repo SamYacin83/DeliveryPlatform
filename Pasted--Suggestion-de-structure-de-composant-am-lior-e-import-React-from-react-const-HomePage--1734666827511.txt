@@ -1,0 +1,100 @@
+// Suggestion de structure de composant améliorée
+import React from 'react';
+
+const HomePage = () => {
+  return (
+    <div className="min-h-screen">
+      {/* Header amélioré avec navigation plus claire */}
+      <header className="sticky top-0 bg-white shadow-sm">
+        <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="logo font-bold text-purple-600 text-xl">RapidLivre</div>
+          
+          <div className="nav-links space-x-6">
+            <a href="/services" className="hover:text-purple-600">Services</a>
+            <a href="/how-it-works" className="hover:text-purple-600">Comment ça marche</a>
+            <a href="/testimonials" className="hover:text-purple-600">Témoignages</a>
+          </div>
+
+          <div className="auth-buttons space-x-4">
+            <a href="/cart" className="p-2">
+              <CartIcon className="w-6 h-6" />
+            </a>
+            <button className="btn-outline">S'inscrire</button>
+            <button className="btn-primary">Connexion</button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Hero section améliorée */}
+      <section className="hero bg-gradient-to-r from-purple-50 to-purple-100">
+        <div className="container mx-auto px-4 py-16 grid grid-cols-2 gap-8">
+          <div className="hero-content">
+            <h1 className="text-4xl font-bold mb-4">
+              Livraison rapide à <span className="text-purple-600">portée de main</span>
+            </h1>
+            
+            <p className="text-gray-600 mb-8">
+              Livraison express en quelques clics. Suivi en temps réel et 
+              satisfaction garantie pour tous vos besoins de livraison.
+            </p>
+
+            <div className="flex gap-4">
+              <button className="btn-primary">Commencer</button>
+              <button className="btn-secondary">En savoir plus</button>
+            </div>
+
+            {/* Badges de confiance */}
+            <div className="trust-badges mt-8 flex gap-4">
+              {/* Ajouter des badges */}
+            </div>
+          </div>
+
+          <div className="hero-image">
+            {/* Votre illustration actuelle */}
+          </div>
+        </div>
+      </section>
+
+      {/* Section Articles améliorée */}
+      <section className="articles py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold">Nos Articles</h2>
+            
+            <div className="search-filters flex gap-4">
+              <input 
+                type="search" 
+                placeholder="Rechercher des articles..."
+                className="search-input"
+              />
+              <div className="filters flex gap-2">
+                {/* Filtres rapides */}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-6">
+            {/* Cartes d'articles améliorées */}
+          </div>
+        </div>
+      </section>
+
+      {/* Nouvelle section Comment ça marche */}
+      <section className="how-it-works bg-gray-50 py-16">
+        {/* Ajouter le processus étape par étape */}
+      </section>
+
+      {/* Nouvelle section Témoignages */}
+      <section className="testimonials py-16">
+        {/* Ajouter les témoignages clients */}
+      </section>
+
+      {/* Footer amélioré */}
+      <footer className="bg-gray-900 text-white py-12">
+        {/* Structure de footer améliorée */}
+      </footer>
+    </div>
+  );
+};
+
+export default HomePage;
