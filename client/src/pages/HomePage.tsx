@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import ArticleCardSkeleton from "../components/ArticleCardSkeleton";
 import OnboardingDialog from "../components/OnboardingDialog";
-import DeliveryIllustration from "../components/DeliveryIllustration";
+
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,7 +46,11 @@ export default function HomePage() {
             </div>
             <div className="flex-1">
               <div className="relative h-[400px] w-full rounded-lg overflow-hidden shadow-xl bg-white">
-                <DeliveryIllustration />
+                <img
+                  src="/image.png"
+                  alt="Livreur avec application de géolocalisation"
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
           </div>
