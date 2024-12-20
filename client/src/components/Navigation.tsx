@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import type { User as UserType } from "../types";
 import { Button } from "@/components/ui/button";
 import { useUser } from "../hooks/use-user";
-import { Bell, User as UserIcon, LogOut } from "lucide-react";
+import { Bell, User as UserIcon, LogOut, ShoppingCart } from "lucide-react";
 import CartDropdown from "./CartDropdown";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
