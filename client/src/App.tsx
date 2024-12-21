@@ -1,6 +1,4 @@
 import { Switch, Route, Link } from "wouter";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/queryClient";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./hooks/use-user";
 import { Button } from "@/components/ui/button";

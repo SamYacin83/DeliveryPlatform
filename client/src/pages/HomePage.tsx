@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types";
@@ -8,19 +7,103 @@ import { Button } from "@/components/ui/button";
 import { Search, Package, Clock, Shield, CalendarClock } from "lucide-react";
 import ArticleCardSkeleton from "../components/ArticleCardSkeleton";
 import OnboardingDialog from "../components/OnboardingDialog";
-import { CartIcon } from "lucide-react";
 
+// Données mockées pour les articles
+const MOCK_ARTICLES: Article[] = [
+  {
+    id: 1,
+    title: "Pizza Margherita",
+    description: "Délicieuse pizza traditionnelle avec sauce tomate, mozzarella et basilic frais",
+    price: 12.99,
+    supplierId: 1,
+    stock: 10,
+  },
+  {
+    id: 2,
+    title: "Burger Gourmet",
+    description: "Burger artisanal avec steak haché frais, cheddar, bacon et sauce maison",
+    price: 15.99,
+    supplierId: 1,
+    stock: 10,
+  },
+  {
+    id: 3,
+    title: "Salade César",
+    description: "Salade fraîche avec poulet grillé, croûtons, parmesan et sauce césar maison",
+    price: 10.99,
+    supplierId: 5,
+    stock: 10,
+  },
+  {
+    id: 4,
+    title: "Pâtes Carbonara",
+    description: "Pâtes fraîches avec sauce carbonara, pancetta et parmesan",
+    price: 13.99,
+    supplierId: 3,
+    stock: 10,
+  },
+  {
+    id: 5,
+    title: "Sushi Mix",
+    description: "Assortiment de sushis avec saumon, thon et crevettes",
+    price: 24.99,
+    supplierId: 2,
+    stock: 10,
+  },
+  {
+    id: 6,
+    title: "Poulet Tikka Masala",
+    description: "Poulet mariné cuit au tandoor avec sauce curry crémeuse et riz basmati",
+    price: 16.99,
+    supplierId: 1,
+    stock: 10,
+  }
+];
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: articles, isLoading } = useQuery<Article[]>({
-    queryKey: ['/api/articles'],
-  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredArticles = articles?.filter(article => 
+  // Simuler un temps de chargement
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []); // Tableau de dépendances vide pour ne l'exécuter qu'une fois au montage
+
+  const filteredArticles = MOCK_ARTICLES.filter(article => 
     article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     article.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const renderArticlesContent = () => {
+    if (isLoading) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ArticleCardSkeleton key={index} />
+          ))}
+        </div>
+      );
+    }
+
+    if (filteredArticles.length === 0) {
+      return (
+        <div className="text-center py-12 text-muted-foreground">
+          Aucun article trouvé
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredArticles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen">
@@ -69,6 +152,7 @@ export default function HomePage() {
             
             {/* Illustration */}
             <div className="flex-1">
+              {/* Le SVG de l'illustration reste le même */}
               <div className="relative h-[400px] w-full flex items-center justify-center">
                 <div className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
                   <svg
@@ -173,23 +257,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <ArticleCardSkeleton key={index} />
-              ))}
-            </div>
-          ) : filteredArticles?.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              Aucun article trouvé
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles?.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          )}
+          {renderArticlesContent()}
         </div>
       </section>
     </div>
