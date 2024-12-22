@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 
 export default function DashboardPage() {
-  const { user } = useUser();
   const { data: orders } = useQuery<Order[]>({
     queryKey: ['/api/orders'],
   });

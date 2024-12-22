@@ -23,7 +23,7 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 interface DeliveryMapProps {
-  orders: Order[];
+ readonly orders: Order[];
 }
 
 // Component to handle map center updates

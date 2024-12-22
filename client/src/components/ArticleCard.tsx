@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { mockOrders } from "../mocks/data";
 
 interface ArticleCardProps {
   article: Article;
@@ -16,16 +17,22 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
   const orderMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ articleId: article.id }),
-      });
-      if (!res.ok) throw new Error('Échec de la commande');
-      return res.json();
+      // Simuler un délai de réponse
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const newOrder = {
+        id: String(mockOrders.length + 1),
+        articleId: article.id,
+        userId: '1',
+        status: 'PENDING',
+        createdAt: new Date().toISOString(),
+      };
+      
+      mockOrders.push(newOrder);
+      return newOrder;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
       toast({
         title: "Succès",
         description: "Votre commande a été passée avec succès",
@@ -52,22 +59,17 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground">
-          {article.description}
-        </p>
+        <p className="text-gray-600">{article.description}</p>
+        <p className="mt-4 text-lg font-semibold">{article.price} €</p>
       </CardContent>
-      <CardFooter className="flex justify-between items-center pt-4 border-t">
-        <div className="flex flex-col">
-          <span className="text-2xl font-bold">{Number(article.price).toFixed(2)} €</span>
-          <span className="text-xs text-muted-foreground">TTC, livraison incluse</span>
-        </div>
-        <Button
+      <CardFooter>
+        <Button 
+          className="w-full" 
           onClick={() => orderMutation.mutate()}
-          disabled={orderMutation.isPending || article.stock === 0}
-          className="flex items-center gap-2"
+          disabled={article.stock === 0 || orderMutation.isPending}
         >
-          <ShoppingCart className="w-4 h-4" />
-          {orderMutation.isPending ? "En cours..." : "Commander"}
+          <ShoppingCart className="w-4 h-4 mr-2" />
+          {orderMutation.isPending ? "Commande en cours..." : "Ajouter au panier"}
         </Button>
       </CardFooter>
     </Card>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { User, UserRole } from '../types';
+import { mockUser } from '../mocks/data';
 
 interface AuthData {
   username: string;
@@ -12,101 +13,68 @@ type AuthResponse =
   | { ok: true; user: User }
   | { ok: false; message: string };
 
-async function handleAuthRequest(
-  url: string,
-  data: AuthData
-): Promise<AuthResponse> {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      if (response.status >= 500) {
-        return { ok: false, message: response.statusText };
-      }
-
-      const message = await response.text();
-      return { ok: false, message };
-    }
-
-    const user = await response.json();
-    return { ok: true, user };
-  } catch (error: any) {
-    return { ok: false, message: error.toString() };
+async function mockAuthRequest(data: AuthData): Promise<AuthResponse> {
+  // Simuler un délai de réponse
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  if (data.username === 'user1' && data.password === 'password') {
+    return { ok: true, user: mockUser };
   }
+  
+  return { ok: false, message: 'Identifiants invalides' };
 }
 
-async function fetchUser(): Promise<User | null> {
-  const response = await fetch('/api/user', {
-    credentials: 'include'
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      return null;
-    }
-    throw new Error(await response.text());
-  }
-
-  return response.json();
+async function mockFetchUser(): Promise<User | null> {
+  // Simuler un délai de réponse
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockUser;
 }
 
 export function useUser() {
   const queryClient = useQueryClient();
 
   const { data: user, error, isLoading } = useQuery<User | null>({
-    queryKey: ['/api/user'],
-    queryFn: fetchUser,
+    queryKey: ['user'],
+    queryFn: mockFetchUser,
     staleTime: Infinity,
     retry: false,
   });
 
   const loginMutation = useMutation({
-    mutationFn: (data: AuthData) => handleAuthRequest('/api/login', data),
+    mutationFn: mockAuthRequest,
     onSuccess: (response) => {
       if (response.ok) {
-        queryClient.setQueryData(['/api/user'], response.user);
+        queryClient.setQueryData(['user'], response.user);
       }
     },
   });
 
   const registerMutation = useMutation({
-    mutationFn: (data: AuthData) => handleAuthRequest('/api/register', data),
+    mutationFn: mockAuthRequest,
     onSuccess: (response) => {
       if (response.ok) {
-        queryClient.setQueryData(['/api/user'], response.user);
+        queryClient.setQueryData(['user'], response.user);
       }
     },
   });
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-      return response.json();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return { success: true };
     },
     onSuccess: () => {
-      queryClient.setQueryData(['/api/user'], null);
+      queryClient.setQueryData(['user'], null);
     },
   });
 
   return {
     user,
-    isLoading,
     error,
-    login: loginMutation.mutateAsync,
-    register: registerMutation.mutateAsync,
-    logout: logoutMutation.mutateAsync,
+    isLoading,
+    login: loginMutation.mutate,
+    register: registerMutation.mutate,
+    logout: logoutMutation.mutate,
+    isAuthenticating: loginMutation.isPending || registerMutation.isPending,
   };
 }
