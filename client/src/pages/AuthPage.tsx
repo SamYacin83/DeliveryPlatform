@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2} from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -223,6 +223,13 @@ export default function AuthPage() {
   // ──────────────────────────────────────────────────────────────────────────
   const onSubmit = async (data: AuthForm) => {
     if (isLoading) return;
+
+    // En mode inscription, on vérifie qu'on est bien à la dernière étape
+    if (!isLogin && step !== steps.length - 1) {
+        nextStep();
+          return;
+      }
+
     setIsLoading(true);
 
     try {
@@ -251,6 +258,8 @@ export default function AuthPage() {
       }
       // -- Mode Inscription --
       else {
+        // Simuler un délai de 10 secondes
+        await new Promise(resolve => setTimeout(resolve, 10000));
         toast({
           title: "✨ Inscription réussie !",
           description: `Rôle choisi : ${data.role}. Vous pouvez maintenant vous connecter.`,
@@ -377,11 +386,19 @@ export default function AuthPage() {
                       ) : (
                         // Si on est à la dernière étape (Confirmation) → Soumission
                         <Button
-                          type="submit"
-                          className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
-                        >
-                          Confirmer l'inscription
-                        </Button>
+                        type="submit"
+                        className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Inscription en cours...
+                          </>
+                        ) : (
+                          "Confirmer l'inscription"
+                        )}
+                      </Button>
                       )}
                     </div>
                   </motion.div>
