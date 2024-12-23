@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 // Pages
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
-import DashboardPage from "./pages/DashboardPage";
+import SupplierDashboard from "./pages/SupplierDashboard";
 import AboutPage from "./pages/AboutPage";
 import ProfilePage from "./pages/ProfilePage";
 import HowItWorksPage from "./pages/HowItWorksPage";
@@ -50,7 +50,7 @@ function App() {
 
           {user && (
             <>
-              <Route path="/dashboard" component={DashboardPage} />
+             <Route path="/dashboard" component={SupplierDashboard} />
               <Route path="/profile" component={ProfilePage} />
             </>
           )}
