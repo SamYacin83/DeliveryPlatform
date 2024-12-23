@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -9,7 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2} from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 // Vos types (utilisés dans le schéma et le formulaire)
 import { AuthForm, DocumentProgress, UserRole } from "./types";
 
@@ -110,6 +111,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);    // Mode connexion ou inscription
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);             // Étape courante (0..3)
+  const [rememberMe, setRememberMe] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({}); // Avancement upload doc
 
   const { toast } = useToast();
@@ -291,7 +293,7 @@ export default function AuthPage() {
       <Card className={`w-full ${isLogin ? "max-w-sm" : "max-w-2xl"} shadow-sm`}>
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl text-center">
-            {isLogin ? "Connexion" : "Inscription"}
+            {isLogin ? "Me connecter" : "Inscription"}
           </CardTitle>
         </CardHeader>
 
@@ -311,13 +313,30 @@ export default function AuthPage() {
                     className="space-y-2"
                   >
                     <PersonalInfoStep form={form} isLogin />
-
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      />
+                      <Label 
+                        htmlFor="remember" 
+                        className="text-sm text-muted-foreground cursor-pointer"
+                      >
+                        Se souvenir de moi
+                      </Label>
+                    </div>
                     <Button
                       type="submit"
                       className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                     >
-                      Se connecter
+                      Connexion
                     </Button>
+                    <div className="text-center">
+                      <Link href="../../ForgotPasswordForm" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
+                        Mot de passe oublié ?
+                      </Link>
+                    </div>
                   </motion.div>
                 ) : (
                   // ──────────────────────────────────────────────────────────
@@ -406,20 +425,29 @@ export default function AuthPage() {
               </AnimatePresence>
 
               {/* Basculer entre connexion et inscription */}
-              <div className="pt-2">
+              <div className={`${isLogin ? "mt-6 pt-6 border-t border-gray-200" : "mt-4"}`}>
+                {isLogin ? (
+                  <>
+                    <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">Pas encore de compte?</h3>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      L'Espace livreur, votre accès requis une présence au siège afin de valider vos documents et activer votre compte.
+                    </p>
+                  </>
+                ) : null}
                 <Button
                   type="button"
-                  variant="ghost"
-                  className="w-full text-sm text-muted-foreground hover:text-[hsl(252,85%,60%)]"
+                  variant={isLogin ? "outline" : "ghost"}
+                  className={isLogin 
+                    ? "w-full mt-4 border-[hsl(252,85%,60%)] text-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,60%)] hover:text-white"
+                    : "w-full text-sm text-muted-foreground hover:text-[hsl(252,85%,60%)]"
+                  }
                   onClick={() => {
-                    // On réinitialise tout
                     setIsLogin(!isLogin);
                     setStep(0);
                     setUploadProgress({});
-                    form.reset();
                   }}
                 >
-                  {isLogin ? "Créer un compte" : "Déjà inscrit ?"}
+                  {isLogin ? "Créer un compte" : "Retour à la connexion"}
                 </Button>
               </div>
             </form>
