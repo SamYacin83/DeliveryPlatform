@@ -62,11 +62,11 @@ export default function CartDropdown() {
           ) : (
             <>
               {items.map((item) => (
-                <DropdownMenuItem key={item.id} className="flex items-start gap-4 p-4">
-                  <div className="h-12 w-12 rounded bg-muted flex items-center justify-center">
+                <DropdownMenuItem key={item.id} className="flex items-center gap-4">
+                  <div className="h-12 w-12 flex items-center justify-center">
                     <ShoppingCart className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1 space-y-1 cursor-pointer">
                     <p className="text-sm font-medium leading-none">{item.title}</p>
                     <p className="text-sm text-muted-foreground">{Number(item.price).toFixed(2)} DJF</p>
                   </div>

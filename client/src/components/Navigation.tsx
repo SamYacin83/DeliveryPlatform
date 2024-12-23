@@ -206,7 +206,7 @@ export default function Navigation({ user, logout }: NavigationProps) {
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuGroup>
                       <DropdownMenuItem asChild>
-                        <Link href="/profile" className="flex items-center">
+                        <Link href="/profile" className="flex items-center cursor-pointer">
                           <UserIcon className="mr-2 h-4 w-4" />
                           Profile
                         </Link>
