@@ -31,3 +31,14 @@ export interface DeliveryLocation {
   lng: number;
   address: string;
 }
+
+export interface DeliveryTracking {
+  id: number;
+  driver: string;
+  status: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  estimatedDelivery: string;
+}

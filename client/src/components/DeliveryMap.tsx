@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Order } from '../types';
+import { DeliveryTracking } from '../types';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -23,7 +23,7 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 interface DeliveryMapProps {
- readonly orders: Order[];
+  readonly orders: DeliveryTracking[];
 }
 
 // Component to handle map center updates
@@ -95,7 +95,7 @@ export default function DeliveryMap({ orders }: DeliveryMapProps) {
       {/* Current position marker */}
       <Marker position={currentPosition}>
         <Popup>
-          Votre position actuelle
+          Siège 
         </Popup>
       </Marker>
 

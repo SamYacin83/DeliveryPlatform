@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import DeliveryMap from "@/components/DeliveryMap";
 import {
   Card,
   CardContent,
@@ -86,19 +87,35 @@ export default function SupplierDashboard() {
   });
 
   const { data: deliveries } = useQuery({
-    queryKey: ["active-deliveries"],
-    queryFn: async () => {
-      return [
-        {
-          id: 1,
-          driver: "Jean Martin",
-          status: "en route",
-          location: { lat: 48.8566, lng: 2.3522 },
-          estimatedDelivery: "15:30"
-        }
-      ];
-    }
-  });
+  queryKey: ["active-deliveries"],
+  queryFn: async () => {
+    // Simulation d'appel API : on renvoie 3 livreurs/livraisons différentes
+    return [
+      {
+        id: 1,
+        driver: "Jean Martin",
+        status: "en route",
+        location: { lat: 48.8566, lng: 2.3522 },
+        estimatedDelivery: "15:30",
+      },
+      {
+        id: 2,
+        driver: "Fatima Ali",
+        status: "en route",
+        location: { lat: 48.5766164, lng: -78.1129627 },
+        estimatedDelivery: "15:45",
+      },
+      {
+        id: 3,
+        driver: "Mohamed Salah",
+        status: "en route",
+        location: { lat: 48.5599101, lng: -78.0987378 },
+        estimatedDelivery: "16:00",
+      },
+    ];
+  },
+});
+
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString("fr-FR", {
@@ -295,7 +312,7 @@ export default function SupplierDashboard() {
             <CardContent className="h-96">
               {/* Intégrer ici la carte avec les positions des livreurs */}
               <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                Carte des livraisons en cours
+              <DeliveryMap orders={deliveries || []} />
               </div>
             </CardContent>
           </Card>
