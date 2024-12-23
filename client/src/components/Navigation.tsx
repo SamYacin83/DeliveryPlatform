@@ -286,13 +286,20 @@ export default function Navigation({ user, logout }: NavigationProps) {
                 <div className="pt-4 border-t">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
+                    <Button
                         variant="ghost"
                         size="sm"
-                        className="flex items-center gap-2"
+                        className="relative"
                       >
                         <Bell className="h-5 w-5" />
-                        Notifications
+                        {hasUnread && (
+                        <Badge
+                          variant="default"
+                          className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
+                        >
+                          {notifications.length}
+                        </Badge>
+                        )}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-80">

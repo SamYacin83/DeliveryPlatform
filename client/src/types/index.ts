@@ -19,7 +19,7 @@ export interface Article {
 export interface Order {
   id: number;
   userId: number;
-  status: 'pending' | 'accepted' | 'in_delivery' | 'delivered';
+  status: 'pending' | 'accepted' | 'in_delivery' | 'delivered' | 'canceled';
   items: Article[];
   total: number;
   createdAt: string;

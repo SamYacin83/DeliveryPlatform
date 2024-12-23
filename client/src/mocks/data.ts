@@ -57,6 +57,19 @@ export const mockOrders: Order[] = [
       lng: 43.1456,
       address: "Djibouti, Djibouti"
     }
+  },
+  {
+    id: 3,
+    userId: 1,
+    status: 'canceled',
+    items: [mockArticles[2]], // Le Petit Prince
+    total: mockArticles[2].price,
+    createdAt: new Date().toISOString(),
+    location: {
+      lat: 11.5892,
+      lng: 43.1456,
+      address: "Djibouti, Djibouti"
+    }
   }
 
 ];
