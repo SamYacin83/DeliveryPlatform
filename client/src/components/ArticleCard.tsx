@@ -60,7 +60,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       </CardHeader>
       <CardContent className="flex-grow">
         <p className="text-gray-600">{article.description}</p>
-        <p className="mt-4 text-lg font-semibold">{article.price} €</p>
+        <p className="mt-4 text-lg font-semibold">{article.price} DJF</p>
       </CardContent>
       <CardFooter>
         <Button 

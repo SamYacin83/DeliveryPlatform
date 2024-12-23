@@ -1,4 +1,4 @@
-import { Article, User, UserRole } from '../types';
+import { Article, User, UserRole,Order } from '../types';
 
 export const mockUser: User = {
   id: '1',
@@ -31,12 +31,18 @@ export const mockArticles: Article[] = [
   },
 ];
 
-export const mockOrders = [
+export const mockOrders: Order[] = [
   {
-    id: '1',
-    articleId: '1',
-    userId: '1',
-    status: 'PENDING',
+    id: 1,
+    userId: 1,
+    status: 'pending',
+    items: [mockArticles[0]], // Le Petit Prince
+    total: mockArticles[0].price,
     createdAt: new Date().toISOString(),
-  },
+    location: {
+      lat: 11.5892,
+      lng: 43.1456,
+      address: "Djibouti, Djibouti"
+    }
+  }
 ];

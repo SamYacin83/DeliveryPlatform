@@ -42,22 +42,36 @@ export default function Navigation({ user, logout }: NavigationProps) {
       return;
     }
 
-    // user !== null, on peut accéder à user.id
-    const handleNotification = (delivery: { orderId: number; status: string }) => {
-      setNotifications((prev) => [
+    const handleNotifications = () => {
+      setNotifications([
         {
-          id: Date.now(),
-          message: `Commande #${delivery.orderId}: ${delivery.status}`,
+          id: 1,
+          message: "Nouvelle commande #1234 confirmée"
         },
-        ...prev,
+        {
+          id: 2,
+          message: "Commande #1234 en cours de livraison"
+        }
       ]);
       setHasUnread(true);
     };
-
+    // user !== null, on peut accéder à user.id
+    // Déclencher les notifications
+    handleNotifications();
     // On suppose que socket.io est disponible via window.io
     const socket = window.io?.({ path: "/socket.io" });
     if (socket) {
-      socket.on(`delivery_updated_${user.id}`, handleNotification);
+      socket.on(`delivery_updated_${user.id}`, (delivery: { orderId: number; status: string }) => {
+        setNotifications(prev => [
+          {
+            id: Date.now(),
+            message: `Commande #${delivery.orderId}: ${delivery.status}`
+          },
+          ...prev
+        ]);
+        setHasUnread(true);
+      });
+
       return () => {
         socket.off(`delivery_updated_${user.id}`);
         socket.disconnect();
@@ -136,7 +150,9 @@ export default function Navigation({ user, logout }: NavigationProps) {
                         <Badge
                           variant="default"
                           className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
-                        />
+                        >
+                          {notifications.length}
+                        </Badge>
                       )}
                     </Button>
                   </DropdownMenuTrigger>

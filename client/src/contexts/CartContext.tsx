@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { Article } from '../types';
+import { mockArticles } from '../mocks/data';
 
 interface CartContextType {
   items: Article[];
@@ -13,8 +14,9 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'rapidlivre-cart';
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<Article[]>([]);
+export function CartProvider({ children }: {readonly children: ReactNode }) {
+  // Utiliser les 5 premiers articles de mockArticles
+  const [items, setItems] = useState<Article[]>(mockArticles.slice(0, 5));
 
   useEffect(() => {
     // Load cart from localStorage on mount
@@ -48,8 +50,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const getItemCount = () => items.length;
 
+  const value = useMemo(() => ({
+    items,
+    addItem,
+    removeItem,
+    clearCart,
+    getItemCount
+  }), [items]); // Dépend uniquement de items car les fonctions sont stables
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, clearCart, getItemCount }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

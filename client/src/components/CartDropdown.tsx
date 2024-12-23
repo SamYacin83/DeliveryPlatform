@@ -51,7 +51,7 @@ export default function CartDropdown() {
           </AnimatePresence>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
+      <DropdownMenuContent align="end" className="w-80 z-[1000]">
         <div className="p-2 text-sm font-medium">Mon Panier</div>
         <DropdownMenuSeparator />
         <div className="max-h-[300px] overflow-auto">
@@ -68,7 +68,7 @@ export default function CartDropdown() {
                   </div>
                   <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium leading-none">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">{Number(item.price).toFixed(2)} €</p>
+                    <p className="text-sm text-muted-foreground">{Number(item.price).toFixed(2)} DJF</p>
                   </div>
                   <Button
                     variant="ghost"
@@ -89,7 +89,7 @@ export default function CartDropdown() {
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">Total</span>
-                <span className="font-bold">{total.toFixed(2)} €</span>
+                <span className="font-bold">{total.toFixed(2)} DJF</span>
               </div>
               <Button className="w-full" asChild>
                 <Link href="/checkout">

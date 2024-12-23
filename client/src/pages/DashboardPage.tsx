@@ -1,7 +1,7 @@
-import { useUser } from "../hooks/use-user";
 import { useQuery } from "@tanstack/react-query";
 import { Order } from "../types";
 import DeliveryMap from "../components/DeliveryMap";
+import { mockOrders } from "../mocks/data";
 import {
   Card,
   CardContent,
@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/card";
 
 export default function DashboardPage() {
+  // Simuler les données de commandes avec mockOrders
   const { data: orders } = useQuery<Order[]>({
     queryKey: ['/api/orders'],
+    queryFn: async () => mockOrders
   });
 
   return (
@@ -27,7 +29,12 @@ export default function DashboardPage() {
             <ul className="space-y-4">
               {orders?.map((order) => (
                 <li key={order.id} className="flex justify-between items-center">
-                  <span>Order #{order.id}</span>
+                  <div>
+                    <span className="font-medium">Order #{order.id}</span>
+                    <div className="text-sm text-muted-foreground">
+                      {order.items.map(item => item.title).join(", ")}
+                    </div>
+                  </div>
                   <span className="capitalize">{order.status}</span>
                 </li>
               ))}

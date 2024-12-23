@@ -117,6 +117,9 @@ export default function AuthPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
+  // Simuler des articles dans le panier
+  const cartItemCount = 2; // Simulation de 2 articles dans le panier
+  
   // Instanciation du formulaire
   const form = useForm<AuthForm>({
     resolver: zodResolver(authSchema),
@@ -299,6 +302,15 @@ export default function AuthPage() {
 
         <CardContent>
           <Form {...form}>
+          {isLogin && cartItemCount > 0 && (
+              <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-sm text-orange-800">
+                  <span className="font-medium">Articles en attente ! </span>
+                  Vous avez {cartItemCount} article{cartItemCount > 1 ? 's' : ''} dans votre panier. 
+                  Connectez-vous pour finaliser votre commande.
+                </p>
+              </div>
+            )}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <AnimatePresence mode="wait">
                 {isLogin ? (

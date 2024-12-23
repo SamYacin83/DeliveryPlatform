@@ -21,7 +21,7 @@ export default function ServicesPage() {
             <p className="text-muted-foreground mb-6">
               Livraison en moins de 30 minutes pour les commandes urgentes.
             </p>
-            <p className="text-primary font-medium">À partir de 5,99€</p>
+            <p className="text-primary font-medium">À partir de 5,99 DJF</p>
           </div>
         </div>
 
@@ -35,7 +35,7 @@ export default function ServicesPage() {
             <p className="text-muted-foreground mb-6">
               Livraison dans la journée pour vos colis non urgents.
             </p>
-            <p className="text-primary font-medium">À partir de 3,99€</p>
+            <p className="text-primary font-medium">À partir de 3,99DJF</p>
           </div>
         </div>
 
@@ -49,7 +49,7 @@ export default function ServicesPage() {
             <p className="text-muted-foreground mb-6">
               Choisissez votre créneau de livraison à l'avance.
             </p>
-            <p className="text-primary font-medium">À partir de 4,99€</p>
+            <p className="text-primary font-medium">À partir de 4,99DJF</p>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export default function ServicesPage() {
             <p className="text-muted-foreground mb-6">
               Protection maximale pour vos colis de valeur.
             </p>
-            <p className="text-primary font-medium">À partir de 7,99€</p>
+            <p className="text-primary font-medium">À partir de 7,99DJF</p>
           </div>
         </div>
       </div>
