@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { mockOrders } from "../mocks/data";
 
 interface ArticleCardProps {
-  article: Article;
+ readonly article: Article;
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {

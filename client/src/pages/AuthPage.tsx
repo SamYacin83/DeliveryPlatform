@@ -118,7 +118,7 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
 
   // Simuler des articles dans le panier
-  const cartItemCount = 2; // Simulation de 2 articles dans le panier
+  const cartItemCount = 3; // Simulation de 2 articles dans le panier
   
   // Instanciation du formulaire
   const form = useForm<AuthForm>({
@@ -345,7 +345,7 @@ export default function AuthPage() {
                       Connexion
                     </Button>
                     <div className="text-center">
-                      <Link href="../../ForgotPasswordForm" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
+                      <Link href="/auth/forgot-password" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
                         Mot de passe oublié ?
                       </Link>
                     </div>
