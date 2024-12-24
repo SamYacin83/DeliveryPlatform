@@ -79,7 +79,8 @@ DeliveryPlatform/
 
 1. Cloner le repository
 ```bash
-git clone https://github.com/votre-org/DeliveryPlatform.git
+git clone git clone https://github.com/votre-org/DeliveryPlatform.git
+cd DeliveryPlatform
 cd DeliveryPlatform
 ```
 
