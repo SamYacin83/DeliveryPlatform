@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\Digitalizer.DeliveryPlatform.WebApi.props" />
+</Project>

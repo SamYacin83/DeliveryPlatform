@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A758E451-74AA-44E0-9F1B-50126B5640BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solutions Items", "Solutions Items", "{153439A5-CD92-477D-9386-EDEEF7FFA8C8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digitalizer.DeliveryPlatform.WebApi", "Digitalizer.DeliveryPlatform.WebApi\Digitalizer.DeliveryPlatform.WebApi.csproj", "{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B4C55F7-DD6D-4ED6-B61A-E0832D30FB5F} = {A758E451-74AA-44E0-9F1B-50126B5640BD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCC9CE8B-FEF5-4F06-B745-D7DC384186D3}
+	EndGlobalSection
+EndGlobal
