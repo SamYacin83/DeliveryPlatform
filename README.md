@@ -1,4 +1,4 @@
-# RapidLivres
+# DeliveryPlatform
 
 Application web moderne pour la gestion et la lecture de livres.
 
