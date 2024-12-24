@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Digitalizer.DeliveryPlatform.WebApi.props" />
-</Project>
