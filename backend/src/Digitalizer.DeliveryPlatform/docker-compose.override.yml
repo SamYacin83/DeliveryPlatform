@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+
+  seq:
+    ports:
+      - "2810:80"
+    volumes:
+      - seqdata:/data
+
+  db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=changeme
+    ports:
+      - "1433:1433"
+ 
+  deliveryplatform.webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "28109:8080"
+      - "28110:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

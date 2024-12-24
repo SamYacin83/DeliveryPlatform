@@ -1,0 +1,55 @@
+version: '3.9'
+# name: "delivery"
+
+services:
+  # Seq pour le logging
+  seq:
+      image: datalust/seq:latest
+      container_name: delivery-seq
+      restart: always
+      environment:
+        - ACCEPT_EULA=Y
+      networks:
+        - delivery-network
+
+  # Database
+  db:
+    image: mysql:latest
+    container_name: delivery_mysql
+    restart: unless-stopped  
+    networks:
+      - delivery-network
+  
+   # Application API
+  deliveryplatform.webapi:
+    image: ${DOCKER_REGISTRY-}serverapi
+    container_name: delivery_api
+    build:
+      context: .
+      dockerfile: DeliveryPlatform.WebApi/Dockerfile
+    depends_on: 
+      - db
+      - redis
+    networks:
+      - delivery-network
+
+   # Redis Cache
+  redis:
+    image: redis:alpine
+    container_name: delivery-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redisdata:/data
+    networks:
+      - delivery-network
+
+# Add this volumes section at the root level
+volumes:
+  redisdata:
+  seqdata:
+
+networks:
+  delivery-network:
+    driver: bridge  

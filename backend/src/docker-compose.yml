@@ -1,0 +1,75 @@
+version: '3.9'
+# name: "echoia"
+
+services:
+  seq:
+      image: datalust/seq:latest
+      container_name: echo_log_seq
+      restart: always
+      environment:
+        - ACCEPT_EULA=Y
+      networks:
+        - echoIa-network
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    container_name: echo_otl_collector
+    restart: always
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    networks:
+      - echoIa-network
+    depends_on:
+      - seq
+
+  db:
+    image: mysql:latest
+    container_name: echo_mysql
+    restart: unless-stopped  
+    networks:
+      - echoIa-network
+ 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: echo_azurite
+    ports:
+      - "10010:10000"  # Blob
+      - "10011:10001"  # Queue
+      - "10012:10002"  # Table
+    networks:
+      - echoIa-network
+    volumes:
+      - ./azurite-storage:/data
+      - ./azurite-logs/debug.log:/azurite/debug.log
+    command: >
+      azurite --location /data --debug /azurite/debug.log 
+              --blobPort 10000 
+              --queuePort 10001 
+              --tablePort 10002
+
+  communication.service:
+    image: ${DOCKER_REGISTRY-}communicationservice
+    container_name: echo_communicationservice
+    build:
+      context: .
+      dockerfile: CommunicationService/CommunicationService.Presentation/Dockerfile
+    depends_on: 
+      - seq
+      - otel-collector
+      - azurite
+    networks:
+      - echoIa-network
+
+  server.api:
+    image: ${DOCKER_REGISTRY-}serverapi
+    container_name: echo_serverapi
+    build:
+      context: .
+      dockerfile: Server/Server.API/Dockerfile
+    depends_on: 
+      - db
+    networks:
+      - echoIa-network
+ 
+networks:
+  echoIa-network:
+    driver: bridge  

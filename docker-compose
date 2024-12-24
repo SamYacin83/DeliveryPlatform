@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Application API
+  api:
+    build:
+      context: .
+      dockerfile: src/DeliveryPlatform.WebApi/Dockerfile
+    container_name: delivery-api
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=db;Database=DeliveryPlatformDb;User=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+      - Redis__ConnectionString=redis:6379
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourCertPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    depends_on:
+      - db
+      - redis
+    networks:
+      - delivery-network
+
+  # SQL Server Database
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: delivery-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - delivery-network
+
+  # Redis Cache
+  redis:
+    image: redis:alpine
+    container_name: delivery-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redisdata:/data
+    networks:
+      - delivery-network
+
+  # Seq pour le logging
+  seq:
+    image: datalust/seq:latest
+    container_name: delivery-seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:80"
+    volumes:
+      - seqdata:/data
+    networks:
+      - delivery-network
+
+volumes:
+  sqldata:
+  redisdata:
+  seqdata:
+
+networks:
+  delivery-network:
+    driver: bridge
