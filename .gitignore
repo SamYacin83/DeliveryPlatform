@@ -1,0 +1,7 @@
+client/coverage/
+client/.tests/coverage/
+client/.tests/results/
+client/.nyc_output/
+environment/local-dev/azurite/Azurite/
+environment/local-dev/azurite/azurite-startup.cmd
+environment/local-dev/azurite/azurite-win-autostart.vbs
