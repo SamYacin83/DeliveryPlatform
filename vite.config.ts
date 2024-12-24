@@ -12,10 +12,10 @@ export default defineConfig({
   plugins: [react(), runtimeErrorOverlay(), themePlugin()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client", "src"),
+      "@": path.resolve(__dirname, "src"),
     },
   },
-  root: path.resolve(__dirname, "client"),
+  root: "./",
   build: {
     outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
