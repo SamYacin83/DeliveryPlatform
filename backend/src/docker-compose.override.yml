@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+
+  seq:
+    ports:
+      - "5341:80"
+      - "43172:4317"  # Expose OTLP gRPC endpoint
+      - "43182:4318"  # Expose OTLP HTTP endpoint
+
+  otel-collector:
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./../../environment/local-dev/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP http receiver
+      - "55679:55679" # zpages extension
+
+  db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=changeme
+    ports:
+      - "7877:3306"
+    healthcheck:
+        test: "mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\" || exit 1"      
+        timeout: 20s
+        retries: 10
+    volumes:
+      - echoia_mysql_data_container:/var/lib/mysql
+      - ./../../environment/local-dev/db/1.CreateDB.sql:/docker-entrypoint-initdb.d/1.CreateDB.sql:ro #scripts sql docker
+  
+  communication.service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+      - AzureWebJobsStorage=DefaultEndpointsProtocol=${STORAGE_PROTOCOL};AccountName=${STORAGE_ACCOUNT};AccountKey=${STORAGE_KEY};BlobEndpoint=${STORAGE_BLOB_ENDPOINT};QueueEndpoint=${STORAGE_QUEUE_ENDPOINT};TableEndpoint=${STORAGE_TABLE_ENDPOINT}
+      - StorageConnection=DefaultEndpointsProtocol=${STORAGE_PROTOCOL};AccountName=${STORAGE_ACCOUNT};AccountKey=${STORAGE_KEY};BlobEndpoint=${STORAGE_BLOB_ENDPOINT};QueueEndpoint=${STORAGE_QUEUE_ENDPOINT};TableEndpoint=${STORAGE_TABLE_ENDPOINT}
+    depends_on:
+      azurite:
+        condition: service_started
+    ports:
+      - "53619:8082"
+      - "53620:8083"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  server.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "53617:8080"
+      - "53618:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+volumes:
+    echoia_mysql_data_container:
+    echoia_auth_data_identity:

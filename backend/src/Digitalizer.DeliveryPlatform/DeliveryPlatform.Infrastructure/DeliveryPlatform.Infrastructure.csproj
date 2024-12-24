@@ -8,4 +8,9 @@
     <RootNamespace>Digitalizer.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Commun\DeliveryPlatform.Shared\DeliveryPlatform.Shared.csproj" />
+    <ProjectReference Include="..\DeliveryPlatform.Application\DeliveryPlatform.Application.csproj" />
+  </ItemGroup>
+
 </Project>
