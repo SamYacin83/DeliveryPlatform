@@ -1,6 +1,6 @@
 # DeliveryPlatform
 
-Application web moderne pour la gestion et la lecture de livres.
+Application web moderne pour la gestion des commandes et des livraisons.
 
 ## Structure du Projet
 
