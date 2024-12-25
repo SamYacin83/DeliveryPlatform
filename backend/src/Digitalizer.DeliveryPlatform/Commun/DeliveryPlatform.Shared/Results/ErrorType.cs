@@ -1,4 +1,4 @@
-﻿namespace Digitalizer.DeliveryPlatform.Shared.Commun.Results;
+﻿namespace Digitalizer.DeliveryPlatform.Common.Results;
 public enum ErrorType
 {
     Failure = 0,

@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CA1716
-namespace Digitalizer.DeliveryPlatform.Shared.Commun.Results;
+namespace Digitalizer.DeliveryPlatform.Common.Results;
 #pragma warning restore CA1716
 public record ErrorResult(string Code, string Description, ErrorType Type)
 {

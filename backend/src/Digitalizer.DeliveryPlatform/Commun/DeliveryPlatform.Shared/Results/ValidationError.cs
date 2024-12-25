@@ -1,4 +1,4 @@
-﻿namespace Digitalizer.DeliveryPlatform.Shared.Commun.Results;
+﻿namespace Digitalizer.DeliveryPlatform.Common.Results;
 public sealed record ValidationError(IReadOnlyList<ErrorResult> Errors) : ErrorResult("General.Validation",
     "One or more validation errors occurred",
     ErrorType.Validation)
