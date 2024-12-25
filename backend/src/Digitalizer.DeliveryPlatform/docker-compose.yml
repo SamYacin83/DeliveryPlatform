@@ -44,6 +44,16 @@ services:
       - redisdata:/data
     networks:
       - delivery-network
+    
+  evently.jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: delivery-Jaeger
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 16686:16686
+    networks:
+      - delivery-network
 
 # Add this volumes section at the root level
 volumes:
