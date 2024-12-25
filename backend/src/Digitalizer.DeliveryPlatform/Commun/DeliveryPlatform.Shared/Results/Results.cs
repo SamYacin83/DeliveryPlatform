@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Digitalizer.DeliveryPlatform.Shared.Commun.Results
+namespace Digitalizer.DeliveryPlatform.Common.Results
 {
     public class Result
     {

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commun\DeliveryPlatform.Shared\DeliveryPlatform.Shared.csproj" />
+    <ProjectReference Include="..\Commun\DeliveryPlatform.Shared\DeliveryPlatform.Common.csproj" />
     <ProjectReference Include="..\DeliveryPlatform.Domain\DeliveryPlatform.Domain.csproj" />
   </ItemGroup>
 

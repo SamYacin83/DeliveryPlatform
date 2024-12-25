@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0928971C-882
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commun", "Commun", "{7F005C74-DD16-4A14-A038-CE7E2778B0AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryPlatform.Shared", "Commun\DeliveryPlatform.Shared\DeliveryPlatform.Shared.csproj", "{C6ED8806-B74D-4E8F-BFF4-037034394069}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryPlatform.Common", "Commun\DeliveryPlatform.Shared\DeliveryPlatform.Common.csproj", "{C6ED8806-B74D-4E8F-BFF4-037034394069}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryPlatform.Application", "DeliveryPlatform.Application\DeliveryPlatform.Application.csproj", "{BC5F6823-4F67-4C0C-8BB5-70238C4A9A17}"
 EndProject
