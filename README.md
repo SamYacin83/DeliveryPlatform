@@ -130,7 +130,7 @@ L'architecture frontend est organisée en composants modulaires avec une sépara
 L'architecture backend suit les principes du Clean Architecture et DDD :
 
 1. **Couche Présentation (API)**
-   - Contrôleurs REST
+   - API minimale
    - Middleware d'authentification JWT
    - Validation des requêtes
    - Documentation Swagger
