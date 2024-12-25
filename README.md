@@ -74,6 +74,12 @@ DeliveryPlatform/
    - Twilio (SMS)
    - Azure Maps
    - Azure SignalR (notifications)
+  
+4. **Observabilité et Monitoring**
+   - Seq (centralisation et analyse des logs)
+   - Jaeger UI (distributed tracing)
+   - Métriques d'application (health checks) - à faire
+   - Alerting et dashboards
 
 ## Installation
 
