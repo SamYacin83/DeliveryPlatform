@@ -35,6 +35,7 @@ public static class SwaggerExtensions
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Delivery Platform API v1");
                 options.RoutePrefix = "swagger";
             });
+            app.ApplyMigrations();
         }
 
         return app;

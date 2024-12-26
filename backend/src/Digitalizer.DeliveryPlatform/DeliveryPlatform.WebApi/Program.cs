@@ -1,4 +1,5 @@
 using Digitalizer.DeliveryPlatform.Common.Configuration;
+using Digitalizer.DeliveryPlatform.Infrastructure.Installers;
 using Digitalizer.DeliveryPlatform.WebApi.Extensions;
 using Digitalizer.DeliveryPlatform.WebApi.Middleware;
 using Serilog;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 
+builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();

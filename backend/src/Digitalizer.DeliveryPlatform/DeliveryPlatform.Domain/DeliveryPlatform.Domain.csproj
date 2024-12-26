@@ -8,4 +8,10 @@
     <RootNamespace>Digitalizer.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Aggregates\Delivery\" />
+    <Folder Include="Aggregates\Driver\" />
+    <Folder Include="Aggregates\Order\" />
+  </ItemGroup>
+
 </Project>
