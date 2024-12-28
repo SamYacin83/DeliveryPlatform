@@ -12,12 +12,11 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql
                                 .AddUserSecrets<DeliveryDbContextFactory>()
                                 .Build();
 
-            var connectionString = configuration.GetConnectionString("Server=localhost; port=3306;Database=Delivery;Uid=root;Pwd=admin;");
-            var serverVersion = ServerVersion.AutoDetect("Server=localhost; port=3306;Database=Delivery;Uid=root;Pwd=admin;");
+            var connectionString = configuration.GetConnectionString("Database");
+            var serverVersion = ServerVersion.AutoDetect(connectionString);
             var optionsBuilder = new DbContextOptionsBuilder<DeliveryDbContext>();
             
             optionsBuilder.UseMySql(connectionString, serverVersion);
-            //"Database": "Server=host.docker.internal; port=3306;Database=Delivery;Uid=root;Pwd=admin;"    "Gim": "Server=localhost;Port=7877;Database=gim;Uid=root;Pwd=admin;",
             return new DeliveryDbContext(optionsBuilder.Options);
         }
     }
