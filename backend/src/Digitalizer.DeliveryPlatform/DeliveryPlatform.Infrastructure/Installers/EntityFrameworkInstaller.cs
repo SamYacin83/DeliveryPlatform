@@ -1,5 +1,7 @@
 ﻿using Digitalizer.DeliveryPlatform.Application.Data;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.Repositories;
@@ -26,13 +28,12 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Installers
                     ServerVersion.AutoDetect(connectionString),
                     b => b.MigrationsAssembly(typeof(DeliveryDbContext).Assembly.FullName)
                 ).UseSnakeCaseNamingConvention()
-                .LogTo(Console.WriteLine)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
             );
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRespository>();
             return services;
         }
     }

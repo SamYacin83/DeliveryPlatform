@@ -3,14 +3,14 @@ using Digitalizer.DeliveryPlatform.WebApi.EndPoints;
 using Digitalizer.DeliveryPlatform.WebApi.ResultsApi;
 using MediatR;
 
-namespace Digitalizer.DeliveryPlatform.WebApi.Features.Orders;
+namespace Digitalizer.DeliveryPlatform.WebApi.Features.Order;
 internal sealed class GetOrderEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/GetOrders", GetOrderAsync)
            .WithName("GetOrder")
-           .WithTags(Tags.Orders)
+           .WithTags(Tags.Order)
            .WithOpenApi(operation =>
            {
                operation.Summary = "Get order details";

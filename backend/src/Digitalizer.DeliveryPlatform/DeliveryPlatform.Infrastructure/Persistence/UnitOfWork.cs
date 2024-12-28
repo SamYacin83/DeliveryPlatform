@@ -2,17 +2,19 @@
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 
 namespace Digitalizer.DeliveryPlatform.Infrastructure.Persistence;
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(DeliveryDbContext context) : IUnitOfWork
 {
-    private readonly DeliveryDbContext _context;
-
-    public UnitOfWork(DeliveryDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            return await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            context.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
+            throw;
+        }
+       
     }
 }

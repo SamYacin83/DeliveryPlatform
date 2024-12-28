@@ -10,4 +10,9 @@ public abstract class Entity
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void SetUpdatedAt(DateTime dateTime)
+    {
+        UpdatedAt = dateTime;
+    }
 }

@@ -4,6 +4,7 @@ using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(DeliveryDbContext))]
-    partial class DeliveryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241227024224_AddFeaturesProducts")]
+    partial class AddFeaturesProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,10 +59,6 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("category_id");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -87,51 +86,7 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
-                    b.HasIndex("CategoryId")
-                        .HasDatabaseName("ix_products_category_id");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_products_name");
-
                     b.ToTable("products", (string)null);
-                });
-
-            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory.ProductCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_product_category");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_product_category_name");
-
-                    b.ToTable("product_category", (string)null);
                 });
 
             modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer.Customer", b =>
@@ -236,13 +191,6 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 
             modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Product", b =>
                 {
-                    b.HasOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory.ProductCategory", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_products_product_category_category_id");
-
                     b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("ProductId")
@@ -268,6 +216,36 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                                 .HasForeignKey("ProductId")
                                 .HasConstraintName("fk_products_products_id");
                         });
+
+                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.ValueObjects.ProductCategory", "Category", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("varchar(200)")
+                                .HasColumnName("category_description");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("category_name");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId")
+                                .HasConstraintName("fk_products_products_id");
+                        });
+
+                    b.Navigation("Category")
+                        .IsRequired();
 
                     b.Navigation("Price")
                         .IsRequired();
