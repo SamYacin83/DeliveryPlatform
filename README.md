@@ -66,7 +66,7 @@ DeliveryPlatform/
    - MediatR (CQRS)
 
 2. **Base de données et Cache**
-   - Azure SQL Database
+   - MySQL
    - Redis
 
 3. **Services Externes**
