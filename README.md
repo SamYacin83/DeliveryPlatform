@@ -38,7 +38,7 @@ DeliveryPlatform/
 
 ### Backend
 - .NET Core SDK 8.0
-- SQL Server ou Azure SQL Database
+- MySQL
 - Redis (optionnel, pour le cache)
 
 ## Technologies Principales
