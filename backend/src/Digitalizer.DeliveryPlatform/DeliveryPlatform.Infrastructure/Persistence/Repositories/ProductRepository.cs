@@ -21,6 +21,13 @@ internal sealed class ProductRepository(DeliveryDbContext context) : IProductRep
                       .SingleOrDefaultAsync(c => c.Id == id);
     }
 
+    public async Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        return await context.Products
+                            .Where(p => ids.Contains(p.Id))
+                            .ToListAsync().ConfigureAwait(false);
+    }
+
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
         return await context.Products.ToListAsync().ConfigureAwait(false);

@@ -7,7 +7,7 @@ public class Customer : AggregateRoot
     private List<DeliveryAddress> _addresses = new();
 
     public string Name { get; private set; }
-    public Email Email { get; private set; }
-    public PhoneNumber Phone { get; private set; }
-    public IReadOnlyCollection<DeliveryAddress> Addresses => _addresses.AsReadOnly();
+    //public Email Email { get; private set; }
+    //public PhoneNumber Phone { get; private set; }
+    public IEnumerable<DeliveryAddress> Addresses => _addresses.AsReadOnly();
 }

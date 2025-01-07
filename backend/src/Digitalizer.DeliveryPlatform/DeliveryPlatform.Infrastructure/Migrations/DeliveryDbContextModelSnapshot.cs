@@ -49,6 +49,90 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                     b.ToTable("customers", (string)null);
                 });
 
+            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("DeliveryServiceType")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("delivery_service_type");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("order_date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_order_customer_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_order_status");
+
+                    b.ToTable("order", (string)null);
+                });
+
+            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.OrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("order_id");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("product_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_item");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_item_order_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_order_item_product_id");
+
+                    b.ToTable("order_item", (string)null);
+                });
+
             modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -174,63 +258,133 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                                 .HasColumnName("street");
 
                             b1.HasKey("CustomerId", "Id")
-                                .HasName("pk_delivery_address");
+                                .HasName("pk_customers_addresses");
 
-                            b1.ToTable("delivery_address", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId")
-                                .HasConstraintName("fk_delivery_address_customers_customer_id");
-                        });
-
-                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("CustomerId")
-                                .HasColumnType("char(36)")
-                                .HasColumnName("id");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(256)
-                                .HasColumnType("varchar(256)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("customers");
+                            b1.ToTable("customers_addresses", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId")
-                                .HasConstraintName("fk_customers_customers_id");
-                        });
-
-                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.ValueObjects.PhoneNumber", "Phone", b1 =>
-                        {
-                            b1.Property<Guid>("CustomerId")
-                                .HasColumnType("char(36)")
-                                .HasColumnName("id");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("varchar(20)")
-                                .HasColumnName("PhoneNumber");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("customers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId")
-                                .HasConstraintName("fk_customers_customers_id");
+                                .HasConstraintName("fk_customers_addresses_customers_customer_id");
                         });
 
                     b.Navigation("Addresses");
+                });
 
-                    b.Navigation("Email")
+            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order", b =>
+                {
+                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.ValueObjects.DeliveryAddress", "DeliveryAddress", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("varchar(100)")
+                                .HasColumnName("delivery_address_city");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("varchar(100)")
+                                .HasColumnName("delivery_address_country");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("delivery_address_postal_code");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("varchar(200)")
+                                .HasColumnName("delivery_address_street");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("order");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId")
+                                .HasConstraintName("fk_order_order_id");
+                        });
+
+                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Money", "TotalAmount", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("total_amount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("varchar(3)")
+                                .HasColumnName("currency");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("order");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId")
+                                .HasConstraintName("fk_order_order_id");
+                        });
+
+                    b.Navigation("DeliveryAddress")
                         .IsRequired();
 
-                    b.Navigation("Phone")
+                    b.Navigation("TotalAmount")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.OrderItem", b =>
+                {
+                    b.HasOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order", null)
+                        .WithMany("OrderLines")
+                        .HasForeignKey("OrderId")
+                        .HasConstraintName("fk_order_item_order_order_id");
+
+                    b.HasOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_item_products_product_id");
+
+                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Money", "UnitPrice", b1 =>
+                        {
+                            b1.Property<Guid>("OrderItemId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("unit_price_amount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("varchar(3)")
+                                .HasColumnName("unit_price_currency");
+
+                            b1.HasKey("OrderItemId");
+
+                            b1.ToTable("order_item");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderItemId")
+                                .HasConstraintName("fk_order_item_order_item_id");
+                        });
+
+                    b.Navigation("UnitPrice")
                         .IsRequired();
                 });
 
@@ -271,6 +425,11 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 
                     b.Navigation("Price")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order", b =>
+                {
+                    b.Navigation("OrderLines");
                 });
 #pragma warning restore 612, 618
         }

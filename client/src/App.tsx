@@ -17,6 +17,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import ServicesPage from "./pages/ServicesPage";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   const { user, isLoading, logout } = useUser();
@@ -50,7 +51,7 @@ function App() {
 
           {user && (
             <>
-             <Route path="/dashboard" component={SupplierDashboard} />
+             <Route path="/dashboard" component={DashboardPage} />
               <Route path="/profile" component={ProfilePage} />
             </>
           )}

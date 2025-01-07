@@ -20,7 +20,7 @@ services:
     networks:
       - delivery-network
   
-   # Application API
+  # Application API
   deliveryplatform.webapi:
     image: ${DOCKER_REGISTRY-}serverapi
     container_name: delivery_api
@@ -33,9 +33,9 @@ services:
     networks:
       - delivery-network
 
-   # Redis Cache
+  # Redis Cache
   redis:
-    image: redis:alpine
+    image: redis:latest
     container_name: delivery-redis
     ports:
       - "6379:6379"
@@ -59,6 +59,7 @@ services:
 volumes:
   redisdata:
   seqdata:
+  delivery_mysql_data_container:
 
 networks:
   delivery-network:
