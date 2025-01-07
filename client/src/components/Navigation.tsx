@@ -122,7 +122,7 @@ export default function Navigation({ user, logout }: NavigationProps) {
               {/* Affiche "Mes commandes" seulement si user connecté */}
               {user && (
                 <Link
-                  href="/dashboard"
+                  href="/Dashboard"
                   className="text-foreground/80 hover:text-primary transition-colors"
                 >
                   Mes commandes
@@ -268,7 +268,7 @@ export default function Navigation({ user, logout }: NavigationProps) {
               </Link>
               {user && (
                 <Link
-                  href="/dashboard"
+                  href="/DashboardPage"
                   className="text-foreground/80 hover:text-primary transition-colors"
                   onClick={handleMobileLinkClick}
                 >

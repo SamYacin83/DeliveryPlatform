@@ -8,6 +8,8 @@ public class DeliveryAddress : ValueObject
     public string PostalCode { get; private set; }
     public string Country { get; private set; }
 
+    public DeliveryAddress() { }
+
     private DeliveryAddress(string street, string city, string postalCode, string country)
     {
         Street = street;

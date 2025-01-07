@@ -15,6 +15,9 @@ services:
       - MYSQL_PASSWORD=changeme
     ports:
       - "3306:3306"
+    volumes:
+      - delivery_mysql_data_container:/var/lib/mysql
+      - ./../../environment/local-dev/db/1.CreateDB.sql:/docker-entrypoint-initdb.d/1.CreateDB.sql:ro #scripts sql docker
  
   deliveryplatform.webapi:
     environment:

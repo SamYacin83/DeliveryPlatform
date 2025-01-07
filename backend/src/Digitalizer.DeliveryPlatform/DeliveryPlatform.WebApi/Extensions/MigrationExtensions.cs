@@ -1,5 +1,4 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
-using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
+﻿using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Microsoft.EntityFrameworkCore;
 
 namespace Digitalizer.DeliveryPlatform.WebApi.Extensions;

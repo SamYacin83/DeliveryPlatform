@@ -1,4 +1,5 @@
-﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Events;
+﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Exceptions;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Events;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product.Exceptions;
 using Digitalizer.DeliveryPlatform.Domain.Commun;
 
@@ -39,6 +40,35 @@ public class Product : AggregateRoot
 
         product.AddDomainEvent(new ProductCreatedEvent(product.Id));
         return product;
+    }
+
+    public void UpdateStock(int newQuantity)
+    {
+        if (newQuantity < 0)
+            throw new InvalidStockQuantityException(newQuantity);
+
+        var oldQuantity = StockQuantity;
+        StockQuantity = newQuantity;
+
+        AddDomainEvent(new ProductStockUpdatedEvent(Id, oldQuantity, newQuantity));
+    }
+
+
+    public bool HasSufficientStock(int requestedQuantity)
+    {
+        return StockQuantity >= requestedQuantity;
+    }
+
+
+    public void DecrementStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new InvalidQuantityException(quantity);
+
+        if (!HasSufficientStock(quantity))
+            throw new InsufficientStockException(Id, quantity, StockQuantity);
+
+        UpdateStock(StockQuantity - quantity);
     }
 
     public void Update(

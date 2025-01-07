@@ -11,8 +11,6 @@
   <ItemGroup>
     <Folder Include="Aggregates\Delivery\" />
     <Folder Include="Aggregates\Driver\" />
-    <Folder Include="Aggregates\Order\" />
-    <Folder Include="Aggregates\Product\ValueObjects\" />
   </ItemGroup>
 
 </Project>

@@ -6,6 +6,8 @@ public class Email : ValueObject
 {
     public string Value { get; private set; }
 
+    public Email() {}
+
     private Email(string value)
     {
         Value = value;
