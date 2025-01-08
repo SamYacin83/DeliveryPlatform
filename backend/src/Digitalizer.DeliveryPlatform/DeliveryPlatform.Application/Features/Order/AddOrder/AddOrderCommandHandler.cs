@@ -12,7 +12,7 @@ using DomainOrder = Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order;
 
 namespace Digitalizer.DeliveryPlatform.Application.Features.Order.AddOrder;
 public class AddOrderCommandHandler(ICustomerRepository repositoryCustomer, IOrderRepository repositoryOrder,
-    IProductRepository repositoryProduct, IUnitOfWork unitOfWork, ICartService cartService) : ICommandHandler<AddOrderCommand, OrderDto>
+    IProductRepository repositoryProduct, IUnitOfWork unitOfWork, ICartService cartService, IDomainEventService domainEventService) : ICommandHandler<AddOrderCommand, OrderDto>
 {
     private const string Djibouti = "Djibouti";
 
@@ -68,6 +68,9 @@ public class AddOrderCommandHandler(ICustomerRepository repositoryCustomer, IOrd
         await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         var orderDto = order.MapToOrderDto();
+
+        await domainEventService.PublishEvents(order, cancellationToken).ConfigureAwait(false);
+
         return Result.Success(orderDto);
     }
 }

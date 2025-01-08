@@ -1,5 +1,6 @@
 using Digitalizer.DeliveryPlatform.Common.Configuration;
 using Digitalizer.DeliveryPlatform.Infrastructure.Installers;
+using Digitalizer.DeliveryPlatform.Infrastructure.SignalR;
 using Digitalizer.DeliveryPlatform.WebApi.Extensions;
 using Digitalizer.DeliveryPlatform.WebApi.Middleware;
 using Serilog;
@@ -15,6 +16,7 @@ builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
 builder.Services.AddEndpoints();
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -22,5 +24,6 @@ app.UseLogContext();
 app.UseSerilogRequestLogging();
 app.UseSwaggerConfiguration();
 app.MapEndpoints();
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 await app.RunAsync().ConfigureAwait(false);
