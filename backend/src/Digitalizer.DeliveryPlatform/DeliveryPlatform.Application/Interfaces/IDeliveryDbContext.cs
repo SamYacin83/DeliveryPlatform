@@ -2,7 +2,7 @@
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
 using Microsoft.EntityFrameworkCore;
 
-namespace Digitalizer.DeliveryPlatform.Application.Data;
+namespace Digitalizer.DeliveryPlatform.Application.Interfaces;
 public interface IDeliveryDbContext
 {
     DbSet<Customer> Customers { get; set; }

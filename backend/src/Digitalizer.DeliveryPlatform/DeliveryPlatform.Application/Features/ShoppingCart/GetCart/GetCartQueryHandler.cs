@@ -1,4 +1,4 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
+﻿using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Common.Messaging;
 using Digitalizer.DeliveryPlatform.Common.Results;
 using Digitalizer.DeliveryPlatform.Domain.Caching.Models;

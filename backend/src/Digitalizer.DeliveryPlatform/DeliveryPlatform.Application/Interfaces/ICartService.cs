@@ -1,6 +1,6 @@
 ﻿using Digitalizer.DeliveryPlatform.Domain.Caching.Models;
 
-namespace Digitalizer.DeliveryPlatform.Application.Data;
+namespace Digitalizer.DeliveryPlatform.Application.Interfaces;
 public interface ICartService
 {
     Task<Cart> GetCartAsync(Guid customerId, CancellationToken cancellationToken = default);
