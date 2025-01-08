@@ -16,6 +16,8 @@ public class DeliveryDbContext(DbContextOptions<DeliveryDbContext> options) : Db
     public DbSet<ProductCategory> ProductCategory { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
+    public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();

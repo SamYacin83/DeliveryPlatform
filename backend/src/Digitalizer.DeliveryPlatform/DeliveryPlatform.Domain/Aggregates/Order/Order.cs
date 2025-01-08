@@ -32,7 +32,6 @@ public class Order : AggregateRoot
                         TotalAmount = Money.Zero,
                         OrderDate = orderDate
         };
-
         order.AddDomainEvent(new OrderCreatedEvent(order.Id));
         return order;
     }
@@ -64,10 +63,53 @@ public class Order : AggregateRoot
         if (TotalAmount.Amount < MinimumOrderAmount)
             throw new InvalidOrderAmountException(TotalAmount.Amount, MinimumOrderAmount);
 
-        Status = OrderStatus.Submitted;
+        UpdateStatus(OrderStatus.Submitted, "Order submitted");
         AddDomainEvent(new OrderSubmittedEvent(Id));
     }
 
+    public void UpdateStatus(OrderStatus newStatus, string? comment = null)
+    {
+        var oldStatus = Status;
+        if (!IsValidStatusTransition(oldStatus, newStatus))
+            throw new InvalidOrderStateTransitionException(oldStatus, newStatus);
+
+        Status = newStatus;
+        AddDomainEvent(new OrderStatusChangedEvent(Id, oldStatus, newStatus, comment));
+    }
+
+    public void Cancel(string reason)
+    {
+        UpdateStatus(OrderStatus.Cancelled, reason);
+        AddDomainEvent(new OrderCancelledEvent(Id, reason));
+    }
+
+    public void ProcessPayment()
+    {
+        UpdateStatus(OrderStatus.PaymentPending, "Payment processing started");
+    }
+
+    public void ConfirmPayment()
+    {
+        UpdateStatus(OrderStatus.PaymentConfirmed, "Payment confirmed");
+    }
+
+    private static bool IsValidStatusTransition(OrderStatus currentStatus, OrderStatus newStatus)
+    {
+        return (currentStatus, newStatus) switch
+               {
+                   (OrderStatus.Created, OrderStatus.Submitted) => true,
+                   (OrderStatus.Submitted, OrderStatus.PaymentPending) => true,
+                   (OrderStatus.PaymentPending, OrderStatus.PaymentConfirmed) => true,
+                   (OrderStatus.PaymentConfirmed, OrderStatus.Processing) => true,
+                   (OrderStatus.Processing, OrderStatus.ReadyForDelivery) => true,
+                   (OrderStatus.ReadyForDelivery, OrderStatus.AssignedToDriver) => true,
+                   (OrderStatus.AssignedToDriver, OrderStatus.InTransit) => true,
+                   (OrderStatus.InTransit, OrderStatus.OutForDelivery) => true,
+                   (OrderStatus.OutForDelivery, OrderStatus.Delivered) => true,
+                   (_, OrderStatus.Cancelled) => true, 
+                   _ => false
+               };
+    }
     private Money GetDeliveryFee() => DeliveryServiceType switch
                                       {
                                           DeliveryServiceType.Standard => new Money(500),

@@ -3,8 +3,14 @@ public enum OrderStatus
 {
     Created,
     Submitted,
-    Confirmed,
-    InDelivery,
+    PaymentPending,
+    PaymentConfirmed,
+    Processing,
+    ReadyForDelivery,
+    AssignedToDriver,
+    InTransit,
+    OutForDelivery,
     Delivered,
-    Cancelled
+    Cancelled,
+    Failed
 }

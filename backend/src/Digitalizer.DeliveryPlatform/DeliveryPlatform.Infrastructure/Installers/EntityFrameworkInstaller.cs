@@ -7,6 +7,7 @@ using Digitalizer.DeliveryPlatform.Infrastructure.Persistence;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.Caching.Services;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.Repositories;
+using Digitalizer.DeliveryPlatform.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,9 +39,12 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Installers
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductCategoryRepository, ProductCategoryRespository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderStatusHistoryRepository, OrderStatusHistoryRepository>();
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<ICartService, CartService>();
-
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IDomainEventService, DomainEventService>();
+            
             //Redis
             try
             {
