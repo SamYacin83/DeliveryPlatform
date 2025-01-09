@@ -19,9 +19,4 @@
     <ProjectReference Include="..\DeliveryPlatform.Domain\DeliveryPlatform.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Customer\GetCustomer\" />
-    <Folder Include="Features\Customer\GetByIdCustomer\" />
-  </ItemGroup>
-
 </Project>

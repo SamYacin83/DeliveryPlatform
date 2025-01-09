@@ -1,5 +1,4 @@
 ﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer.ValueObjects;
-using Digitalizer.DeliveryPlatform.Domain.Enums;
 
 namespace Digitalizer.DeliveryPlatform.Application.Features.Customer;
 

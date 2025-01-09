@@ -4,6 +4,7 @@ using Digitalizer.DeliveryPlatform.Infrastructure.Installers;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Digitalizer.DeliveryPlatform.Infrastructure.SignalR;
 using Digitalizer.DeliveryPlatform.WebApi.Extensions;
+using Digitalizer.DeliveryPlatform.WebApi.Features;
 using Digitalizer.DeliveryPlatform.WebApi.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
@@ -34,5 +35,5 @@ app.UseSerilogRequestLogging();
 app.UseSwaggerConfiguration();
 app.MapEndpoints();
 app.MapHub<NotificationHub>("/hubs/notifications");
-app.MapGroup("api").MapIdentityApi<ApplicationUser>(); // api/login
+app.MapGroup("api").MapIdentityApi<ApplicationUser>().WithTags(Tags.Identity);
 await app.RunAsync().ConfigureAwait(false);

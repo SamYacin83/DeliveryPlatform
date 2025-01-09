@@ -7,4 +7,5 @@ internal static class Tags
     internal const string ProductCategory = "ProductCategory";
     internal const string Cart = "Cart";
     internal const string Customer = "Customer";
+    internal const string Identity = "Identity";
 }
