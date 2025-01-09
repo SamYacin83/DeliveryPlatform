@@ -18,7 +18,7 @@ internal sealed class GetByIdProductCategoryEndPoint : IEndpoint
                operation.Summary = "Get product details by ID";
                operation.Description = "Returns the details of a product by its ID";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> GetByIdProductCatAsync(IMediator mediator, Guid productId)

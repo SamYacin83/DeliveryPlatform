@@ -19,7 +19,7 @@ internal sealed class DeleteProductEndPoint : IEndpoint
                operation.Summary = "Delete an existing product";
                operation.Description = "Allows deleting an existing product from the delivery platform";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> DeleteProductAsync(IMediator mediator, [FromBody] ProductDto productDto)

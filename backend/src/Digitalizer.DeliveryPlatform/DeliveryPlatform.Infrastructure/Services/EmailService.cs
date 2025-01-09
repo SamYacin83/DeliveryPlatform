@@ -29,6 +29,7 @@ public class EmailService : IEmailService, IDisposable
 
     public async Task<bool> SendWelcomeEmailAsync(string email, string verificationToken)
     {
+        //TODO: Implement the link to confirm email address validation and activate the account
         try
         {
             using var message = new MailMessage

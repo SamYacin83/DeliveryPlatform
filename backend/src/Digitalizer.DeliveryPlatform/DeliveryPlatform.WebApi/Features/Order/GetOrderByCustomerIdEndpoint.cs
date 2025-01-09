@@ -17,7 +17,7 @@ public class GetOrderByCustomerIdEndpoint : IEndpoint
                operation.Summary = "Get order by customer ID";
                operation.Description = "Retrieves the order details for a given customer ID";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> GetOrderByCustomerIdAsync(IMediator mediator, Guid customerId)

@@ -18,7 +18,7 @@ public class GetOrderStatusHistoryEndpoint : IEndpoint
                operation.Summary = "Get order status history by order ID";
                operation.Description = "Retrieves the order status history for a given order ID";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> GetOrderStatusHistoryAsync(IMediator mediator, Guid OrderId)

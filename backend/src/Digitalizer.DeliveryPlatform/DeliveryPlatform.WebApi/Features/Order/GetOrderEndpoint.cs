@@ -16,7 +16,7 @@ internal sealed class GetOrderEndpoint : IEndpoint
                operation.Summary = "Get order details";
                operation.Description = "Returns the details of an order including its items";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> GetOrderAsync(IMediator mediator)
