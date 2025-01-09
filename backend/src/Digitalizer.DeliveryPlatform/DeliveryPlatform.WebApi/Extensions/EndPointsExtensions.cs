@@ -22,10 +22,11 @@ public static class EndpointsExtensions
     public static WebApplication MapEndpoints(this WebApplication app)
     {
         var endpoints = app.Services.GetServices<IEndpoint>();
+        var apiGroup = app.MapGroup("/api");
 
         foreach (var endpoint in endpoints)
         {
-            endpoint.MapEndpoint(app);
+            endpoint.MapEndpoint(apiGroup);
         }
 
         return app;
