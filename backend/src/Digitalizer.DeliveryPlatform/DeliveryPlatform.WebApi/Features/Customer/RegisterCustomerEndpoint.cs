@@ -18,7 +18,7 @@ public class RegisterCustomerEndpoint : IEndpoint
                operation.Summary = "Register a new customer";
                operation.Description = "Allows registering a new customer to the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           });
     }
 
     private static async Task<IResult> AddCustomerAsync(IMediator mediator, [FromBody] RequestRegisterCustomer request)
