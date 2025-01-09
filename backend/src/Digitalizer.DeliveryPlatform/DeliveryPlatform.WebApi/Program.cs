@@ -1,8 +1,11 @@
 using Digitalizer.DeliveryPlatform.Common.Configuration;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.User;
 using Digitalizer.DeliveryPlatform.Infrastructure.Installers;
+using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Digitalizer.DeliveryPlatform.Infrastructure.SignalR;
 using Digitalizer.DeliveryPlatform.WebApi.Extensions;
 using Digitalizer.DeliveryPlatform.WebApi.Middleware;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,13 +20,19 @@ builder.Services.AddEndpoints();
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSignalR();
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+       .AddRoles<IdentityRole>()
+       .AddEntityFrameworkStores<DeliveryDbContext>();
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseLogContext();
 app.UseSerilogRequestLogging();
 app.UseSwaggerConfiguration();
 app.MapEndpoints();
 app.MapHub<NotificationHub>("/hubs/notifications");
-
+app.MapGroup("api").MapIdentityApi<ApplicationUser>(); // api/login
 await app.RunAsync().ConfigureAwait(false);

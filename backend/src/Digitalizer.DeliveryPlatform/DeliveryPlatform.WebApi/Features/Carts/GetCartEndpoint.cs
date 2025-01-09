@@ -11,7 +11,7 @@ public class GetCartEndpoint : IEndpoint
     {
         app.MapGet("/carts", GetCartAsync)
            .WithName("GetCart")
-           .WithTags(Tags.Carts)
+           .WithTags(Tags.Cart)
            .WithOpenApi(operation =>
            {
                operation.Summary = "Get cart details by customer ID";

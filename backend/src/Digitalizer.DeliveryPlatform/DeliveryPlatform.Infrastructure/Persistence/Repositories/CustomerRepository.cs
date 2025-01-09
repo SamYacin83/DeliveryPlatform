@@ -10,4 +10,9 @@ internal sealed class CustomerRepository(DeliveryDbContext context) : ICustomerR
         return context.Customers
                        .SingleOrDefaultAsync(c => c.Id == id);
     }
+
+    public void Add(Customer customer)
+    {
+        context.Customers.Add(customer);
+    }
 }

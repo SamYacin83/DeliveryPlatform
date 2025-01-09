@@ -13,7 +13,7 @@ internal sealed class AddCartEndpoint : IEndpoint
     {
         app.MapPost("/AddCart", AddCartAsync)
            .WithName("AddCart")
-           .WithTags(Tags.Carts)
+           .WithTags(Tags.Cart)
            .WithOpenApi(operation =>
            {
                operation.Summary = "Add a new cart";
