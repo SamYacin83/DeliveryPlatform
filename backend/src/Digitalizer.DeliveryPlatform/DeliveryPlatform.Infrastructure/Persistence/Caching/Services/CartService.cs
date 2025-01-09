@@ -1,4 +1,4 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
+﻿using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Domain.Caching.Models;
 
 namespace Digitalizer.DeliveryPlatform.Infrastructure.Persistence.Caching.Services;

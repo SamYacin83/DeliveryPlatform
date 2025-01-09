@@ -1,7 +1,7 @@
 ﻿using Digitalizer.DeliveryPlatform.Application.Features.Order;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 
-namespace Digitalizer.DeliveryPlatform.Application.Data;
+namespace Digitalizer.DeliveryPlatform.Application.Interfaces;
 public interface INotificationService
 {
     Task NotifyOrderStatusChanged(Guid orderId, OrderStatus newStatus);

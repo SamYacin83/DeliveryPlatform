@@ -18,7 +18,7 @@ internal sealed class AddOrderEndpoint : IEndpoint
                 operation.Summary = "Add a new order";
                 operation.Description = "Allows adding a new order to the delivery platform";
                 return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> AddOrderAsync(IMediator mediator, [FromBody] RequestCard request)

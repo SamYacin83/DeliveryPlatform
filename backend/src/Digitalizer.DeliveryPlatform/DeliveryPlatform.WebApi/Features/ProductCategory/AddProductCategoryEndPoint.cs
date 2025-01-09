@@ -19,7 +19,7 @@ internal sealed class AddProductCategoryEndPoint : IEndpoint
                operation.Summary = "Add a new product category";
                operation.Description = "Allows adding a new product category to the delivery platform";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> AddProductCatAsync(IMediator mediator, [FromBody] ProductCategoryDto productCategoryDto)

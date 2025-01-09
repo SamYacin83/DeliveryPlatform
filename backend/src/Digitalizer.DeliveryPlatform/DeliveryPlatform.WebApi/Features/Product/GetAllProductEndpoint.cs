@@ -17,7 +17,7 @@ internal sealed class GetAllProductEndpoint : IEndpoint
                operation.Summary = "Get all product details";
                operation.Description = "Returns the details of all products including their items";
                return operation;
-           });
+           }).RequireAuthorization();
     }
 
     private static async Task<IResult> GetAllProductAsync(IMediator mediator)

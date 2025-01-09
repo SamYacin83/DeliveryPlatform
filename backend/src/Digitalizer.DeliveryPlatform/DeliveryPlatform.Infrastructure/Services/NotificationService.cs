@@ -1,5 +1,5 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
-using Digitalizer.DeliveryPlatform.Application.Features.Order;
+﻿using Digitalizer.DeliveryPlatform.Application.Features.Order;
+using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 using Digitalizer.DeliveryPlatform.Infrastructure.SignalR;
 using Microsoft.AspNetCore.SignalR;

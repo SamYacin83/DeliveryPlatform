@@ -1,4 +1,5 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
+﻿using Digitalizer.DeliveryPlatform.Application.Identity;
+using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
@@ -44,7 +45,9 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Installers
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IDomainEventService, DomainEventService>();
-            
+            services.AddScoped <IIdentityService,IdentityService>();
+            services.AddScoped<IEmailService, EmailService>();
+
             //Redis
             try
             {

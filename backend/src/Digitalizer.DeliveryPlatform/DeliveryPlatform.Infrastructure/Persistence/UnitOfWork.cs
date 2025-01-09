@@ -1,4 +1,4 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Data;
+﻿using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 
 namespace Digitalizer.DeliveryPlatform.Infrastructure.Persistence;

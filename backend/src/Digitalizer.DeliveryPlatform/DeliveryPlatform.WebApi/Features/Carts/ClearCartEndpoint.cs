@@ -11,7 +11,7 @@ public class ClearCartEndpoint : IEndpoint
     {
         app.MapDelete("/carts", ClearCartAsync)
            .WithName("DeleteCart")
-           .WithTags(Tags.Carts)
+           .WithTags(Tags.Cart)
            .WithOpenApi(operation =>
            {
                operation.Summary = "Clear cart by customer ID";

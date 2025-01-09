@@ -11,7 +11,7 @@ public class RemoveFromCart :IEndpoint
     {
         app.MapPut("carts/remove", RemoveFromCartAsync)
            .WithName("RemoveFromCart")
-           .WithTags(Tags.Carts)
+           .WithTags(Tags.Cart)
            .WithOpenApi(operation =>
            {
                operation.Summary = "Clear cart by customer ID";
