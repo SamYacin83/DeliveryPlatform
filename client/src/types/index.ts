@@ -52,3 +52,23 @@ export interface Supplier {
   phone: string;
   email: string;
 }
+
+export interface OrderItem {
+  id: string;
+  articleId: string;
+  title: string;
+  quantity: number;
+  price: number;
+  type: "SOGIK" | "Particulier";
+}
+
+export interface DashboardOrder {
+  id: string;
+  date: string;
+  status: "pending" | "delivered" | "cancelled";
+  total: number;
+  items: OrderItem[];
+  deliveryAddress: string;
+  trackingNumber: string;
+  estimatedDelivery?: string;
+}
