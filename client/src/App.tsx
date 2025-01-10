@@ -19,6 +19,7 @@ import ServicesPage from "./pages/ServicesPage";
 import ArticlesPage from "./pages/ArticlesPage";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import DashboardPage from "./pages/DashboardPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function App() {
   const { user, isLoading, logout } = useUser();
@@ -52,6 +53,7 @@ function App() {
           <Route path="/testimonials" component={TestimonialsPage} />
           <Route path="/articles" component={ArticlesPage} />
           <Route path="/dashboard" component={DashboardPage} />
+          <Route path="/checkout" component={CheckoutPage} />
 
           {user && (
             <>

@@ -11,6 +11,7 @@ import { ShoppingCart, Clock, MapPin, Star, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
 
 interface ArticleDetailModalProps {
   article: Article;
@@ -25,12 +26,22 @@ export default function ArticleDetailModal({
 }: ArticleDetailModalProps) {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
+  const { addItem } = useCart();
 
   const handleAddToCart = () => {
+    // Ajouter l'article au panier
+    addItem({
+      ...article,
+      quantity: quantity
+    });
+
+    // Afficher la notification
     toast({
       title: "Ajouté au panier",
       description: `${quantity} × ${article.title} ajouté au panier`,
     });
+    
+    // Fermer le modal
     onOpenChange(false);
   };
 

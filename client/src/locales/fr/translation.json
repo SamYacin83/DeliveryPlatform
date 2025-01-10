@@ -1,0 +1,28 @@
+{
+  "checkout": {
+    "title": "Finaliser la commande",
+    "description": "Remplissez les informations ci-dessous pour finaliser votre commande",
+    "deliveryInfo": "Informations de livraison",
+    "name": "Nom complet",
+    "phone": "Numéro de téléphone",
+    "address": "Adresse de livraison",
+    "deliveryOptions": "Options de livraison",
+    "standardDelivery": "Livraison standard (30-45 min)",
+    "expressDelivery": "Livraison express (15-20 min)",
+    "payment": "Paiement",
+    "paymentMethod": "Mode de paiement",
+    "cashOnDelivery": "Paiement à la livraison",
+    "placeOrder": "Commander maintenant",
+    "processing": "Traitement en cours...",
+    "orderSummary": "Résumé de la commande",
+    "itemCount": "{{count}} article(s)",
+    "subtotal": "Sous-total",
+    "deliveryFee": "Frais de livraison",
+    "total": "Total",
+    "success": "Commande confirmée !",
+    "successDescription": "Votre commande a été enregistrée avec succès. Un livreur vous contactera bientôt.",
+    "emptyCart": "Votre panier est vide",
+    "emptyCartDescription": "Ajoutez des articles à votre panier pour passer commande",
+    "continueShopping": "Continuer les achats"
+  }
+}
