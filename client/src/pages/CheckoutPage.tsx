@@ -1,5 +1,5 @@
 import { useCart } from "@/contexts/CartContext";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { MapPin, CreditCard, Clock, Truck, ChevronRight, Calendar, Home, MapPinOff, Receipt, ArrowLeft, Check, Loader2 } from "lucide-react";
@@ -647,15 +647,13 @@ export default function CheckoutPage() {
               className="gap-2"
             >
               {isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <><Loader2 className="h-4 w-4 animate-spin" />
                   Traitement en cours...
-                </>
+                </> 
               ) : (
-                <>
-                  <Check className="h-4 w-4" />
+                <><Check className="h-4 w-4" />
                   Confirmer la commande
-                </>
+                </> 
               )}
             </Button>
           </DialogFooter>

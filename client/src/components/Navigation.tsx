@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Bell, User as UserIcon, LogOut, Trash2, Menu, X } from "lucide-react";
+import { 
+  Bell, 
+  User as UserIcon, 
+  LogOut, 
+  Trash2, 
+  Menu, 
+  X, 
+  Package, 
+  List, 
+  ShoppingBag 
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -8,6 +18,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -140,15 +151,6 @@ export default function Navigation({ user, logout }: NavigationProps) {
               >
                 Témoignages
               </Link>
-              {/* Affiche "Mes commandes" seulement si user connecté */}
-              {user && (
-                <Link
-                  href="/Dashboard"
-                  className="text-foreground/80 hover:text-primary transition-colors"
-                >
-                  Mes commandes
-                </Link>
-              )}
             </nav>
 
             {/* Panier (desktop) */}
@@ -264,6 +266,24 @@ export default function Navigation({ user, logout }: NavigationProps) {
                           Profile
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/products" className="flex items-center cursor-pointer">
+                          <Package className="mr-2 h-4 w-4" />
+                          Produits
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/product-types" className="flex items-center cursor-pointer">
+                          <List className="mr-2 h-4 w-4" />
+                          Types de produits
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/orders" className="flex items-center cursor-pointer">
+                          <ShoppingBag className="mr-2 h-4 w-4" />
+                          Commandes
+                        </Link>
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => logout && logout()}
                         className="text-destructive focus:text-destructive cursor-pointer"
@@ -319,20 +339,53 @@ export default function Navigation({ user, logout }: NavigationProps) {
               >
                 Témoignages
               </Link>
-              {user && (
-                <Link
-                  href="/DashboardPage"
-                  className="text-foreground/80 hover:text-primary transition-colors"
-                  onClick={handleMobileLinkClick}
-                >
-                  Mes commandes
-                </Link>
-              )}
 
               {/* Panier (mobile) */}
               <div className="pt-4 border-t">
                 <CartDropdown />
               </div>
+
+              {/* Profile section in mobile menu */}
+              {user && (
+                <>
+                  <div className="pt-4 border-t">
+                    <Link
+                      href="/profile"
+                      className="text-foreground/80 hover:text-primary transition-colors"
+                      onClick={handleMobileLinkClick}
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                  <div className="pt-2">
+                    <Link
+                      href="/products"
+                      className="text-foreground/80 hover:text-primary transition-colors"
+                      onClick={handleMobileLinkClick}
+                    >
+                      Produits
+                    </Link>
+                  </div>
+                  <div className="pt-2">
+                    <Link
+                      href="/product-types"
+                      className="text-foreground/80 hover:text-primary transition-colors"
+                      onClick={handleMobileLinkClick}
+                    >
+                      Types de produits
+                    </Link>
+                  </div>
+                  <div className="pt-2">
+                    <Link
+                      href="/orders"
+                      className="text-foreground/80 hover:text-primary transition-colors"
+                      onClick={handleMobileLinkClick}
+                    >
+                      Commandes
+                    </Link>
+                  </div>
+                </>
+              )}
 
               {/* Notifications (mobile), seulement si user connecté */}
               {user && (

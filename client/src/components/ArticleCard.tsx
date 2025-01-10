@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import CustomButton from "@/components/ui/custom-button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from 'react-i18next';
 import { mockOrders } from "../mocks/data";
 import { motion } from "framer-motion";

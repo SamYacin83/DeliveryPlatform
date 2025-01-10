@@ -2,7 +2,6 @@ import { Switch, Route } from "wouter";
 import { Loader2 } from "lucide-react";
 import { useUser } from "./hooks/use-user";
 import Navigation from "./components/Navigation";
-import NotificationProvider from "./components/NotificationProvider";
 import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/Footer";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +19,12 @@ import ArticlesPage from "./pages/ArticlesPage";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import DashboardPage from "./pages/DashboardPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import ProductsPage from "./pages/products/ProductsPage";
+import ProductForm from "./pages/products/ProductForm";
+import ProductTypesPage from "./pages/product-types/ProductTypesPage";
+import ProductTypeForm from "./pages/product-types/ProductTypeForm";
+import OrdersPage from "./pages/orders/OrdersPage";
+import OrderDetailsPage from "./pages/orders/OrderDetailsPage";
 
 function App() {
   const { user, isLoading, logout } = useUser();
@@ -37,8 +42,7 @@ function App() {
       {/* Barre de navigation (unique) */}
       <Navigation user={user ?? null} logout={logout} />
       
-      {/* Notification provider, breadcrumb, etc. */}
-      <NotificationProvider />
+      {/* Breadcrumb, etc. */}
       <Breadcrumb />
 
       {/* Contenu principal (routing) */}
@@ -58,6 +62,16 @@ function App() {
           {user && (
             <>
               <Route path="/profile" component={ProfilePage} />
+              {/* Routes Produits */}
+              <Route path="/products" component={ProductsPage} />
+              <Route path="/products/add" component={ProductForm} />
+              <Route path="/products/edit/:id" component={ProductForm} />
+              <Route path="/product-types" component={ProductTypesPage} />
+              <Route path="/product-types/add" component={ProductTypeForm} />
+              <Route path="/product-types/edit/:id" component={ProductTypeForm} />
+              {/* Routes Commandes */}
+              <Route path="/orders" component={OrdersPage} />
+              <Route path="/orders/:id" component={OrderDetailsPage} />
             </>
           )}
         </Switch>
