@@ -31,5 +31,10 @@
   "deliveryAddress": "Delivery Address",
   "orderedItems": "Ordered Items",
   "quantity": "Quantity",
-  "total": "Total"
+  "total": "Total",
+  "deliveryDriver": "Delivery Driver",
+  "deliveryStatus": "Delivery Status",
+  "enRoute": "En route to destination",
+  "yourLocation": "Your location",
+  "estimatedArrival": "Estimated arrival"
 }

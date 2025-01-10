@@ -32,15 +32,16 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       {/* Barre de navigation (unique) */}
-     <Navigation user={user ?? null} logout={logout} />
+      <Navigation user={user ?? null} logout={logout} />
+      
       {/* Notification provider, breadcrumb, etc. */}
       <NotificationProvider />
       <Breadcrumb />
 
       {/* Contenu principal (routing) */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
@@ -53,7 +54,7 @@ function App() {
 
           {user && (
             <>
-             <Route path="/dashboard" component={DashboardPage} />
+              <Route path="/dashboard" component={DashboardPage} />
               <Route path="/profile" component={ProfilePage} />
             </>
           )}

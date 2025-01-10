@@ -62,6 +62,13 @@ export interface OrderItem {
   type: "SOGIK" | "Particulier";
 }
 
+export interface DeliveryDriver {
+  id: string;
+  name: string;
+  phone: string;
+  currentLocation: [number, number];
+}
+
 export interface DashboardOrder {
   id: string;
   date: string;
@@ -69,6 +76,8 @@ export interface DashboardOrder {
   total: number;
   items: OrderItem[];
   deliveryAddress: string;
+  coordinates: [number, number];
   trackingNumber: string;
   estimatedDelivery?: string;
+  driver?: DeliveryDriver;
 }

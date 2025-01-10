@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Bell, User as UserIcon, LogOut, Trash2 } from "lucide-react";
+import { Bell, User as UserIcon, LogOut, Trash2, Menu, X } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CartDropdown from "./CartDropdown";
 import { HamburgerIcon } from "./HamburgerIcon";
+import { useTranslation } from "react-i18next";
 
 // Typage minimaliste d'un user
 interface User {
@@ -26,6 +27,7 @@ interface NavigationProps {
 }
 
 export default function Navigation({ user, logout }: NavigationProps) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState<
     Array<{ id: number; message: string }>
   >([]);
@@ -84,11 +86,14 @@ export default function Navigation({ user, logout }: NavigationProps) {
     setIsMobileMenuOpen(false);
   };
 
+  const toggleMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="bg-white border-b">
       <div className="container mx-auto px-4">
-        {/* Barre horizontale */}
-        <div className="flex items-center h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/"
@@ -96,6 +101,22 @@ export default function Navigation({ user, logout }: NavigationProps) {
           >
             RapidLivre
           </Link>
+
+          {/* Menu burger pour mobile */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
 
           {/* Groupe de droite */}
           <div className="flex items-center ml-auto gap-4">
