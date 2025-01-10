@@ -1,0 +1,39 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "search": "Rechercher",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier"
+  },
+  "article": {
+    "title": "Titre",
+    "description": "Description",
+    "readMore": "Lire la suite",
+    "publishedAt": "Publié le"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "articles": "Articles",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "button": {
+    "addToCart": "Ajouter au panier",
+    "pending": "Commande en cours..."
+  },
+  "badge": {
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock"
+  },
+  "toast": {
+    "success": {
+      "title": "Succès",
+      "description": "Votre commande a été passée avec succès"
+    },
+    "error": {
+      "title": "Erreur"
+    }
+  }
+}

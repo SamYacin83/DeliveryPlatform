@@ -6,14 +6,16 @@ import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mockOrders } from "../mocks/data";
+import { useTranslation } from 'react-i18next';
 
 interface ArticleCardProps {
- readonly article: Article;
+  readonly article: Article;
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const orderMutation = useMutation({
     mutationFn: async () => {
@@ -34,13 +36,13 @@ export default function ArticleCard({ article }: ArticleCardProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       toast({
-        title: "Succès",
-        description: "Votre commande a été passée avec succès",
+        title: t("toast.success.title"),
+        description: t("toast.success.description"),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Erreur",
+        title: t("toast.error.title"),
         description: error.message,
         variant: "destructive",
       });
@@ -54,7 +56,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <CardTitle className="text-xl font-semibold">{article.title}</CardTitle>
           <Badge variant="secondary">
             <Package className="w-3 h-3 mr-1" />
-            {article.stock > 0 ? "En stock" : "Rupture"}
+            {article.stock > 0 ? t("badge.inStock") : t("badge.outOfStock")}
           </Badge>
         </div>
       </CardHeader>
@@ -69,7 +71,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           disabled={article.stock === 0 || orderMutation.isPending}
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
-          {orderMutation.isPending ? "Commande en cours..." : "Ajouter au panier"}
+          {orderMutation.isPending ? t("button.pending") : t("button.addToCart")}
         </Button>
       </CardFooter>
     </Card>

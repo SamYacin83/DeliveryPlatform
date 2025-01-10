@@ -1,0 +1,39 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "search": "Search",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "article": {
+    "title": "Title",
+    "description": "Description",
+    "readMore": "Read More",
+    "publishedAt": "Published on"
+  },
+  "navigation": {
+    "home": "Home",
+    "articles": "Articles",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "button": {
+    "addToCart": "Add to Cart",
+    "pending": "Order in progress..."
+  },
+  "badge": {
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  },
+  "toast": {
+    "success": {
+      "title": "Success",
+      "description": "Your order has been placed successfully"
+    },
+    "error": {
+      "title": "Error"
+    }
+  }
+}
