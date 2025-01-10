@@ -1,29 +1,31 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
+import authEN from '../public/locales/en/auth.json';
+import authFR from '../public/locales/fr/auth.json';
+import translationFR from '../public/locales/fr/translation.json';
+import translationEN from '../public/locales/en/translation.json';
 
 i18n
-  .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: 'fr', // Force le français comme langue par défaut
-    fallbackLng: 'fr',
-    debug: true,
+    fallbackLng: 'fr-CA',
+    resources: {
+      en: {
+        translation: translationEN,
+        auth: authEN
+      },
+      fr: {
+        translation: translationFR,
+        auth: authFR
+      },
+    },
     interpolation: {
       escapeValue: false,
     },
-    backend: {
-      loadPath: '/locales/{{lng}}/translation.json',
-    },
-    detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
-    },
+    react: { useSuspense: false },
+    supportedLngs: ['en', 'fr', 'fr-CA', 'en-CA'],
   });
-
-// Force l'utilisation du français au démarrage
-i18n.changeLanguage('fr');
 
 export default i18n;

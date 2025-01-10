@@ -11,6 +11,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "react-i18next";
 // Vos types (utilisés dans le schéma et le formulaire)
 import { AuthForm, DocumentProgress, UserRole } from "./types";
 
@@ -27,15 +28,15 @@ import ConfirmationStep from "@/components/steps/ConfirmationStep";
 
 // (Exemple) : Vous pouvez adapter si vous avez déjà vos propres schémas
 const addressSchema = z.object({
-  street: z.string().min(1, "La rue est requise"),
-  streetNumber: z.string().min(1, "Le numéro est requis"),
+  street: z.string().min(1, "pages.auth.address.street.required"),
+  streetNumber: z.string().min(1, "pages.auth.address.streetNumber.required"),
   apartment: z.string().optional(),
   building: z.string().optional(),
   floor: z.string().optional(),
   additionalInfo: z.string().optional(),
-  city: z.string().min(1, "La ville est requise"),
-  postalCode: z.string().min(1, "Le code postal est requis"),
-  country: z.string().min(1, "Le pays est requis"),
+  city: z.string().min(1, "pages.auth.address.city.required"),
+  postalCode: z.string().min(1, "pages.auth.address.postalCode.required"),
+  country: z.string().min(1, "pages.auth.address.country.required"),
   region: z.string().optional(),
 });
 
@@ -49,26 +50,26 @@ const documentSchema = z.object({
 const authSchema = z.object({
   username: z
     .string()
-    .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères")
-    .max(20, "Le nom d'utilisateur ne doit pas dépasser 20 caractères"),
+    .min(3, "pages.auth.validation.username.min")
+    .max(20, "pages.auth.validation.username.max"),
   password: z
     .string()
-    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
-    .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
-    .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
-    .regex(/\d/, "Le mot de passe doit contenir au moins un chiffre"),
-  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  email: z.string().email("L'email est invalide"),
+    .min(8, "pages.auth.validation.password.min")
+    .regex(/[A-Z]/, "pages.auth.validation.password.uppercase")
+    .regex(/[a-z]/, "pages.auth.validation.password.lowercase")
+    .regex(/\d/, "pages.auth.validation.password.number"),
+  firstName: z.string().min(2, "pages.auth.validation.firstName.required"),
+  lastName: z.string().min(2, "pages.auth.validation.lastName.required"),
+  email: z.string().email("pages.auth.validation.email.invalid"),
   phone: z
     .string()
     .regex(
       /^\+?\d{3}[-\s.]?\d{3}[-\s.]?\d{4,6}$/,
-      "Le numéro de téléphone est invalide"
+      "pages.auth.validation.phone.invalid"
     ),
   role: z.enum(["client", "delivery", "supplier"], {
-    required_error: "Le rôle est requis",
-    invalid_type_error: "Le rôle sélectionné est invalide",
+    required_error: "pages.auth.role.required",
+    invalid_type_error: "pages.auth.role.invalid",
   }),
   address: addressSchema.optional(),
   documents: documentSchema.optional(),
@@ -80,19 +81,19 @@ const authSchema = z.object({
 
 const steps = [
   {
-    title: "Informations personnelles",
+    title: "pages.auth.steps.personalInfo",
     fields: ["firstName", "lastName", "email", "phone", "username", "password"],
   },
   {
-    title: "Choisir votre rôle",
+    title: "pages.auth.steps.role",
     fields: ["role"],
   },
   {
-    title: "Détails supplémentaires",
+    title: "pages.auth.steps.details",
     fields: ["address", "documents"],
   },
   {
-    title: "Confirmation",
+    title: "pages.auth.steps.confirmation",
     fields: [],
   },
 ] as const;
@@ -116,6 +117,7 @@ export default function AuthPage() {
 
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   // Simuler des articles dans le panier
   const cartItemCount = 3; // Simulation de 2 articles dans le panier
@@ -152,6 +154,7 @@ export default function AuthPage() {
       if (!file) return;
 
       setUploadProgress((prev) => ({
+
         ...prev,
         [documentType]: { progress: 0, status: "uploading" },
       }));
@@ -245,8 +248,8 @@ export default function AuthPage() {
           data.password === TEMP_CREDENTIALS.password
         ) {
           toast({
-            title: "🎉 Connexion réussie !",
-            description: `Bienvenue, ${data.username} !`,
+            title: t("pages.auth.login.success.title"),
+            description: t("pages.auth.login.success.description", { username: data.username }),
             variant: "default",
             duration: 3000,
             className: "bg-primary text-primary-foreground",
@@ -254,8 +257,8 @@ export default function AuthPage() {
           setLocation("/dashboard");
         } else {
           toast({
-            title: "Erreur",
-            description: "Identifiants invalides (utilisez admin / Samatar1983)",
+            title: t("pages.auth.login.error.title"),
+            description: t("pages.auth.login.error.description"),
             variant: "destructive",
             duration: 3000,
           });
@@ -266,8 +269,8 @@ export default function AuthPage() {
         // Simuler un délai de 10 secondes
         await new Promise(resolve => setTimeout(resolve, 10000));
         toast({
-          title: "✨ Inscription réussie !",
-          description: `Rôle choisi : ${data.role}. Vous pouvez maintenant vous connecter.`,
+          title: t("pages.auth.register.success.title"),
+          description: t("pages.auth.register.success.description", { role: data.role }),
           variant: "default",
           duration: 5000,
           className: "bg-primary text-primary-foreground",
@@ -279,8 +282,8 @@ export default function AuthPage() {
       }
     } catch (error: any) {
       toast({
-        title: "Erreur",
-        description: error.message || "Une erreur s'est produite",
+        title: t("pages.auth.error.title"),
+        description: error.message || t("pages.auth.error.description"),
         variant: "destructive",
       });
     } finally {
@@ -296,7 +299,7 @@ export default function AuthPage() {
       <Card className={`w-full ${isLogin ? "max-w-sm" : "max-w-2xl"} shadow-sm`}>
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl text-center">
-            {isLogin ? "Me connecter" : "Inscription"}
+            {t(isLogin ? "pages.auth.title.login" : "pages.auth.title.register")}
           </CardTitle>
         </CardHeader>
 
@@ -305,9 +308,8 @@ export default function AuthPage() {
           {isLogin && cartItemCount > 0 && (
               <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
                 <p className="text-sm text-orange-800">
-                  <span className="font-medium">Articles en attente ! </span>
-                  Vous avez {cartItemCount} article{cartItemCount > 1 ? 's' : ''} dans votre panier. 
-                  Connectez-vous pour finaliser votre commande.
+                  <span className="font-medium">{t("pages.auth.login.cart.title")}</span>
+                  {t("pages.auth.login.cart.description", { count: cartItemCount })}
                 </p>
               </div>
             )}
@@ -335,18 +337,18 @@ export default function AuthPage() {
                         htmlFor="remember" 
                         className="text-sm text-muted-foreground cursor-pointer"
                       >
-                        Se souvenir de moi
+                        {t("pages.auth.login.rememberMe")}
                       </Label>
                     </div>
                     <Button
                       type="submit"
                       className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                     >
-                      Connexion
+                      {t("pages.auth.login.submit")}
                     </Button>
                     <div className="text-center">
                       <Link href="/auth/forgot-password" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
-                        Mot de passe oublié ?
+                        {t("pages.auth.login.forgotPassword")}
                       </Link>
                     </div>
                   </motion.div>
@@ -400,7 +402,7 @@ export default function AuthPage() {
                         className="flex items-center gap-2"
                       >
                         <ChevronLeft className="w-4 h-4" />
-                        Retour
+                        {t("pages.auth.steps.back")}
                       </Button>
 
                       {/* Si on n'est pas à la dernière étape → Bouton Suivant */}
@@ -411,7 +413,7 @@ export default function AuthPage() {
                           disabled={!canProceed()}
                           className="flex items-center gap-2"
                         >
-                          Suivant
+                          {t("pages.auth.steps.next")}
                           <ChevronRight className="w-4 h-4" />
                         </Button>
                       ) : (
@@ -424,10 +426,10 @@ export default function AuthPage() {
                         {isLoading ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Inscription en cours...
+                            {t("pages.auth.register.submitting")}
                           </>
                         ) : (
-                          "Confirmer l'inscription"
+                          t("pages.auth.register.submit")
                         )}
                       </Button>
                       )}
@@ -440,9 +442,11 @@ export default function AuthPage() {
               <div className={`${isLogin ? "mt-6 pt-6 border-t border-gray-200" : "mt-4"}`}>
                 {isLogin ? (
                   <>
-                    <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">Pas encore de compte?</h3>
+                    <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">
+                      {t("pages.auth.login.noAccount")}
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-2">
-                      L'Espace livreur, votre accès requis une présence au siège afin de valider vos documents et activer votre compte.
+                      {t("pages.auth.login.noAccountDescription")}
                     </p>
                   </>
                 ) : null}
@@ -459,7 +463,7 @@ export default function AuthPage() {
                     setUploadProgress({});
                   }}
                 >
-                  {isLogin ? "Créer un compte" : "Retour à la connexion"}
+                  {isLogin ? t("pages.auth.login.signupLink") : t("pages.auth.register.login")}
                 </Button>
               </div>
             </form>

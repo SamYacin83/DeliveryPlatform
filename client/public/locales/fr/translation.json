@@ -35,5 +35,285 @@
     "error": {
       "title": "Erreur"
     }
+  },
+  "pages": {
+    "auth": {
+      "title": {
+        "login": "Connexion",
+        "register": "Inscription"
+      },
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse e-mail",
+        "phone": "Numéro de téléphone",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "role": "Rôle"
+      },
+      "placeholders": {
+        "firstName": "Entrez votre prénom",
+        "lastName": "Entrez votre nom",
+        "email": "Entrez votre email",
+        "phone": "Entrez votre numéro de téléphone",
+        "username": "Choisissez un nom d'utilisateur",
+        "password": "Choisissez un mot de passe",
+        "confirmPassword": "Confirmez votre mot de passe"
+      },
+      "login": {
+        "subtitle": "Connectez-vous à votre compte",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié ?",
+        "submit": "Se connecter",
+        "noAccount": "Pas encore de compte ?",
+        "signupLink": "Créer un compte",
+        "cart": {
+          "title": "Articles en attente !",
+          "description": "Vous avez {{count}} article{{count > 1 ? 's' : ''}} dans votre panier. Connectez-vous pour finaliser votre commande."
+        },
+        "noAccountDescription": "L'Espace livreur, votre accès requis une présence au siège afin de valider vos documents et activer votre compte.",
+        "success": {
+          "title": " Connexion réussie !",
+          "description": "Bienvenue, {{username}} !"
+        },
+        "error": {
+          "title": "Erreur de connexion",
+          "description": "Identifiants invalides (utilisez admin / Samatar1983)"
+        }
+      },
+      "register": {
+        "subtitle": "Créez votre compte",
+        "submitting": "Inscription en cours...",
+        "submit": "Confirmer l'inscription",
+        "login": "Retour à la connexion",
+        "success": {
+          "title": " Inscription réussie !",
+          "description": "Rôle choisi : {{role}}. Vous pouvez maintenant vous connecter."
+        },
+        "error": {
+          "title": "Erreur d'inscription",
+          "description": "Une erreur est survenue lors de l'inscription. Veuillez réessayer."
+        }
+      },
+      "steps": {
+        "personalInfo": "Informations personnelles",
+        "role": "Choisir votre rôle",
+        "details": "Détails supplémentaires",
+        "confirmation": "Confirmation",
+        "submit": "Valider",
+        "back": "Retour",
+        "next": "Suivant",
+        "progress": "Étape {{current}} sur {{total}}",
+        "labels": {
+          "step1": "Informations",
+          "step2": "Rôle",
+          "step3": "Documents",
+          "step4": "Révision",
+          "completed": "Terminé",
+          "current": "En cours",
+          "pending": "En attente"
+        }
+      },
+      "validation": {
+        "firstName": {
+          "required": "Le prénom est requis",
+          "min": "Le prénom doit contenir au moins 2 caractères"
+        },
+        "lastName": {
+          "required": "Le nom est requis",
+          "min": "Le nom doit contenir au moins 2 caractères"
+        },
+        "email": {
+          "required": "L'email est requis",
+          "invalid": "Format d'email invalide"
+        },
+        "username": {
+          "required": "Le nom d'utilisateur est requis",
+          "min": "Le nom d'utilisateur doit contenir au moins 3 caractères",
+          "max": "Le nom d'utilisateur ne doit pas dépasser 20 caractères"
+        },
+        "password": {
+          "required": "Le mot de passe est requis",
+          "min": "Le mot de passe doit contenir au moins 8 caractères",
+          "uppercase": "Le mot de passe doit contenir au moins une majuscule",
+          "lowercase": "Le mot de passe doit contenir au moins une minuscule",
+          "number": "Le mot de passe doit contenir au moins un chiffre",
+          "match": "Les mots de passe ne correspondent pas"
+        },
+        "phone": {
+          "invalid": "Le numéro de téléphone est invalide",
+          "required": "Le numéro de téléphone est requis"
+        },
+        "role": {
+          "required": "Veuillez sélectionner un rôle"
+        }
+      },
+      "address": {
+        "title": "Informations d'adresse",
+        "street": {
+          "label": "Rue",
+          "required": "La rue est requise"
+        },
+        "streetNumber": {
+          "label": "Numéro",
+          "required": "Le numéro est requis"
+        },
+        "apartment": "Appartement",
+        "building": "Bâtiment",
+        "floor": "Étage",
+        "additionalInfo": "Informations supplémentaires",
+        "city": {
+          "label": "Ville",
+          "required": "La ville est requise"
+        },
+        "postalCode": {
+          "label": "Code postal",
+          "required": "Le code postal est requis"
+        },
+        "country": {
+          "label": "Pays",
+          "required": "Le pays est requis"
+        },
+        "region": "Région"
+      },
+      "role": {
+        "title": "Choisissez votre rôle",
+        "description": "Sélectionnez le rôle qui vous correspond le mieux",
+        "client": "Client",
+        "delivery": "Livreur",
+        "supplier": "Fournisseur",
+        "required": "Le rôle est requis",
+        "invalid": "Le rôle sélectionné est invalide",
+        "descriptions": {
+          "client": "Je veux commander des produits",
+          "delivery": "Je veux livrer des produits",
+          "supplier": "Je veux vendre des produits"
+        }
+      },
+      "documents": {
+        "title": "Documents requis",
+        "subtitle": "Veuillez télécharger les documents suivants",
+        "description": "Tous les documents doivent être valides et clairement lisibles",
+        "identity": {
+          "label": "Pièce d'identité",
+          "description": "Carte d'identité ou passeport"
+        },
+        "drivingLicense": {
+          "label": "Permis de conduire",
+          "description": "Permis de conduire en cours de validité"
+        },
+        "vehicleRegistration": {
+          "label": "Carte grise",
+          "description": "Carte grise du véhicule"
+        },
+        "insurance": {
+          "label": "Assurance",
+          "description": "Attestation d'assurance en cours de validité"
+        },
+        "status": {
+          "uploading": "Téléchargement en cours...",
+          "completed": "Téléchargement terminé",
+          "error": "Erreur lors du téléchargement",
+          "pending": "En attente de téléchargement",
+          "verifying": "Vérification du document..."
+        },
+        "buttons": {
+          "upload": "Télécharger le document",
+          "change": "Modifier le document",
+          "remove": "Supprimer"
+        }
+      },
+      "confirmation": {
+        "title": "Vérifiez vos informations",
+        "description": "Veuillez vérifier vos informations avant de soumettre",
+        "personalInfo": "Informations personnelles",
+        "roleInfo": "Informations sur le rôle",
+        "addressInfo": "Informations d'adresse",
+        "documentsInfo": "Documents",
+        "submit": "Terminer l'inscription",
+        "modify": "Modifier",
+        "agreement": {
+          "terms": "J'accepte les conditions générales",
+          "privacy": "J'accepte la politique de confidentialité",
+          "required": "Vous devez accepter pour continuer"
+        }
+      },
+      "errors": {
+        "general": {
+          "required": "Ce champ est requis",
+          "invalid": "Valeur invalide",
+          "networkError": "Erreur réseau. Veuillez vérifier votre connexion",
+          "serverError": "Erreur serveur. Veuillez réessayer plus tard",
+          "unexpectedError": "Une erreur inattendue s'est produite"
+        },
+        "auth": {
+          "invalidCredentials": "Email ou mot de passe invalide",
+          "accountLocked": "Votre compte a été bloqué",
+          "tooManyAttempts": "Trop de tentatives échouées",
+          "sessionExpired": "Votre session a expiré",
+          "unauthorized": "Accès non autorisé"
+        },
+        "validation": {
+          "invalidFormat": "Format invalide",
+          "tooShort": "Valeur trop courte",
+          "tooLong": "Valeur trop longue",
+          "passwordMismatch": "Les mots de passe ne correspondent pas",
+          "invalidCharacters": "Contient des caractères invalides",
+          "duplicateEmail": "Cet email est déjà enregistré",
+          "duplicateUsername": "Ce nom d'utilisateur est déjà pris",
+          "weakPassword": "Le mot de passe est trop faible"
+        },
+        "upload": {
+          "fileTooLarge": "Fichier trop volumineux",
+          "invalidFileType": "Type de fichier invalide",
+          "uploadFailed": "Échec du téléchargement",
+          "maxFilesExceeded": "Nombre maximum de fichiers dépassé",
+          "corruptedFile": "Le fichier semble être corrompu"
+        },
+        "address": {
+          "invalidPostalCode": "Code postal invalide",
+          "invalidCity": "Nom de ville invalide",
+          "invalidStreet": "Nom de rue invalide",
+          "invalidCountry": "Pays invalide",
+          "invalidRegion": "Région invalide"
+        },
+        "role": {
+          "invalidRole": "Sélection de rôle invalide",
+          "insufficientDocuments": "Documents requis manquants",
+          "pendingVerification": "Vérification du rôle en attente",
+          "rejectedRole": "Demande de rôle rejetée"
+        },
+        "form": {
+          "incompleteFields": "Veuillez remplir tous les champs requis",
+          "invalidStep": "Étape invalide",
+          "stepNotCompleted": "Veuillez d'abord compléter l'étape actuelle",
+          "formExpired": "La session du formulaire a expiré",
+          "submitError": "Erreur lors de la soumission du formulaire"
+        }
+      },
+      "messages": {
+        "success": {
+          "registration": "Inscription réussie",
+          "upload": "Fichier téléchargé avec succès",
+          "verification": "Vérification réussie",
+          "stepCompleted": "Étape complétée avec succès"
+        },
+        "info": {
+          "verificationPending": "Vérification en attente",
+          "documentProcessing": "Le document est en cours de traitement",
+          "almostDone": "Presque terminé ! Veuillez vérifier vos informations",
+          "sessionTimeout": "Votre session expirera dans {{minutes}} minutes"
+        },
+        "warning": {
+          "unsavedChanges": "Vous avez des modifications non enregistrées",
+          "weakPassword": "Envisagez d'utiliser un mot de passe plus fort",
+          "documentSize": "Les fichiers volumineux peuvent prendre plus de temps à télécharger",
+          "browserSupport": "Certaines fonctionnalités peuvent ne pas fonctionner dans votre navigateur"
+        }
+      }
+    }
   }
 }
