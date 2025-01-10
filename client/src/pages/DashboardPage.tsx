@@ -26,6 +26,8 @@ import {
   MapPin,
   Calendar,
   Filter,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -33,6 +35,7 @@ import { lazy } from "react";
 import { mockOrders } from "../mocks/orderData";
 import { DashboardOrder } from "@/types";
 import OrderDetailsModal from "@/components/OrderDetailsModal";
+import { Button } from "@/components/ui/button";
 
 // Import dynamique du composant Map
 const MapComponent = lazy(() => import("../components/Map"));
@@ -50,12 +53,15 @@ const statusIcons = {
   cancelled: XCircle,
 };
 
+const ITEMS_PER_PAGE = 5;
+
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState("3months");
   const [statusFilter, setStatusFilter] = useState("all");
   const { t } = useTranslation();
   const [orders, setOrders] = useState<DashboardOrder[]>(mockOrders);
   const [selectedOrder, setSelectedOrder] = useState<DashboardOrder | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filtrer les commandes en fonction du timeFilter
   useEffect(() => {
@@ -86,6 +92,7 @@ export default function DashboardPage() {
     });
 
     setOrders(filteredOrders);
+    setCurrentPage(1); // Réinitialiser la page lors du filtrage
   }, [timeFilter, statusFilter]);
 
   // Statistiques calculées à partir des commandes filtrées
@@ -94,6 +101,15 @@ export default function DashboardPage() {
     totalSpent: orders.reduce((acc, order) => acc + order.total, 0),
     pendingOrders: orders.filter((order) => order.status === "pending").length,
     deliveredOrders: orders.filter((order) => order.status === "delivered").length,
+  };
+
+  // Pagination
+  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedOrders = orders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -105,7 +121,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] hover:bg-primary/5">
               <Filter className="w-4 h-4 mr-2" />
               <SelectValue placeholder={t("dashboard:selectPeriod")} />
             </SelectTrigger>
@@ -158,7 +174,7 @@ export default function DashboardPage() {
                 <CardDescription>{t("dashboard:lastOrders")}</CardDescription>
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[130px]">
+                <SelectTrigger className="w-[160px] hover:bg-primary/5">
                   <SelectValue placeholder={t("dashboard:allStatuses")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,12 +188,12 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {orders.map((order) => (
+              {paginatedOrders.map((order) => (
                 <motion.div
                   key={order.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
+                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-primary/5 transition-colors cursor-pointer"
                   onClick={() => setSelectedOrder(order)}
                 >
                   <div className="flex items-center gap-4">
@@ -199,6 +215,31 @@ export default function DashboardPage() {
                   </div>
                 </motion.div>
               ))}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm">
+                    Page {currentPage} sur {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

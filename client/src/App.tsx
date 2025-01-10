@@ -51,10 +51,10 @@ function App() {
           <Route path="/how-it-works" component={HowItWorksPage} />
           <Route path="/testimonials" component={TestimonialsPage} />
           <Route path="/articles" component={ArticlesPage} />
+          <Route path="/dashboard" component={DashboardPage} />
 
           {user && (
             <>
-              <Route path="/dashboard" component={DashboardPage} />
               <Route path="/profile" component={ProfilePage} />
             </>
           )}
