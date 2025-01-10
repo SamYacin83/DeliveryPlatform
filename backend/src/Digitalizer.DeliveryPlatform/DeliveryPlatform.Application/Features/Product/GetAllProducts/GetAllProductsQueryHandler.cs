@@ -16,6 +16,7 @@ public class GetAllProductsQueryHandler(IProductRepository productRepository)
             Name = p.Name,
             Description = p.Description,
             PriceAmount = p.Price.Amount,
+            PictureUrl = p.PictureUrl,
             Currency = p.Price.Currency,
             CategoryId = p.CategoryId,
             StockQuantity = p.StockQuantity,
