@@ -1,14 +1,14 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import authEN from '../public/locales/en/auth.json';
-import navigationEN from '../public/locales/en/navigation.json';
-import translationEN from '../public/locales/en/translation.json';
-import dashboardEN from '../public/locales/en/dashboard.json';
-import authFR from '../public/locales/fr/auth.json';
-import navigationFR from '../public/locales/fr/navigation.json';
-import translationFR from '../public/locales/fr/translation.json';
-import dashboardFR from '../public/locales/fr/dashboard.json';
+import authEN from './locales/en/auth.json';
+import navigationEN from './locales/en/navigation.json';
+import translationEN from './locales/en/translation.json';
+import dashboardEN from './locales/en/dashboard.json';
+import authFR from './locales/fr/auth.json';
+import navigationFR from './locales/fr/navigation.json';
+import translationFR from './locales/fr/translation.json';
+import dashboardFR from './locales/fr/dashboard.json';
 
 i18n
   .use(LanguageDetector)
