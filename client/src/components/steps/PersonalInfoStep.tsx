@@ -2,6 +2,7 @@ import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { AuthForm } from "../../pages/types";
+
 const getInputClassName = (
   formState: any, 
   fieldName: "firstName" | "lastName" | "email" | "phone" | "username" | "password"
@@ -14,7 +15,6 @@ const getInputClassName = (
   }
   return "";
 };
-
 
 interface PersonalInfoStepProps {
   readonly form: UseFormReturn<AuthForm>;
@@ -29,10 +29,11 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
       {isLogin ? (
         <>
           <div>
-            <label htmlFor="username-login" className="sr-only">Nom d'utilisateur</label>
+            <label htmlFor="username-login" className="sr-only">Email</label>
             <Input
               id="username-login"
-              placeholder="Nom d'utilisateur"
+              type="email"
+              placeholder="Email"
               {...register("username")}
               className="h-9"
             />
@@ -112,10 +113,11 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
           </div>
 
           <div>
-            <label htmlFor="username-register" className="sr-only">Nom d'utilisateur</label>
+            <label htmlFor="username-register" className="sr-only">Email</label>
             <Input
               id="username-register"
-              placeholder="Nom d'utilisateur"
+              type="email"
+              placeholder="Email"
               {...register("username")}
               className="h-9"
             />

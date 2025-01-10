@@ -5,37 +5,30 @@ interface LoginRequest {
   password: string;
 }
 
-interface LoginResponse {
-  token: string;
-  refreshToken: string;
-}
-
-export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
+export const login = async (credentials: LoginRequest): Promise<void> => {
   try {
-    const authApi = axiosManager.getInstance(ServiceAPI.auth);
-    console.log('Sending login request with:', credentials);
-    const response = await authApi.post('login?useCookies=true', credentials);
-    console.log('Login response:', response.data);
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-    }
-    return response.data;
+    const authApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
+    console.log('Sending login request');
+    await authApi.post('login?useCookies=true', credentials, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    console.log('Login successful, checking cookies:', document.cookie);
   } catch (error) {
     console.error('Login error:', error);
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error('Une erreur est survenue lors de la connexion');
+    throw error;
   }
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('refreshToken');
+  const authApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
+  return authApi.post('logout', {}, { withCredentials: true });
 };
 
 export default {
   login,
-  logout,
+  logout
 };

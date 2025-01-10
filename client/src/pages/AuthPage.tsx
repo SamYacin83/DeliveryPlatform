@@ -133,8 +133,7 @@ export default function AuthPage() {
         ? z.object({
             username: z
               .string()
-              .min(3, "pages.auth.validation.username.min")
-              .max(20, "pages.auth.validation.username.max"),
+              .email("pages.auth.validation.email.invalid"),
             password: z
               .string()
               .min(8, "pages.auth.validation.password.min")
