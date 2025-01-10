@@ -11,8 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import CustomButton from "@/components/ui/custom-button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Données mockées pour les articles
 const MOCK_ARTICLES: Article[] = [
@@ -75,6 +76,66 @@ const MOCK_ARTICLES: Article[] = [
     stock: 10,
     type: "SOGIK",
     imageUrl: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&h=400&fit=crop"
+  },
+  {
+    id: 7,
+    title: "Ramen au Porc",
+    description: "Ramen japonais avec porc char siu, œuf mollet et légumes",
+    price: 14.99,
+    supplierId: 4,
+    stock: 10,
+    type: "Particulier",
+    imageUrl: "https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=500&h=400&fit=crop"
+  },
+  {
+    id: 8,
+    title: "Tacos au Bœuf",
+    description: "Tacos mexicains avec bœuf épicé, guacamole et salsa",
+    price: 11.99,
+    supplierId: 3,
+    stock: 10,
+    type: "SOGIK",
+    imageUrl: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=500&h=400&fit=crop"
+  },
+  {
+    id: 9,
+    title: "Poke Bowl Saumon",
+    description: "Bowl hawaïen avec saumon frais, avocat, mangue et riz",
+    price: 18.99,
+    supplierId: 2,
+    stock: 10,
+    type: "Particulier",
+    imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=400&fit=crop"
+  },
+  {
+    id: 10,
+    title: "Pad Thai",
+    description: "Nouilles de riz sautées aux crevettes et sauce tamarin",
+    price: 15.99,
+    supplierId: 5,
+    stock: 10,
+    type: "SOGIK",
+    imageUrl: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=500&h=400&fit=crop"
+  },
+  {
+    id: 11,
+    title: "Moussaka",
+    description: "Gratin d'aubergines à la grecque avec viande hachée et béchamel",
+    price: 17.99,
+    supplierId: 1,
+    stock: 10,
+    type: "Particulier",
+    imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&h=400&fit=crop"
+  },
+  {
+    id: 12,
+    title: "Paella aux Fruits de Mer",
+    description: "Paella espagnole avec crevettes, moules et calamars",
+    price: 22.99,
+    supplierId: 4,
+    stock: 10,
+    type: "SOGIK",
+    imageUrl: "https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=500&h=400&fit=crop"
   }
 ];
 
@@ -144,29 +205,30 @@ export default function ArticlesPage() {
         {totalPages > 1 && (
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
             <div className="flex items-center gap-2">
-              <Button
+              <CustomButton
                 variant="outline"
-                size="icon"
+                size="sm"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
-                className="hidden sm:flex"
+                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center"
               >
-                <ChevronLeft className="h-4 w-4 mr-1" />
                 <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
+                <ChevronLeft className="h-4 w-4 -ml-2" />
+              </CustomButton>
+              <CustomButton
                 variant="outline"
-                size="icon"
+                size="sm"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
+                className="h-8 w-8 p-0"
               >
                 <ChevronLeft className="h-4 w-4" />
-              </Button>
+              </CustomButton>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter(page => {
-                    if (totalPages <= 7) return true;
+                    if (totalPages <= 5) return true;
                     if (page === 1 || page === totalPages) return true;
                     if (page >= currentPage - 1 && page <= currentPage + 1) return true;
                     return false;
@@ -174,58 +236,64 @@ export default function ArticlesPage() {
                   .map((page, index, array) => {
                     if (index > 0 && array[index - 1] !== page - 1) {
                       return [
-                        <Button
+                        <span
                           key={`ellipsis-${page}`}
-                          variant="ghost"
-                          size="icon"
-                          disabled
-                          className="cursor-default"
+                          className="w-8 text-center text-muted-foreground"
                         >
                           ...
-                        </Button>,
-                        <Button
+                        </span>,
+                        <CustomButton
                           key={page}
                           variant={currentPage === page ? "default" : "outline"}
-                          size="icon"
+                          size="sm"
                           onClick={() => handlePageChange(page)}
+                          className={cn(
+                            "h-8 w-8 p-0",
+                            currentPage === page && "bg-primary text-primary-foreground hover:bg-primary/90"
+                          )}
                         >
                           {page}
-                        </Button>
+                        </CustomButton>
                       ];
                     }
                     return (
-                      <Button
+                      <CustomButton
                         key={page}
                         variant={currentPage === page ? "default" : "outline"}
-                        size="icon"
+                        size="sm"
                         onClick={() => handlePageChange(page)}
+                        className={cn(
+                          "h-8 w-8 p-0",
+                          currentPage === page && "bg-primary text-primary-foreground hover:bg-primary/90"
+                        )}
                       >
                         {page}
-                      </Button>
+                      </CustomButton>
                     );
                   })}
               </div>
 
-              <Button
+              <CustomButton
                 variant="outline"
-                size="icon"
+                size="sm"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
+                className="h-8 w-8 p-0"
               >
                 <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button
+              </CustomButton>
+              <CustomButton
                 variant="outline"
-                size="icon"
+                size="sm"
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages}
-                className="hidden sm:flex"
+                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center"
               >
-                <ChevronRight className="h-4 w-4 mr-1" />
                 <ChevronRight className="h-4 w-4" />
-              </Button>
+                <ChevronRight className="h-4 w-4 -ml-2" />
+              </CustomButton>
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
               Page {currentPage} sur {totalPages} ({filteredArticles.length} articles)
             </div>
           </div>
