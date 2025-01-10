@@ -4,9 +4,10 @@ import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Package, Clock, Shield, CalendarClock } from "lucide-react";
+import { Search, Package, Clock, Shield, CalendarClock, Star, TrendingUp, Truck, Phone } from "lucide-react";
 import ArticleCardSkeleton from "../components/ArticleCardSkeleton";
 import OnboardingDialog from "../components/OnboardingDialog";
+import { motion } from "framer-motion";
 
 // Données mockées pour les articles
 const MOCK_ARTICLES: Article[] = [
@@ -108,121 +109,110 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       <OnboardingDialog />
-      {/* Hero section with illustration */}
-      <section className="relative bg-gradient-to-b from-primary/5 to-background pb-20">
+      {/* Hero Section avec CTA */}
+      <section className="relative bg-gradient-to-r from-primary/10 to-primary/5 py-20">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-12 pt-12">
-            <div className="flex-1 text-center lg:text-left">
-              <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-                Livraison rapide à<br />
-                <span className="text-primary">portée de main</span>
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl">
-                Faites-vous livrer tout ce dont vous avez besoin en quelques minutes. Des courses aux documents, nous assurons une livraison fiable et rapide.
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl font-bold mb-6"
+            >
+              Livraison rapide à portée de main
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-muted-foreground mb-8"
+            >
+              Des courses aux documents, nous assurons une livraison rapide et sécurisée en quelques clics
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Button size="lg" className="text-lg" asChild>
+                <Link href="/articles">
+                  Commander maintenant
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg" asChild>
+                <Link href="/services">
+                  Nos services
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Avantages */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Pourquoi choisir RapidLivre ?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <Truck className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Livraison ultra-rapide</h3>
+              <p className="text-muted-foreground">
+                Livraison en moins de 30 minutes pour les commandes urgentes
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" className="px-8">
-                  Commencer
-                </Button>
-                <Button size="lg" variant="outline" className="px-8" asChild>
-                  <Link href="/about">En savoir plus</Link>
-                </Button>
-              </div>
-              
-              {/* Trust badges */}
-              <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>Livraison 24/7</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>100% Sécurisé</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Package className="w-4 h-4" />
-                  <span>Suivi en direct</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CalendarClock className="w-4 h-4" />
-                  <span>Planning flexible</span>
-                </div>
-              </div>
             </div>
-            
-            {/* Illustration */}
-            <div className="flex-1">
-              {/* Le SVG de l'illustration reste le même */}
-              <div className="relative h-[400px] w-full flex items-center justify-center">
-                <div className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
-                  <svg
-                    viewBox="0 0 800 600"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-auto drop-shadow-xl"
-                  >
-                    <rect width="800" height="600" fill="url(#gradient)" rx="20" />
-                    <rect x="100" y="100" width="300" height="500" rx="20" fill="#1F2937" />
-                    <rect x="110" y="110" width="280" height="480" rx="15" fill="#F8FAFC" />
-                    <rect x="120" y="120" width="260" height="400" rx="10" fill="#E5E7EB" />
-                    <path
-                      d="M150,300 Q250,200 350,300"
-                      stroke="hsl(252,85%,60%)"
-                      strokeWidth="4"
-                      strokeDasharray="8,8"
-                      strokeLinecap="round"
-                    />
-                    <circle cx="150" cy="300" r="8" fill="hsl(252,85%,60%)" />
-                    <circle cx="350" cy="300" r="8" fill="hsl(252,85%,60%)" />
-                    <g transform="translate(450, 250)">
-                      <rect x="0" y="100" width="200" height="80" rx="20" fill="hsl(252,85%,60%)" />
-                      <circle cx="50" cy="180" r="30" fill="#1F2937" />
-                      <circle cx="150" cy="180" r="30" fill="#1F2937" />
-                      <circle cx="100" cy="80" r="40" fill="#1F2937" />
-                      <rect x="60" y="120" width="80" height="100" rx="20" fill="hsl(252,85%,60%)" />
-                    </g>
-                    <defs>
-                      <linearGradient id="gradient" x1="0" y1="0" x2="800" y2="600">
-                        <stop offset="0%" stopColor="#F8FAFC" />
-                        <stop offset="100%" stopColor="#F1F5F9" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-primary" />
               </div>
+              <h3 className="text-xl font-semibold mb-3">100% Sécurisé</h3>
+              <p className="text-muted-foreground">
+                Suivi en temps réel et assurance sur toutes les livraisons
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <Star className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Service Premium</h3>
+              <p className="text-muted-foreground">
+                Une équipe dédiée et un support client 24/7
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it works section */}
+      {/* Comment ça marche */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Comment ça marche ?</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
+            <div className="relative text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Package className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Commandez en ligne</h3>
+              <h3 className="font-semibold mb-2">1. Commandez en ligne</h3>
               <p className="text-sm text-muted-foreground">
                 Sélectionnez vos articles et passez commande
               </p>
             </div>
-            <div className="text-center">
+            <div className="relative text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Préparation</h3>
+              <h3 className="font-semibold mb-2">2. Préparation rapide</h3>
               <p className="text-sm text-muted-foreground">
                 Nos partenaires préparent votre commande
               </p>
             </div>
-            <div className="text-center">
+            <div className="relative text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-primary" />
+                <TrendingUp className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Suivi en temps réel</h3>
+              <h3 className="font-semibold mb-2">3. Suivi en temps réel</h3>
               <p className="text-sm text-muted-foreground">
                 Suivez votre livraison sur la carte
               </p>
@@ -231,33 +221,77 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CalendarClock className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Livraison</h3>
+              <h3 className="font-semibold mb-2">4. Livraison express</h3>
               <p className="text-sm text-muted-foreground">
-                Recevez votre commande rapidement
+                Recevez votre commande en un temps record
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Articles section */}
+      {/* Section Témoignages */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Nos Articles</h2>
-            <div className="w-72 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Rechercher des articles..."
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          <h2 className="text-3xl font-bold text-center mb-12">Ce que disent nos clients</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sophie M.",
+                role: "Cliente régulière",
+                content: "Service impeccable ! Ma commande est toujours livrée dans les temps."
+              },
+              {
+                name: "Thomas L.",
+                role: "Entrepreneur",
+                content: "RapidLivre a révolutionné la gestion de mes livraisons urgentes."
+              },
+              {
+                name: "Marie D.",
+                role: "Commerçante",
+                content: "Un service client exceptionnel et des livreurs très professionnels."
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-primary font-semibold">{testimonial.name[0]}</span>
+                  </div>
+                  <div className="ml-4">
+                    <h4 className="font-semibold">{testimonial.name}</h4>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground">{testimonial.content}</p>
+                <div className="mt-4 flex text-primary">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-current" />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {renderArticlesContent()}
+      {/* CTA Section */}
+      <section className="py-16 bg-primary text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6">Prêt à essayer RapidLivre ?</h2>
+          <p className="text-xl mb-8 opacity-90">
+            Rejoignez des milliers de clients satisfaits dès aujourd'hui
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary" className="text-lg" asChild>
+              <Link href="/articles">
+                Voir nos articles
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg bg-transparent border-white hover:bg-white/10">
+              <Phone className="mr-2 h-5 w-5" />
+              Contactez-nous
+            </Button>
+          </div>
         </div>
       </section>
     </div>

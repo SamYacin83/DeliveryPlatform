@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import ServicesPage from "./pages/ServicesPage";
+import ArticlesPage from "./pages/ArticlesPage";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import DashboardPage from "./pages/DashboardPage";
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/services" component={ServicesPage} />
           <Route path="/how-it-works" component={HowItWorksPage} />
           <Route path="/testimonials" component={TestimonialsPage} />
+          <Route path="/articles" component={ArticlesPage} />
 
           {user && (
             <>
