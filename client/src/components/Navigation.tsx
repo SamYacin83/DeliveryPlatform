@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Bell, User as UserIcon, LogOut } from "lucide-react";
+import { Bell, User as UserIcon, LogOut, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -21,8 +21,8 @@ interface User {
 }
 
 interface NavigationProps {
-  readonly  user: User | null; // Peut être null
-  readonly  logout?: () => void;
+  readonly user: User | null; // Peut être null
+  readonly logout?: () => void;
 }
 
 export default function Navigation({ user, logout }: NavigationProps) {
@@ -157,6 +157,22 @@ export default function Navigation({ user, logout }: NavigationProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-80">
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <h2 className="font-medium">Notifications</h2>
+                      {notifications.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-xs"
+                          onClick={() => {
+                            setNotifications([]);
+                            setHasUnread(false);
+                          }}
+                        >
+                          Tout marquer comme lu
+                        </Button>
+                      )}
+                    </div>
                     <DropdownMenuGroup>
                       {notifications.length === 0 ? (
                         <DropdownMenuItem className="text-muted-foreground text-center py-4">
@@ -164,19 +180,35 @@ export default function Navigation({ user, logout }: NavigationProps) {
                         </DropdownMenuItem>
                       ) : (
                         notifications.map((notification) => (
-                          <DropdownMenuItem
+                          <div
                             key={notification.id}
-                            className="py-3 px-4 hover:bg-primary/5 cursor-pointer"
+                            className="flex items-start gap-2 p-3 hover:bg-primary/5 cursor-pointer relative group"
                           >
-                            <div className="flex flex-col gap-1">
-                              <span className="font-medium">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">
                                 {notification.message}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
                                 Il y a {Math.floor(Math.random() * 10) + 1} minutes
-                              </span>
+                              </p>
                             </div>
-                          </DropdownMenuItem>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setNotifications(prev =>
+                                  prev.filter(n => n.id !== notification.id)
+                                );
+                                if (notifications.length === 1) {
+                                  setHasUnread(false);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                            </Button>
+                          </div>
                         ))
                       )}
                     </DropdownMenuGroup>
@@ -286,23 +318,39 @@ export default function Navigation({ user, logout }: NavigationProps) {
                 <div className="pt-4 border-t">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                    <Button
+                      <Button
                         variant="ghost"
                         size="sm"
                         className="relative"
                       >
                         <Bell className="h-5 w-5" />
                         {hasUnread && (
-                        <Badge
-                          variant="default"
-                          className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
-                        >
-                          {notifications.length}
-                        </Badge>
+                          <Badge
+                            variant="default"
+                            className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
+                          >
+                            {notifications.length}
+                          </Badge>
                         )}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-80">
+                      <div className="flex items-center justify-between p-2 border-b">
+                        <h2 className="font-medium">Notifications</h2>
+                        {notifications.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 px-2 text-xs"
+                            onClick={() => {
+                              setNotifications([]);
+                              setHasUnread(false);
+                            }}
+                          >
+                            Tout marquer comme lu
+                          </Button>
+                        )}
+                      </div>
                       <DropdownMenuGroup>
                         {notifications.length === 0 ? (
                           <DropdownMenuItem className="text-muted-foreground text-center py-4">
@@ -310,20 +358,36 @@ export default function Navigation({ user, logout }: NavigationProps) {
                           </DropdownMenuItem>
                         ) : (
                           notifications.map((notification) => (
-                            <DropdownMenuItem
+                            <div
                               key={notification.id}
-                              className="py-3 px-4 hover:bg-primary/5 cursor-pointer"
+                              className="flex items-start gap-2 p-3 hover:bg-primary/5 cursor-pointer relative group"
                             >
-                              <div className="flex flex-col gap-1">
-                                <span className="font-medium">
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">
                                   {notification.message}
-                                </span>
-                                <span className="text-xs text-muted-foreground">
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
                                   Il y a{" "}
                                   {Math.floor(Math.random() * 10) + 1} minutes
-                                </span>
+                                </p>
                               </div>
-                            </DropdownMenuItem>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setNotifications(prev =>
+                                    prev.filter(n => n.id !== notification.id)
+                                  );
+                                  if (notifications.length === 1) {
+                                    setHasUnread(false);
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                              </Button>
+                            </div>
                           ))
                         )}
                       </DropdownMenuGroup>
@@ -335,16 +399,16 @@ export default function Navigation({ user, logout }: NavigationProps) {
               {/* Auth (mobile) */}
               <div className="pt-4 border-t">
                 {user ? (
-                    <Button
-                      variant="outline"
-                      className="w-full mb-2"
-                      onClick={() => {
-                        logout && logout();
-                        handleMobileLinkClick();
-                      }}
-                    >
-                      Déconnexion
-                    </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full mb-2"
+                    onClick={() => {
+                      logout && logout();
+                      handleMobileLinkClick();
+                    }}
+                  >
+                    Déconnexion
+                  </Button>
                 ) : (
                   <Button
                     className="w-full"

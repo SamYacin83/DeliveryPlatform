@@ -1,0 +1,50 @@
+{
+  "brand": {
+    "name": "RapidLivre"
+  },
+  "menu": {
+    "home": "Accueil",
+    "products": "Produits",
+    "orders": "Commandes",
+    "deliveries": "Livraisons",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Aucune notification",
+    "markAsRead": "Tout marquer comme lu",
+    "newOrder": "Nouvelle commande #{{orderId}} confirmée",
+    "orderDelivery": "Commande #{{orderId}} en cours de livraison",
+    "deliveryUpdated": "Commande #{{orderId}} : {{status}}"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide",
+    "checkout": "Commander",
+    "total": "Total",
+    "items": "{{count}} article(s)",
+    "viewCart": "Voir le panier"
+  },
+  "user": {
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "account": "Compte",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "register": "Inscription"
+  },
+  "mobile": {
+    "menu": "Menu",
+    "close": "Fermer le menu"
+  },
+  "search": {
+    "placeholder": "Rechercher des produits...",
+    "button": "Rechercher"
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "en": "Anglais",
+    "fr": "Français"
+  }
+}
