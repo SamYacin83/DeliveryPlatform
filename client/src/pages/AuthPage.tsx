@@ -12,6 +12,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+
 // Vos types (utilisés dans le schéma et le formulaire)
 import { AuthForm, DocumentProgress, UserRole } from "./types";
 
@@ -113,18 +116,31 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);             // Étape courante (0..3)
   const [rememberMe, setRememberMe] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({}); // Avancement upload doc
+  const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
 
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
+  const { login, error: authError, isLoading: isAuthLoading } = useAuth();
 
   // Simuler des articles dans le panier
   const cartItemCount = 3; // Simulation de 2 articles dans le panier
   
   // Instanciation du formulaire
   const form = useForm<AuthForm>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(
+      isLogin
+        ? z.object({
+            username: z
+              .string()
+              .min(3, "pages.auth.validation.username.min")
+              .max(20, "pages.auth.validation.username.max"),
+            password: z
+              .string()
+              .min(8, "pages.auth.validation.password.min")
+          })
+        : authSchema
+    ),
     mode: "onChange",
     defaultValues: {
       username: "",
@@ -144,6 +160,15 @@ export default function AuthPage() {
     },
   });
 
+  console.log("Form initialized:", form);
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      console.log("Form values changed:", value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   // ──────────────────────────────────────────────────────────────────────────
   // 3.1. Simulation de l'upload des documents
   // ──────────────────────────────────────────────────────────────────────────
@@ -154,7 +179,6 @@ export default function AuthPage() {
       if (!file) return;
 
       setUploadProgress((prev) => ({
-
         ...prev,
         [documentType]: { progress: 0, status: "uploading" },
       }));
@@ -226,68 +250,52 @@ export default function AuthPage() {
     }
   };
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 3.4. Soumission finale du formulaire
-  // ──────────────────────────────────────────────────────────────────────────
-  const onSubmit = async (data: AuthForm) => {
-    if (isLoading) return;
-
-    // En mode inscription, on vérifie qu'on est bien à la dernière étape
-    if (!isLogin && step !== steps.length - 1) {
-        nextStep();
-          return;
-      }
-
-    setIsLoading(true);
-
+  // Gérer la soumission du formulaire de connexion
+  const handleLogin = async (data: AuthForm) => {
+    console.log("handleLogin called with data:", data);
     try {
-      // -- Mode Connexion --
-      if (isLogin) {
-        if (
-          data.username === TEMP_CREDENTIALS.username &&
-          data.password === TEMP_CREDENTIALS.password
-        ) {
-          toast({
-            title: t("pages.auth.login.success.title"),
-            description: t("pages.auth.login.success.description", { username: data.username }),
-            variant: "default",
-            duration: 3000,
-            className: "bg-primary text-primary-foreground",
-          });
-          setLocation("/dashboard");
-        } else {
-          toast({
-            title: t("pages.auth.login.error.title"),
-            description: t("pages.auth.login.error.description"),
-            variant: "destructive",
-            duration: 3000,
-          });
-        }
-      }
-      // -- Mode Inscription --
-      else {
-        // Simuler un délai de 10 secondes
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        toast({
-          title: t("pages.auth.register.success.title"),
-          description: t("pages.auth.register.success.description", { role: data.role }),
-          variant: "default",
-          duration: 5000,
-          className: "bg-primary text-primary-foreground",
-        });
-        // On repasse en mode login après l’inscription
-        setIsLogin(true);
-        form.reset();
-        setStep(0);
-      }
-    } catch (error: any) {
+      console.log("Attempting login...");
+      // S'assurer que les données sont dans le bon format pour l'API
+      const loginData = {
+        email: data.username,
+        password: data.password
+      };
+      console.log("Sending login request with:", loginData);
+      await login(loginData);
+      console.log("Login successful");
+      
       toast({
-        title: t("pages.auth.error.title"),
-        description: error.message || t("pages.auth.error.description"),
-        variant: "destructive",
+        title: t("pages.auth.login.success"),
+        description: t("pages.auth.login.successDescription"),
       });
-    } finally {
-      setIsLoading(false);
+
+      // Rediriger vers la page d'accueil après la connexion
+      setLocation("/");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: t("pages.auth.login.error"),
+        description: t("pages.auth.login.errorDescription"),
+      });
+    }
+  };
+
+  // Gérer la soumission du formulaire d'inscription
+  const handleSignup = async (data: AuthForm) => {
+    // Pour l'instant, nous n'implémentons que la connexion
+    toast({
+      variant: "destructive",
+      title: t("pages.auth.signup.notImplemented"),
+      description: t("pages.auth.signup.notImplementedDescription"),
+    });
+  };
+
+  // Gérer la soumission du formulaire (connexion ou inscription)
+  const onSubmit = async (data: AuthForm) => {
+    if (isLogin) {
+      await handleLogin(data);
+    } else {
+      await handleSignup(data);
     }
   };
 
@@ -313,7 +321,16 @@ export default function AuthPage() {
                 </p>
               </div>
             )}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <form 
+              onSubmit={(e) => {
+                console.log("Form submit event triggered");
+                form.handleSubmit((data) => {
+                  console.log("Form data:", data);
+                  handleLogin(data);
+                })(e);
+              }} 
+              className="space-y-3"
+            >
               <AnimatePresence mode="wait">
                 {isLogin ? (
                   // ──────────────────────────────────────────────────────────
@@ -344,7 +361,14 @@ export default function AuthPage() {
                       type="submit"
                       className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                     >
-                      {t("pages.auth.login.submit")}
+                      {isAuthLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          {t("pages.auth.login.submitting")}
+                        </>
+                      ) : (
+                        t("pages.auth.login.submit")
+                      )}
                     </Button>
                     <div className="text-center">
                       <Link href="/auth/forgot-password" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
@@ -419,19 +443,19 @@ export default function AuthPage() {
                       ) : (
                         // Si on est à la dernière étape (Confirmation) → Soumission
                         <Button
-                        type="submit"
-                        className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            {t("pages.auth.register.submitting")}
-                          </>
-                        ) : (
-                          t("pages.auth.register.submit")
-                        )}
-                      </Button>
+                          type="submit"
+                          className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                          disabled={isAuthLoading}
+                        >
+                          {isAuthLoading ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {t("pages.auth.register.submitting")}
+                            </>
+                          ) : (
+                            t("pages.auth.register.submit")
+                          )}
+                        </Button>
                       )}
                     </div>
                   </motion.div>

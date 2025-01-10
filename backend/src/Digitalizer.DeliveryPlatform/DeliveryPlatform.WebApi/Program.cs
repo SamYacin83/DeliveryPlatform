@@ -21,12 +21,16 @@ builder.Services.AddEndpoints();
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSignalR();
+builder.Services.AddCors();
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
        .AddRoles<IdentityRole>()
        .AddEntityFrameworkStores<DeliveryDbContext>();
 
 var app = builder.Build();
+
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+                  .WithOrigins("http://localhost:28110", "https://localhost:28110"));
 
 app.UseAuthentication();
 app.UseAuthorization();
