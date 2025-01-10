@@ -14,6 +14,8 @@ export interface Article {
   price: number;
   supplierId: number;
   stock: number;
+  type: "Particulier" | "SOGIK";
+  imageUrl: string;
 }
 
 export interface Order {
@@ -41,4 +43,12 @@ export interface DeliveryTracking {
     lng: number;
   };
   estimatedDelivery: string;
+}
+
+export interface Supplier {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
 }

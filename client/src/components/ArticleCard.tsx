@@ -1,15 +1,15 @@
-import { Article } from "../types";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Article } from "@/types";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Package } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { mockOrders } from "../mocks/data";
 import { useTranslation } from 'react-i18next';
+import { mockOrders } from "../mocks/data";
 
 interface ArticleCardProps {
-  readonly article: Article;
+  article: Article;
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
@@ -50,27 +50,46 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   });
 
   return (
-    <Card className="flex flex-col h-full hover:shadow-lg transition-shadow">
+    <Card className="overflow-hidden flex flex-col h-full transition-all hover:shadow-lg">
+      {/* Image */}
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={article.imageUrl}
+          alt={article.title}
+          className="w-full h-full object-cover transition-transform hover:scale-105"
+        />
+        <Badge 
+          variant={article.type === "SOGIK" ? "destructive" : "secondary"}
+          className="absolute top-2 right-2"
+        >
+          {article.type}
+        </Badge>
+      </div>
+
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-xl font-semibold">{article.title}</CardTitle>
-          <Badge variant="secondary">
-            <Package className="w-3 h-3 mr-1" />
-            {article.stock > 0 ? t("badge.inStock") : t("badge.outOfStock")}
-          </Badge>
+        <div className="space-y-1">
+          <h3 className="font-semibold text-lg leading-none">{article.title}</h3>
+          <p className="text-sm text-muted-foreground line-clamp-2">{article.description}</p>
         </div>
       </CardHeader>
+
       <CardContent className="flex-grow">
-        <p className="text-gray-600">{article.description}</p>
-        <p className="mt-4 text-lg font-semibold">{article.price} DJF</p>
+        <div className="flex items-center justify-between">
+          <p className="text-lg font-bold">{article.price.toFixed(2)} DJF</p>
+          <p className="text-sm text-muted-foreground">
+            Stock: {article.stock}
+          </p>
+        </div>
       </CardContent>
+
       <CardFooter>
         <Button 
           className="w-full" 
           onClick={() => orderMutation.mutate()}
           disabled={article.stock === 0 || orderMutation.isPending}
+          size="lg"
         >
-          <ShoppingCart className="w-4 h-4 mr-2" />
+          <ShoppingCart className="mr-2 h-4 w-4" />
           {orderMutation.isPending ? t("button.pending") : t("button.addToCart")}
         </Button>
       </CardFooter>
