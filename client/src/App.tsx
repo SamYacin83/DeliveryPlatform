@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 
 // Pages
-import AuthPage from "./pages/AuthPage";
+import AuthPage from "./pages/Authentification/AuthPage";
 import HomePage from "./pages/HomePage";
 import SupplierDashboard from "./pages/SupplierDashboard";
 import AboutPage from "./pages/AboutPage";

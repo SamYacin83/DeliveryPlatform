@@ -5,7 +5,7 @@ import { AuthForm } from "../../pages/types";
 
 const getInputClassName = (
   formState: any, 
-  fieldName: "firstName" | "lastName" | "email" | "phone" | "username" | "password"
+  fieldName: "firstName" | "lastName" | "phone" | "email" | "password"
 ): string => {
   if (formState.errors[fieldName]) {
     return "border-red-500 focus:ring-red-500";
@@ -87,19 +87,6 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
               {formState.errors.lastName && <p className="text-red-500 text-xs mt-1">{formState.errors.lastName.message}</p>}
             </div>
           </div>
-
-          <div>
-            <label htmlFor="email" className="sr-only">Email</label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              {...register("email")}
-              className="h-9"
-            />
-            {formState.errors.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.message}</p>}
-          </div>
-
           <div>
             <label htmlFor="phone" className="sr-only">Téléphone</label>
             <Input
@@ -113,15 +100,15 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
           </div>
 
           <div>
-            <label htmlFor="username-register" className="sr-only">Email</label>
+            <label htmlFor="email" className="sr-only">Email</label>
             <Input
-              id="username-register"
+              id="email"
               type="email"
               placeholder="Email"
-              {...register("username")}
+              {...register("email")}
               className="h-9"
             />
-            {formState.errors.username && <p className="text-red-500 text-xs mt-1">{formState.errors.username.message}</p>}
+            {formState.errors.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.message}</p>}
           </div>
 
           <div>

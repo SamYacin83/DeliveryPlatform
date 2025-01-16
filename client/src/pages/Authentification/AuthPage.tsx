@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo,useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,16 +7,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2} from "lucide-react";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useStepsConfig } from './hooks/useStepsConfig';
+import { createAuthSchema, createLoginSchema } from './validation/validation';
 
 // Vos types (utilisés dans le schéma et le formulaire)
-import { AuthForm, DocumentProgress, UserRole } from "./types";
+import { AuthForm, DocumentProgress, UserRole } from "../types";
 
 // Vos composants d'étapes + la barre de progression
 import ProgressBar from "@/components/ProgressBar";
@@ -24,88 +24,6 @@ import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import RoleStep from "@/components/steps/RoleStep";
 import DetailsStep from "@/components/steps/DetailsStep";
 import ConfirmationStep from "@/components/steps/ConfirmationStep";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 1. Schémas de validation Zod
-// ─────────────────────────────────────────────────────────────────────────────
-
-// (Exemple) : Vous pouvez adapter si vous avez déjà vos propres schémas
-const addressSchema = z.object({
-  street: z.string().min(1, "pages.auth.address.street.required"),
-  streetNumber: z.string().min(1, "pages.auth.address.streetNumber.required"),
-  apartment: z.string().optional(),
-  building: z.string().optional(),
-  floor: z.string().optional(),
-  additionalInfo: z.string().optional(),
-  city: z.string().min(1, "pages.auth.address.city.required"),
-  postalCode: z.string().min(1, "pages.auth.address.postalCode.required"),
-  country: z.string().min(1, "pages.auth.address.country.required"),
-  region: z.string().optional(),
-});
-
-const documentSchema = z.object({
-  identityCard: z.any().optional(),
-  driversLicense: z.any().optional(),
-  vehicleRegistration: z.any().optional(),
-  insurance: z.any().optional(),
-});
-
-const authSchema = z.object({
-  username: z
-    .string()
-    .min(3, "pages.auth.validation.username.min")
-    .max(20, "pages.auth.validation.username.max"),
-  password: z
-    .string()
-    .min(8, "pages.auth.validation.password.min")
-    .regex(/[A-Z]/, "pages.auth.validation.password.uppercase")
-    .regex(/[a-z]/, "pages.auth.validation.password.lowercase")
-    .regex(/\d/, "pages.auth.validation.password.number"),
-  firstName: z.string().min(2, "pages.auth.validation.firstName.required"),
-  lastName: z.string().min(2, "pages.auth.validation.lastName.required"),
-  email: z.string().email("pages.auth.validation.email.invalid"),
-  phone: z
-    .string()
-    .regex(
-      /^\+?\d{3}[-\s.]?\d{3}[-\s.]?\d{4,6}$/,
-      "pages.auth.validation.phone.invalid"
-    ),
-  role: z.enum(["client", "delivery", "supplier"], {
-    required_error: "pages.auth.role.required",
-    invalid_type_error: "pages.auth.role.invalid",
-  }),
-  address: addressSchema.optional(),
-  documents: documentSchema.optional(),
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 2. Définition des 4 étapes (pour TOUS les rôles)
-// ─────────────────────────────────────────────────────────────────────────────
-
-const steps = [
-  {
-    title: "pages.auth.steps.personalInfo",
-    fields: ["firstName", "lastName", "email", "phone", "username", "password"],
-  },
-  {
-    title: "pages.auth.steps.role",
-    fields: ["role"],
-  },
-  {
-    title: "pages.auth.steps.details",
-    fields: ["address", "documents"],
-  },
-  {
-    title: "pages.auth.steps.confirmation",
-    fields: [],
-  },
-] as const;
-
-// Creds de démo (pour la Connexion)
-const TEMP_CREDENTIALS = {
-  username: "admin",
-  password: "Samatar1983",
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. Composant principal AuthPage
@@ -122,24 +40,27 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
   const { login, error: authError, isLoading: isAuthLoading } = useAuth();
+  const { steps } = useStepsConfig();
+  
+  // Création des schémas avec traduction  
+  const validationSchema = useMemo(() => isLogin ? createLoginSchema(t) : createAuthSchema(t), [t, isLogin]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+// 2. Définition des 4 étapes (pour TOUS les rôles)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Creds de démo (pour la Connexion)
+const TEMP_CREDENTIALS = {
+  username: "admin",
+  password: "Samatar1983",
+};
 
   // Simuler des articles dans le panier
   const cartItemCount = 3; // Simulation de 2 articles dans le panier
   
   // Instanciation du formulaire
   const form = useForm<AuthForm>({
-    resolver: zodResolver(
-      isLogin
-        ? z.object({
-            username: z
-              .string()
-              .email("pages.auth.validation.email.invalid"),
-            password: z
-              .string()
-              .min(8, "pages.auth.validation.password.min")
-          })
-        : authSchema
-    ),
+    resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
       username: "",
