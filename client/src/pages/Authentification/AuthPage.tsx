@@ -97,6 +97,7 @@ const TEMP_CREDENTIALS = {
       if (!file) return;
 
       setUploadProgress((prev) => ({
+
         ...prev,
         [documentType]: { progress: 0, status: "uploading" },
       }));
@@ -105,6 +106,7 @@ const TEMP_CREDENTIALS = {
       const interval = setInterval(() => {
         progress += 10;
         setUploadProgress((prev) => ({
+
           ...prev,
           [documentType]: {
             progress: Math.min(progress, 100),
@@ -122,35 +124,59 @@ const TEMP_CREDENTIALS = {
   // 3.2. Autorisation de passer à l’étape suivante (formulaire valide ?)
   // ──────────────────────────────────────────────────────────────────────────
   const canProceed = () => {
-    // En mode login, on ne fait pas le multi-step
     if (isLogin) return true;
-
+  
     const currentFields = steps[step].fields;
     const errors = form.formState.errors;
-
-    // Vérifie s’il y a des erreurs sur les champs de l’étape en cours
+    const currentRole = form.watch("role");
+  
+    // Vérifie s'il y a des erreurs sur les champs de l'étape en cours
     const hasErrors = currentFields.some((field) => {
       if (field === "address") {
-        return form.watch("role") === "delivery" && errors.address;
+        if (currentRole === "client") {
+          return errors.address;
+        }
+        if (currentRole === "delivery") {
+          return errors.address;
+        }
       }
-      if (field === "documents") {
-        return form.watch("role") === "delivery" && errors.documents;
+      if (field === "documents" && currentRole === "delivery") {
+        return errors.documents;
       }
       return errors[field as keyof typeof errors];
     });
-
+  
     // Vérifie si tous les champs sont remplis
     const isComplete = currentFields.every((field) => {
-      if (field === "address" || field === "documents") {
-        // On laisse la validation zod s’en charger
-        return true;
+      if (field === "address") {
+        const address = form.watch("address");
+        if (currentRole === "client") {
+          if (!address) return false;
+          return ['street', 'city', 'postalCode', 'country'].every(key => 
+            address[key as keyof typeof address] && 
+            String(address[key as keyof typeof address]).trim() !== ''
+          );
+        }
+        if (currentRole === "delivery") {
+          if (!address) return false;
+          return ['street', 'streetNumber', 'city', 'postalCode', 'country'].every(key => 
+            address[key as keyof typeof address] && 
+            String(address[key as keyof typeof address]).trim() !== ''
+          );
+        }
+      }
+      if (field === "documents" && currentRole === "delivery") {
+        const documents = form.watch("documents");
+        if (!documents) return false;
+        return ['identityCard', 'driversLicense', 'vehicleRegistration', 'insurance'].every(key =>
+          documents[key as keyof typeof documents]
+        );
       }
       return form.watch(field as keyof AuthForm);
     });
-
+  
     return !hasErrors && isComplete;
   };
-
   // ──────────────────────────────────────────────────────────────────────────
   // 3.3. Navigation entre les étapes
   // ──────────────────────────────────────────────────────────────────────────
@@ -281,9 +307,11 @@ const TEMP_CREDENTIALS = {
                     >
                       {isAuthLoading ? (
                         <>
+
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           {t("pages.auth.login.submitting")}
                         </>
+
                       ) : (
                         t("pages.auth.login.submit")
                       )}
@@ -367,9 +395,11 @@ const TEMP_CREDENTIALS = {
                         >
                           {isAuthLoading ? (
                             <>
+
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                               {t("pages.auth.register.submitting")}
                             </>
+
                           ) : (
                             t("pages.auth.register.submit")
                           )}
@@ -384,6 +414,7 @@ const TEMP_CREDENTIALS = {
               <div className={`${isLogin ? "mt-6 pt-6 border-t border-gray-200" : "mt-4"}`}>
                 {isLogin ? (
                   <>
+
                     <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">
                       {t("pages.auth.login.noAccount")}
                     </h3>
@@ -391,6 +422,7 @@ const TEMP_CREDENTIALS = {
                       {t("pages.auth.login.noAccountDescription")}
                     </p>
                   </>
+
                 ) : null}
                 <Button
                   type="button"

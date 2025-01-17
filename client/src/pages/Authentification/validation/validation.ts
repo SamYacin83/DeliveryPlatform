@@ -2,28 +2,50 @@ import * as z from 'zod';
 import { TFunction } from 'i18next';
 
 // Types
-export type AddressSchema = z.infer<ReturnType<typeof createAddressSchema>>;
-export type DocumentSchema = z.infer<ReturnType<typeof createDocumentSchema>>;
+export type ClientAddressSchema = z.infer<ReturnType<typeof createClientAddressSchema>>;
+export type DeliveryAddressSchema = z.infer<ReturnType<typeof createDeliveryAddressSchema>>;
+export type DeliveryDocumentSchema = z.infer<ReturnType<typeof createDeliveryDocumentSchema>>;
+export type OptionalDocumentSchema = z.infer<ReturnType<typeof createOptionalDocumentSchema>>;
 export type AuthSchema = z.infer<ReturnType<typeof createAuthSchema>>;
 
-// Schéma de l'adresse
-export const createAddressSchema = (t: TFunction) => {
+// Schéma de l'adresse pour les clients
+export const createClientAddressSchema = (t: TFunction) => {
   return z.object({
-    street: z.string().min(1, t('pages.auth.address.street.required')),
-    streetNumber: z.string().min(1, t('pages.auth.address.streetNumber.required')),
+    street: z.string().min(1, t('auth:address.street.required')),
+    city: z.string().min(1, t('auth:address.city.required')),
+    postalCode: z.string().min(1, t('auth:address.postalCode.required')),
+    country: z.string().min(1, t('auth:address.country.required')),
+  });
+};
+
+// Schéma de l'adresse pour les livreurs
+export const createDeliveryAddressSchema = (t: TFunction) => {
+  return z.object({
+    street: z.string().min(1, t('auth:address.street.required')),
+    streetNumber: z.string().min(1, t('auth:address.streetNumber.required')),
     apartment: z.string().optional(),
     building: z.string().optional(),
     floor: z.string().optional(),
     additionalInfo: z.string().optional(),
-    city: z.string().min(1, t('pages.auth.address.city.required')),
-    postalCode: z.string().min(1, t('pages.auth.address.postalCode.required')),
-    country: z.string().min(1, t('pages.auth.address.country.required')),
+    city: z.string().min(1, t('auth:address.city.required')),
+    postalCode: z.string().min(1, t('auth:address.postalCode.required')),
+    country: z.string().min(1, t('auth:address.country.required')),
     region: z.string().optional(),
   });
 };
 
-// Schéma des documents
-export const createDocumentSchema = () => {
+// Schéma des documents pour les livreurs
+export const createDeliveryDocumentSchema = (t: TFunction) => {
+  return z.object({
+    identityCard: z.instanceof(File, { message: t('auth:documents.identity.required') }),
+    driversLicense: z.instanceof(File, { message: t('auth:documents.drivingLicense.required') }),
+    vehicleRegistration: z.instanceof(File, { message: t('auth:documents.vehicleRegistration.required') }),
+    insurance: z.instanceof(File, { message: t('auth:documents.insurance.required') }),
+  });
+};
+
+// Schéma des documents optionnels
+export const createOptionalDocumentSchema = () => {
   return z.object({
     identityCard: z.any().optional(),
     driversLicense: z.any().optional(),
@@ -34,10 +56,7 @@ export const createDocumentSchema = () => {
 
 // Schéma d'authentification principal
 export const createAuthSchema = (t: TFunction) => {
-  const addressSchema = createAddressSchema(t);
-  const documentSchema = createDocumentSchema();
-
-  return z.object({
+  const baseSchema = {
     username: z
       .string()
       .min(3, t('pages.auth.validation.username.min'))
@@ -64,13 +83,31 @@ export const createAuthSchema = (t: TFunction) => {
         /^\+?\d{3}[-\s.]?\d{3}[-\s.]?\d{4,6}$/,
         t('pages.auth.validation.phone.invalid')
       ),
-    role: z.enum(['client', 'delivery', 'supplier'], {
-      required_error: t('pages.auth.role.required'),
-      invalid_type_error: t('pages.auth.role.invalid'),
+  };
+
+  return z.discriminatedUnion('role', [
+    // Schéma pour les clients
+    z.object({
+      ...baseSchema,
+      role: z.literal('client'),
+      address: createClientAddressSchema(t),
+      documents: createOptionalDocumentSchema().optional(),
     }),
-    address: addressSchema.optional(),
-    documents: documentSchema.optional(),
-  });
+    // Schéma pour les livreurs
+    z.object({
+      ...baseSchema,
+      role: z.literal('delivery'),
+      address: createDeliveryAddressSchema(t),
+      documents: createDeliveryDocumentSchema(t),
+    }),
+    // Schéma pour les fournisseurs
+    z.object({
+      ...baseSchema,
+      role: z.literal('supplier'),
+      address: createClientAddressSchema(t).optional(),
+      documents: createOptionalDocumentSchema().optional(),
+    }),
+  ]);
 };
 
 // Schéma de connexion simplifié
