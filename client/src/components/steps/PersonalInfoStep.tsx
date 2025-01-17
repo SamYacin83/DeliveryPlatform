@@ -30,22 +30,22 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
       {isLogin ? (
         <>
           <div>
-            <label htmlFor="email" className="sr-only">Email</label>
+            <label htmlFor="email" className="sr-only">{t('auth:login.subtitle')}</label>
             <Input
               id="email"
               type="email"
-              placeholder="Email"
+              placeholder={t('auth:login.email')}
               {...register("email")}
               className="h-9"
             />
             {formState.errors.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.message}</p>}
           </div>
           <div className="space-y-1">
-            <label htmlFor="password-login" className="sr-only">{t('auth:personnal.info.password')}</label>
+            <label htmlFor="password-login" className="sr-only">{t('auth:login.password')}</label>
             <Input
               id="password-login"
               type="password"
-              placeholder={t('auth:personnal.info.password')}
+              placeholder={t('auth:login.password')}
               {...register("password")}
               className="h-9"
             />
