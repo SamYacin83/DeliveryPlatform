@@ -224,13 +224,11 @@ export default function DetailsStep({ form, uploadProgress, handleFileChange }: 
             <div className="space-y-2">
               <label htmlFor="drivers-license" className="text-sm">{t('auth:documents.drivingLicense.label')}</label>
               <div className="space-y-1">
-                <Input
-                  id="drivers-license"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  {...register("documents.driversLicense")}
-                  className="h-9"
-                  onChange={handleFileChange('driversLicense')}
+                <CustomFileUpload
+                id="drivers-license"
+                accept=".pdf,.jpg,.jpeg,.png"
+                {...register("documents.driversLicense")}
+                onChange={handleFileChange('driversLicense')}
                 />
                 {formState.errors.documents?.driversLicense && <p className="text-red-500 text-xs mt-1">{formState.errors.documents.driversLicense.message}</p>}
                 {uploadProgress.driversLicense && (
@@ -249,13 +247,11 @@ export default function DetailsStep({ form, uploadProgress, handleFileChange }: 
             <div className="space-y-2">
               <label htmlFor="vehicle-registration" className="text-sm">{t('auth:documents.vehicleRegistration.label')}</label>
               <div className="space-y-1">
-                <Input
+                <CustomFileUpload
                   id="vehicle-registration"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  {...register("documents.vehicleRegistration")}
-                  className="h-9"
-                  onChange={handleFileChange('vehicleRegistration')}
+                accept=".pdf,.jpg,.jpeg,.png"
+                {...register("documents.vehicleRegistration")}
+                onChange={handleFileChange('vehicleRegistration')}
                 />
                 {formState.errors.documents?.vehicleRegistration && <p className="text-red-500 text-xs mt-1">{formState.errors.documents.vehicleRegistration.message}</p>}
                 {uploadProgress.vehicleRegistration && (
@@ -274,13 +270,11 @@ export default function DetailsStep({ form, uploadProgress, handleFileChange }: 
             <div className="space-y-2">
               <label htmlFor="insurance" className="text-sm">{t('auth:documents.insurance.label')}</label>
               <div className="space-y-1">
-                <Input
-                  id="insurance"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  {...register("documents.insurance")}
-                  className="h-9"
-                  onChange={handleFileChange('insurance')}
+                <CustomFileUpload
+                 id="insurance"
+                 accept=".pdf,.jpg,.jpeg,.png"
+                 {...register("documents.insurance")}
+                onChange={handleFileChange('insurance')}
                 />
                 {formState.errors.documents?.insurance && <p className="text-red-500 text-xs mt-1">{formState.errors.documents.insurance.message}</p>}
                 {uploadProgress.insurance && (

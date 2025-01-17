@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
+
 interface CustomFileUploadProps {
   id: string;
   accept?: string;
@@ -41,17 +40,16 @@ const CustomFileUpload = React.forwardRef<HTMLInputElement, CustomFileUploadProp
           name={name}
           {...props}
         />
-        <div className="flex gap-2 items-center">
-          <Button
+        <div className="flex items-center gap-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+          <button
             type="button"
             onClick={handleClick}
-            variant="outline"
-            size="sm"
+            className="text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
           >
             {t('auth:documents.chooseFile')}
-          </Button>
-          <span className="text-sm text-gray-600">
-            {fileName || t('auth:documents.noFileChosen')}
+          </button>
+          <span className="text-sm text-muted-foreground flex-1">
+            {fileName || t('auth:documents.chooseFile')}
           </span>
         </div>
       </div>
