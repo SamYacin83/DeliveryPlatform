@@ -2,6 +2,7 @@ import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { AuthForm } from "../../pages/types";
+import { useTranslation } from 'react-i18next';
 
 const getInputClassName = (
   formState: any, 
@@ -23,28 +24,28 @@ interface PersonalInfoStepProps {
 
 export default function PersonalInfoStep({ form, isLogin = false }: Readonly<PersonalInfoStepProps>) {
   const { register, formState } = form;
-  
+  const { t } = useTranslation();
   return (
     <>
       {isLogin ? (
         <>
           <div>
-            <label htmlFor="username-login" className="sr-only">Email</label>
+            <label htmlFor="email" className="sr-only">Email</label>
             <Input
-              id="username-login"
+              id="email"
               type="email"
               placeholder="Email"
-              {...register("username")}
+              {...register("email")}
               className="h-9"
             />
-            {formState.errors.username && <p className="text-red-500 text-xs mt-1">{formState.errors.username.message}</p>}
+            {formState.errors.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.message}</p>}
           </div>
           <div className="space-y-1">
-            <label htmlFor="password-login" className="sr-only">Mot de passe</label>
+            <label htmlFor="password-login" className="sr-only">{t('auth:personnal.info.password')}</label>
             <Input
               id="password-login"
               type="password"
-              placeholder="Mot de passe"
+              placeholder={t('auth:personnal.info.password')}
               {...register("password")}
               className="h-9"
             />
@@ -55,10 +56,10 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
         <>
           <div className="grid grid-cols-2 gap-2">
             <div className="relative">
-              <label htmlFor="firstname" className="sr-only">Prénom</label>
+              <label htmlFor="firstname" className="sr-only">{t('auth:fields.firstName')}</label>
               <Input
                 id="firstname"
-                placeholder="Prénom"
+                placeholder={t('auth:fields.firstName')}
                 {...register("firstName")}
                 className={`h-9 ${getInputClassName(formState, "firstName")}`}
               />
@@ -77,10 +78,10 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
             </div>
             
             <div>
-              <label htmlFor="lastname" className="sr-only">Nom</label>
+              <label htmlFor="lastname" className="sr-only">{t('auth:fields.lastName')}</label>
               <Input
                 id="lastname"
-                placeholder="Nom"
+                placeholder={t('auth:fields.lastName')}
                 {...register("lastName")}
                 className="h-9"
               />
@@ -88,11 +89,11 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
             </div>
           </div>
           <div>
-            <label htmlFor="phone" className="sr-only">Téléphone</label>
+            <label htmlFor="phone" className="sr-only">{t('auth:fields.phone')}</label>
             <Input
               id="phone"
               type="tel"
-              placeholder="Téléphone"
+              placeholder={t('auth:fields.phone')}
               {...register("phone")}
               className="h-9"
             />
@@ -100,11 +101,11 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
           </div>
 
           <div>
-            <label htmlFor="email" className="sr-only">Email</label>
+            <label htmlFor="email" className="sr-only">{t('auth:fields.email')}</label>
             <Input
               id="email"
               type="email"
-              placeholder="Email"
+              placeholder={t('auth:fields.email')}
               {...register("email")}
               className="h-9"
             />
@@ -112,11 +113,11 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
           </div>
 
           <div>
-            <label htmlFor="password-register" className="sr-only">Mot de passe</label>
+            <label htmlFor="password-register" className="sr-only">{t('auth:fields.password')}</label>
             <Input
               id="password-register"
               type="password"
-              placeholder="Mot de passe"
+              placeholder={t('auth:fields.password')}
               {...register("password")}
               className="h-9"
             />

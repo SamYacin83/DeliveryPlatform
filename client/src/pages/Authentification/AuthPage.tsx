@@ -80,8 +80,6 @@ const TEMP_CREDENTIALS = {
     },
   });
 
-  console.log("Form initialized:", form);
-
   useEffect(() => {
     const subscription = form.watch((value) => {
       console.log("Form values changed:", value);

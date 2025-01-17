@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { AuthForm } from "../../pages/types";
 import { useTranslation } from 'react-i18next';
-
+import {CustomFileUpload } from "./components/CustomFileUpload";
 interface FileProgress {
   readonly progress: number;
   readonly status: 'idle' | 'uploading' | 'completed' | 'error';
@@ -201,14 +201,12 @@ export default function DetailsStep({ form, uploadProgress, handleFileChange }: 
             <div className="space-y-2">
               <label htmlFor="identity-card" className="text-sm">{t('auth:documents.identity.label')}</label>
               <div className="space-y-1">
-                <Input
-                  id="identity-card"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  {...register("documents.identityCard")}
-                  className="h-9"
-                  onChange={handleFileChange('identityCard')}
-                />
+              <CustomFileUpload
+                id="identity-card"
+                accept=".pdf,.jpg,.jpeg,.png"
+                {...register("documents.identityCard")}
+                onChange={handleFileChange('identityCard')}
+              />
                 {formState.errors.documents?.identityCard && <p className="text-red-500 text-xs mt-1">{formState.errors.documents.identityCard.message}</p>}
                 {uploadProgress.identityCard && (
                   <div className="w-full bg-secondary h-1 rounded-full overflow-hidden">
