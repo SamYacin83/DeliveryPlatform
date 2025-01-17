@@ -94,8 +94,11 @@ const TEMP_CREDENTIALS = {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      setUploadProgress((prev) => ({
+      // Mettre à jour le formulaire avec le fichier
+      form.setValue(`documents.${documentType}`, file);
 
+      // Mettre à jour la progression
+      setUploadProgress((prev) => ({
         ...prev,
         [documentType]: { progress: 0, status: "uploading" },
       }));
@@ -104,7 +107,6 @@ const TEMP_CREDENTIALS = {
       const interval = setInterval(() => {
         progress += 10;
         setUploadProgress((prev) => ({
-
           ...prev,
           [documentType]: {
             progress: Math.min(progress, 100),
@@ -127,47 +129,70 @@ const TEMP_CREDENTIALS = {
     const currentRole = form.watch("role");
     const currentFields = steps[step].fields(currentRole);
     const errors = form.formState.errors;
+    
+    console.log("Current Role:", currentRole);
+    console.log("Current Fields:", currentFields);
+    console.log("Form Errors:", errors);
   
     // Vérifie s'il y a des erreurs sur les champs de l'étape en cours
     const hasErrors = currentFields.some((field) => {
       if (field === "address") {
-        if (currentRole === "client") {
-          return errors.address;
-        }
         if (currentRole === "delivery") {
+          console.log("Address Errors:", errors.address);
           return errors.address;
         }
       }
       if (field === "documents" && currentRole === "delivery") {
+        console.log("Documents Errors:", errors.documents);
         return errors.documents;
       }
       return errors[field as keyof typeof errors];
     });
+    
+    console.log("Has Errors:", hasErrors);
   
     // Vérifie si tous les champs sont remplis
     const isComplete = currentFields.every((field) => {
       if (field === "address") {
         const address = form.watch("address");
+        console.log("Address Values:", address);
         if (!address) return false;
         
         const requiredFields = currentRole === "delivery" 
           ? ['street', 'streetNumber', 'city', 'postalCode', 'country']
           : ['street', 'city', 'postalCode', 'country'];
           
-        return requiredFields.every(key => {
+        const addressComplete = requiredFields.every(key => {
           const value = address[key as keyof typeof address];
-          return value !== undefined && value !== null && String(value).trim() !== '';
+          const isValid = value !== undefined && value !== null && String(value).trim() !== '';
+          console.log(`Address field ${key}:`, value, "isValid:", isValid);
+          return isValid;
         });
+        
+        console.log("Address Complete:", addressComplete);
+        return addressComplete;
       }
       if (field === "documents" && currentRole === "delivery") {
         const documents = form.watch("documents");
+        console.log("Documents Values:", documents);
         if (!documents) return false;
-        return ['identityCard', 'driversLicense', 'vehicleRegistration', 'insurance'].every(key =>
-          documents[key as keyof typeof documents]
-        );
+        
+        const docsComplete = ['identityCard', 'driversLicense', 'vehicleRegistration', 'insurance'].every(key => {
+          const hasDoc = documents[key as keyof typeof documents];
+          console.log(`Document ${key}:`, hasDoc);
+          return hasDoc;
+        });
+        
+        console.log("Documents Complete:", docsComplete);
+        return docsComplete;
       }
-      return form.watch(field as keyof AuthForm);
+      const value = form.watch(field as keyof AuthForm);
+      console.log(`Field ${field}:`, value);
+      return value;
     });
+    
+    console.log("Is Complete:", isComplete);
+    console.log("Can Proceed:", !hasErrors && isComplete);
   
     return !hasErrors && isComplete;
   };
