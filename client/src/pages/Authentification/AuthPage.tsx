@@ -63,7 +63,6 @@ const TEMP_CREDENTIALS = {
     resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
-      username: "",
       password: "",
       firstName: "",
       lastName: "",
@@ -72,7 +71,6 @@ const TEMP_CREDENTIALS = {
       role: "client" as UserRole,
       address: {
         street: "",
-        streetNumber: "",
         city: "",
         postalCode: "",
         country: "",
@@ -126,9 +124,9 @@ const TEMP_CREDENTIALS = {
   const canProceed = () => {
     if (isLogin) return true;
   
-    const currentFields = steps[step].fields;
-    const errors = form.formState.errors;
     const currentRole = form.watch("role");
+    const currentFields = steps[step].fields(currentRole);
+    const errors = form.formState.errors;
   
     // Vérifie s'il y a des erreurs sur les champs de l'étape en cours
     const hasErrors = currentFields.some((field) => {
@@ -150,20 +148,16 @@ const TEMP_CREDENTIALS = {
     const isComplete = currentFields.every((field) => {
       if (field === "address") {
         const address = form.watch("address");
-        if (currentRole === "client") {
-          if (!address) return false;
-          return ['street', 'city', 'postalCode', 'country'].every(key => 
-            address[key as keyof typeof address] && 
-            String(address[key as keyof typeof address]).trim() !== ''
-          );
-        }
-        if (currentRole === "delivery") {
-          if (!address) return false;
-          return ['street', 'streetNumber', 'city', 'postalCode', 'country'].every(key => 
-            address[key as keyof typeof address] && 
-            String(address[key as keyof typeof address]).trim() !== ''
-          );
-        }
+        if (!address) return false;
+        
+        const requiredFields = currentRole === "delivery" 
+          ? ['street', 'streetNumber', 'city', 'postalCode', 'country']
+          : ['street', 'city', 'postalCode', 'country'];
+          
+        return requiredFields.every(key => {
+          const value = address[key as keyof typeof address];
+          return value !== undefined && value !== null && String(value).trim() !== '';
+        });
       }
       if (field === "documents" && currentRole === "delivery") {
         const documents = form.watch("documents");

@@ -15,9 +15,9 @@ export function ClientDetailsStep({ form }: Readonly<ClientDetailsStepProps>) {
     <div className="space-y-2">
       <h3 className="text-sm font-medium">{t('auth:steps.details')}</h3>
       <div>
-        <label htmlFor="street-client" className="sr-only">Rue</label>
+        <label htmlFor="street" className="sr-only">Rue</label>
         <Input
-          id="street-client"
+          id="street"
           placeholder="Rue"
           {...register("address.street")}
           className="h-9"
@@ -25,9 +25,9 @@ export function ClientDetailsStep({ form }: Readonly<ClientDetailsStepProps>) {
         {formState.errors.address?.street && <p className="text-red-500 text-xs mt-1">{formState.errors.address.street.message}</p>}
       </div>
       <div>
-        <label htmlFor="city-client" className="sr-only">Ville</label>
+        <label htmlFor="city" className="sr-only">Ville</label>
         <Input
-          id="city-client"
+          id="city"
           placeholder="Ville"
           {...register("address.city")}
           className="h-9"
@@ -36,9 +36,9 @@ export function ClientDetailsStep({ form }: Readonly<ClientDetailsStepProps>) {
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label htmlFor="postal-code-client" className="sr-only">Code postal</label>
+          <label htmlFor="postalCode" className="sr-only">Code postal</label>
           <Input
-            id="postal-code-client"
+            id="postalCode"
             placeholder="Code postal"
             {...register("address.postalCode")}
             className="h-9"
@@ -46,9 +46,9 @@ export function ClientDetailsStep({ form }: Readonly<ClientDetailsStepProps>) {
           {formState.errors.address?.postalCode && <p className="text-red-500 text-xs mt-1">{formState.errors.address.postalCode.message}</p>}
         </div>
         <div>
-          <label htmlFor="country-client" className="sr-only">Pays</label>
+          <label htmlFor="country" className="sr-only">Pays</label>
           <Input
-            id="country-client"
+            id="country"
             placeholder="Pays"
             {...register("address.country")}
             className="h-9"
