@@ -18,6 +18,13 @@ public class OrderConfiguration : BaseConfiguration<Order>
         builder.Property(o => o.DeliveryServiceType)
                .HasConversion<string>();
 
+        builder.HasOne(o => o.AssignedDeliveryPerson)
+              .WithMany(d => d.AssignedOrders)
+              .HasForeignKey(o => o.AssignedDeliveryPersonId)
+              .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(o => o.AssignedDeliveryPersonId);
+
         builder.HasMany(o => o.OrderLines)
                .WithOne()
                .HasForeignKey("OrderId");

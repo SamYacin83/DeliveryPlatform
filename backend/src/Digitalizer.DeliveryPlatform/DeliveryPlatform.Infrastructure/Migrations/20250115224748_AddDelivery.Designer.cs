@@ -4,6 +4,7 @@ using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(DeliveryDbContext))]
-    partial class DeliveryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250115224748_AddDelivery")]
+    partial class AddDelivery
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,8 +65,8 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
                         .HasColumnName("email");
 
                     b.Property<string>("FirstName")
@@ -129,6 +132,10 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("customer_id");
 
+                    b.Property<Guid?>("DeliveryPersonId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("delivery_person_id");
+
                     b.Property<string>("DeliveryServiceType")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -155,6 +162,9 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId")
                         .HasDatabaseName("ix_order_customer_id");
+
+                    b.HasIndex("DeliveryPersonId")
+                        .HasDatabaseName("ix_order_delivery_person_id");
 
                     b.HasIndex("Status")
                         .HasDatabaseName("ix_order_status");
@@ -363,48 +373,6 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                                 .HasConstraintName("fk_delivery_person_delivery_person_id");
                         });
 
-                    b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.ValueObjects.DeliveryAddress", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("DeliveryPersonId")
-                                .HasColumnType("char(36)")
-                                .HasColumnName("id");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("city");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("country");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("varchar(20)")
-                                .HasColumnName("postal_code");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("varchar(200)")
-                                .HasColumnName("street");
-
-                            b1.HasKey("DeliveryPersonId");
-
-                            b1.ToTable("delivery_person");
-
-                            b1.WithOwner()
-                                .HasForeignKey("DeliveryPersonId")
-                                .HasConstraintName("fk_delivery_person_delivery_person_id");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
                     b.Navigation("CurrentLocation")
                         .IsRequired();
                 });
@@ -416,6 +384,11 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                         .HasForeignKey("AssignedDeliveryPersonId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_order_delivery_person_assigned_delivery_person_id");
+
+                    b.HasOne("Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities.DeliveryPerson", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("DeliveryPersonId")
+                        .HasConstraintName("fk_order_delivery_person_delivery_person_id");
 
                     b.OwnsOne("Digitalizer.DeliveryPlatform.Domain.ValueObjects.DeliveryAddress", "DeliveryAddress", b1 =>
                         {
@@ -577,6 +550,8 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
             modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities.DeliveryPerson", b =>
                 {
                     b.Navigation("AssignedOrders");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Order", b =>

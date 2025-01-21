@@ -1,5 +1,6 @@
 ﻿using Digitalizer.DeliveryPlatform.Application.Data;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory;
@@ -15,6 +16,8 @@ public class DeliveryDbContext(DbContextOptions<DeliveryDbContext> options) : Db
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductCategory> ProductCategory { get; set; }
     public DbSet<Order> Order { get; set; }
+    public DbSet<DeliveryPerson> DeliveryPerson { get; set; }
+
     public DbSet<OrderItem> OrderItem { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

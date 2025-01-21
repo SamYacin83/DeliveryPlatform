@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Aggregates\Delivery\" />
     <Folder Include="Aggregates\Driver\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commun\DeliveryPlatform.Shared\DeliveryPlatform.Common.csproj" />
   </ItemGroup>
 
 </Project>

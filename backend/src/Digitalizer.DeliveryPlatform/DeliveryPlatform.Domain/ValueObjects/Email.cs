@@ -5,8 +5,7 @@ namespace Digitalizer.DeliveryPlatform.Domain.ValueObjects;
 public class Email : ValueObject
 {
     public string Value { get; private set; }
-
-    public Email() {}
+    protected Email() { } // Required for EF Core
 
     private Email(string value)
     {

@@ -1,4 +1,5 @@
-﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
+﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
 using Digitalizer.DeliveryPlatform.Domain.Enums;
 
 namespace Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.ValueObjects;

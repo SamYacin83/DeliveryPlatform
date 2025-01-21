@@ -1,4 +1,5 @@
 ﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities;
 using Digitalizer.DeliveryPlatform.Infrastructure.Persistence.MySql;
 using Microsoft.EntityFrameworkCore;
 

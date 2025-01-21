@@ -7,5 +7,9 @@ public enum DeliveryStatus
     InTransit,
     Delivered,
     Failed,
-    Cancelled
+    Cancelled,
+    Available,
+    Assigned,
+    InDelivery,
+    Unavailable
 }

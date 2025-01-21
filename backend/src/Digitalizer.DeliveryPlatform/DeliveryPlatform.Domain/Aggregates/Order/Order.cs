@@ -1,4 +1,6 @@
-﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Events;
+﻿using Digitalizer.DeliveryPlatform.Domain.Aggregates.Delivery.Events;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Events;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.Exceptions;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order.ValueObjects;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
@@ -19,9 +21,29 @@ public class Order : AggregateRoot
     public DateTime OrderDate { get; private set; }
     public DeliveryAddress DeliveryAddress { get; private set; }
     public DeliveryServiceType DeliveryServiceType { get; private set; }
+    public Guid? AssignedDeliveryPersonId { get; private set; }
+    public DeliveryPerson? AssignedDeliveryPerson { get; private set; }
 
     private Order() { }
 
+    public void AssignDeliveryPerson(Guid deliveryPersonId)
+    {
+        if (Status != OrderStatus.Submitted)
+            throw new InvalidOperationException("Un livreur ne peut être assigné qu'à une commande soumise.");
+
+        AssignedDeliveryPersonId = deliveryPersonId;
+        Status = OrderStatus.InDelivery;
+
+        AddDomainEvent(new OrderAssignedToDeliveryPersonEvent(Id, deliveryPersonId));
+    }
+    public void MarkAsDelivered()
+    {
+        if (Status != OrderStatus.InDelivery)
+            throw new InvalidOrderStateException();
+
+        Status = OrderStatus.Delivered;
+        AddDomainEvent(new OrderDeliveredEvent(Id));
+    }
     public static Order Create(CustomerId customerId, DeliveryAddress deliveryAddress, DateTime orderDate)
     {
         var order = new Order
