@@ -1,9 +1,9 @@
 import { UseFormReturn } from "react-hook-form";
 import { motion } from "framer-motion";
-import { AuthForm } from "../../../pages/types";
+import { AuthForm } from "../../../../pages/types";
 import { useTranslation } from 'react-i18next';
 import { CustomFileUpload } from "./CustomFileUpload";
-import { DocumentProgress } from "../DetailsStep";
+import { DocumentProgress } from "../../DetailsStep";
 
 interface DeliveryDocumentsStepProps {
   readonly form: UseFormReturn<AuthForm>;

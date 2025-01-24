@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
+import { useForm,UseFormReturn } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2} from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useStepsConfig } from './hooks/useStepsConfig';
 import { createAuthSchema, createLoginSchema } from './validation/validation';
 
+import { ClientConfirmationStep } from "@/components/steps/components/Confirmation/ClientConfirmationStep";
+import { DeliveryConfirmationStep } from "../../components/steps/components/Confirmation/DeliveryConfirmationStep";
+import { SupplierConfirmationStep } from "../../components/steps/components/Confirmation/SupplierConfirmationStep"; 
 // Vos types (utilisés dans le schéma et le formulaire)
 import { AuthForm, DocumentProgress, UserRole } from "../types";
 
@@ -23,7 +26,24 @@ import ProgressBar from "@/components/ProgressBar";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import RoleStep from "@/components/steps/RoleStep";
 import DetailsStep from "@/components/steps/DetailsStep";
-import ConfirmationStep from "@/components/steps/ConfirmationStep";
+
+interface ConfirmationStepProps {
+  form: UseFormReturn<AuthForm>;
+}
+
+const ConfirmationStepWrapper = ({ form }: ConfirmationStepProps) => {
+  const role = form.watch("role");
+
+  const ComponentMap = {
+    delivery: DeliveryConfirmationStep,
+    supplier: SupplierConfirmationStep,
+    client: ClientConfirmationStep
+  };
+
+  const StepComponent = ComponentMap[role as keyof typeof ComponentMap] || ClientConfirmationStep;
+  return <StepComponent form={form} />;
+};
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. Composant principal AuthPage
@@ -377,7 +397,7 @@ const TEMP_CREDENTIALS = {
                             handleFileChange={handleFileChange}
                           />
                         )}
-                        {step === 3 && <ConfirmationStep form={form} />}
+                        {step === 3 && <ConfirmationStepWrapper form={form} />}
                       </motion.div>
                     </AnimatePresence>
 

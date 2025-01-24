@@ -1,8 +1,8 @@
 import { UseFormReturn } from "react-hook-form";
 import { AuthForm } from "../../pages/types";
-import { ClientDetailsStep } from "./components/ClientDetailsStep";
-import { DeliveryDetailsStep } from "./components/DeliveryDetailsStep";
-import { SupplierDetailsStep } from "./components/SupplierDetailsStep";
+import { ClientDetailsStep } from "./components/Client/ClientDetailsStep";
+import { DeliveryDetailsStep } from "./components/Delivery/DeliveryDetailsStep";
+import { SupplierDetailsStep } from "./components/Supplier/SupplierDetailsStep";
 
 export interface FileProgress {
   readonly progress: number;

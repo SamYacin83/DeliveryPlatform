@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { AuthForm } from "../../../pages/types";
+import { AuthForm } from "../../../../pages/types";
 import { useTranslation } from 'react-i18next';
 
 interface ClientDetailsStepProps {
