@@ -1,5 +1,4 @@
 import axiosManager, { ServiceAPI } from '../axiosManager';
-
 interface LoginRequest {
   email: string;
   password: string;
@@ -8,18 +7,12 @@ interface LoginRequest {
 export const login = async (credentials: LoginRequest): Promise<void> => {
   try {
     const authApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
-    console.log('Sending login request');
-    await authApi.post('login?useCookies=true', credentials, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
+    const response = await authApi.post('login', credentials, {
+      params: { useCookies: true }
     });
-    console.log('Login successful, checking cookies:', document.cookie);
-  } catch (error) {
+    console.log('Login response:', response);
+  } catch (error: unknown) {
     console.error('Login error:', error);
-    throw error;
   }
 };
 

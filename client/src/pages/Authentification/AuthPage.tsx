@@ -240,7 +240,7 @@ const TEMP_CREDENTIALS = {
       console.log("Attempting login...");
       // S'assurer que les données sont dans le bon format pour l'API
       const loginData = {
-        email: data.username,
+        email: data.email,
         password: data.password
       };
       console.log("Sending login request with:", loginData);
@@ -275,6 +275,7 @@ const TEMP_CREDENTIALS = {
 
   // Gérer la soumission du formulaire (connexion ou inscription)
   const onSubmit = async (data: AuthForm) => {
+    console.log("onSubmit called with data:", data);
     if (isLogin) {
       await handleLogin(data);
     } else {
@@ -304,15 +305,11 @@ const TEMP_CREDENTIALS = {
                 </p>
               </div>
             )}
-            <form 
-              onSubmit={(e) => {
-                console.log("Form submit event triggered");
-                form.handleSubmit((data) => {
-                  console.log("Form data:", data);
-                  handleLogin(data);
-                })(e);
-              }} 
-              className="space-y-3"
+           <form 
+              onSubmit={form.handleSubmit((data) => {
+                console.log("Form data:", data);
+                onSubmit(data);  // Utiliser onSubmit pour router vers login/signup
+              })} 
             >
               <AnimatePresence mode="wait">
                 {isLogin ? (

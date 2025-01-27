@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
+import axios, { AxiosHeaders, AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
 
 export enum ServiceAPI {
   DeliveryPlatform
@@ -21,20 +21,19 @@ class AxiosInstanceManager {
   };
 
   createInstance(name: ServiceAPI, config: AxiosRequestConfig): AxiosInstance {
-    if (this.instances.has(name)) {
-      throw new Error(`Instance with name ${name} already exists.`);
-    }
     const instance = axios.create({ 
       ...this.defaultConfig, 
       ...config,
+      headers: {
+        ...this.defaultConfig.headers,
+        ...config.headers
+      }
     });
 
-    // Log les requêtes
     instance.interceptors.request.use(request => {
-      console.log('Request:', {
-        url: request.url,
-        cookies: document.cookie
-      });
+      if (request.headers && 'set' in request.headers) {
+        (request.headers as AxiosHeaders).set('X-Use-Cookies', 'true');
+      }
       return request;
     });
 
@@ -72,6 +71,9 @@ class AxiosInstanceManager {
 }
 
 const manager = new AxiosInstanceManager();
-manager.createInstance(ServiceAPI.DeliveryPlatform, { baseURL: 'https://localhost:28110/api/' });
+manager.createInstance(ServiceAPI.DeliveryPlatform, { 
+  baseURL: 'https://localhost:28110/api/',
+  withCredentials: true
+});
 
 export default manager;

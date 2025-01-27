@@ -57,10 +57,10 @@ export const createOptionalDocumentSchema = () => {
 // Schéma d'authentification principal
 export const createAuthSchema = (t: TFunction) => {
   const baseSchema = {
-    username: z
+    email: z
       .string()
-      .min(3, t('pages.auth.validation.username.min'))
-      .max(20, t('pages.auth.validation.username.max')),
+      .min(1, t('pages.auth.validation.email.required'))
+      .email(t('pages.auth.validation.email.invalid')),
     password: z
       .string()
       .min(8, t('pages.auth.validation.password.min'))
@@ -73,10 +73,6 @@ export const createAuthSchema = (t: TFunction) => {
     lastName: z
       .string()
       .min(2, t('pages.auth.validation.lastName.required')),
-    email: z
-      .string()
-      .min(1, t('pages.auth.validation.email.required'))
-      .email(t('pages.auth.validation.email.invalid')),
     phone: z
       .string()
       .regex(
@@ -113,7 +109,7 @@ export const createAuthSchema = (t: TFunction) => {
 // Schéma de connexion simplifié
 export const createLoginSchema = (t: TFunction) => {
   return z.object({
-    username: z
+    email: z
       .string()
       .min(1, t('pages.auth.validation.email.required'))
       .email(t('pages.auth.validation.email.invalid')),
