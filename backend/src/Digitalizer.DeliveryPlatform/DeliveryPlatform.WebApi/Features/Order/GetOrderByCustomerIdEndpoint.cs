@@ -1,12 +1,9 @@
 ﻿using Digitalizer.DeliveryPlatform.Application.Features.Order.GetByCustomerIdOrder;
-using Digitalizer.DeliveryPlatform.Application.Features.ShoppingCart.RemoveItemFromCart;
 using Digitalizer.DeliveryPlatform.WebApi.EndPoints;
 using Digitalizer.DeliveryPlatform.WebApi.ResultsApi;
 using MediatR;
-using static Digitalizer.DeliveryPlatform.WebApi.Features.Carts.RemoveFromCart;
 
 namespace Digitalizer.DeliveryPlatform.WebApi.Features.Order;
-
 public class GetOrderByCustomerIdEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
@@ -21,7 +18,6 @@ public class GetOrderByCustomerIdEndpoint : IEndpoint
                return operation;
            });
     }
-
     private static async Task<IResult> GetOrderByCustomerIdAsync(IMediator mediator, Guid customerId)
     {
         var query = new GetOrderByCustomerIdQuery(customerId);

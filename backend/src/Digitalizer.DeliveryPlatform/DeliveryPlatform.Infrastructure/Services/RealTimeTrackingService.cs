@@ -15,11 +15,9 @@ public class RealTimeTrackingService
         _locations[deliveryPersonId] = location;
     }
 
-    public Location GetLocation(Guid deliveryPersonId)
+    public Location? GetLocation(Guid deliveryPersonId)
     {
-        return _locations.TryGetValue(deliveryPersonId, out var location)
-            ? location
-            : Location.Default;
+        return _locations.TryGetValue(deliveryPersonId, out var location) ? location : null;
     }
 }
 

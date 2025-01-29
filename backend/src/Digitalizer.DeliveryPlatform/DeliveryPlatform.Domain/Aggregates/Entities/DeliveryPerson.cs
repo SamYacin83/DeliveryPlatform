@@ -5,8 +5,6 @@ using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 using Digitalizer.DeliveryPlatform.Domain.Commun;
 using Digitalizer.DeliveryPlatform.Domain.Enums;
 using Digitalizer.DeliveryPlatform.Domain.ValueObjects;
-using System.Net;
-
 
 namespace Digitalizer.DeliveryPlatform.Domain.Aggregates.Entities;
 public class DeliveryPerson : AggregateRoot
@@ -22,6 +20,15 @@ public class DeliveryPerson : AggregateRoot
     public DeliveryAddress Address { get; private set; } // Ajout de l'adresse
 
     private DeliveryPerson() { }
+    private DeliveryPerson(string firstName, string lastName, PhoneNumber phoneNumber, Email email) :  base()
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+        Email = email;
+        CurrentLocation = Location.Default;
+        Status = DeliveryStatus.Available;        
+    }
 
     // Méthode de création
     public static DeliveryPerson Create(string firstName, string lastName, PhoneNumber phoneNumber, Email email, DeliveryAddress address)
@@ -35,16 +42,13 @@ public class DeliveryPerson : AggregateRoot
         if (email is null) throw new ArgumentNullException(nameof(email), "Le numéro de téléphone ne peut pas être nul.");
         if (address is null) throw new ArgumentNullException(nameof(address), "L'adresse ne peut pas être nulle.");
 
-        return new DeliveryPerson
+        var deliveryPerson = new DeliveryPerson(firstName, lastName, phoneNumber, email)
         {
-            FirstName = firstName,
-            LastName = lastName,
-            PhoneNumber = phoneNumber,
-            Email = email,
-            CurrentLocation = Location.Default,
-            Status = DeliveryStatus.Available,
-            Address = address
+            Address = address 
         };
+
+        return deliveryPerson;
+
     }
 
     // Mettre à jour la localisation

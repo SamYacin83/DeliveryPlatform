@@ -1,5 +1,6 @@
 ﻿using Digitalizer.DeliveryPlatform.Application.Data;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Customer;
+using Digitalizer.DeliveryPlatform.Domain.Aggregates.Delivery;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Order;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.Product;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory;
@@ -37,6 +38,7 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Installers
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductCategoryRepository, ProductCategoryRespository>();
+            services.AddScoped<IDeliveryPersonRepository, DeliveryPersonRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<ICartService, CartService>();

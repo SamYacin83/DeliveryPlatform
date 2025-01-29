@@ -3,13 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Digitalizer.DeliveryPlatform.Domain.Aggregates.Delivery.ValueObjects;
+
 public class Location
 {
-    public double Latitude { get; }
-    public double Longitude { get; }
+    public double Latitude { get; private set; }
+
+    public double Longitude { get; private set; }
 
     public Location(double latitude, double longitude)
     {
@@ -22,6 +25,7 @@ public class Location
         Latitude = latitude;
         Longitude = longitude;
     }
+    public Location() { }
     public static Location Default => new Location(0, 0);
     public override bool Equals(object? obj)
     {

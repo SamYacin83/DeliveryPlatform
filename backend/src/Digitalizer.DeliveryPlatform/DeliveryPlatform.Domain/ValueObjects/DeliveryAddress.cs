@@ -20,20 +20,22 @@ public class DeliveryAddress : ValueObject
 
     public static DeliveryAddress Create(string street, string city, string postalCode, string country)
     {
-        if (string.IsNullOrEmpty(street))
-            throw new ArgumentNullException(nameof(street));
+        if (string.IsNullOrEmpty(street) || street.Length > 100)
+            throw new ArgumentException("Le nom de la rue est invalide.", nameof(street));
 
-        if (string.IsNullOrEmpty(city))
-            throw new ArgumentNullException(nameof(city));
+        if (string.IsNullOrEmpty(city) || city.Length > 50)
+            throw new ArgumentException("Le nom de la ville est invalide.", nameof(city));
 
-        if (string.IsNullOrEmpty(postalCode))
-            throw new ArgumentNullException(nameof(postalCode));
+        if (string.IsNullOrEmpty(postalCode) || postalCode.Length > 20)
+            throw new ArgumentException("Le code postal est invalide.", nameof(postalCode));
 
-        if (string.IsNullOrEmpty(country))
-            throw new ArgumentNullException(nameof(country));
+        if (string.IsNullOrEmpty(country) || country.Length > 50)
+            throw new ArgumentException("Le pays est invalide.", nameof(country));
 
         return new DeliveryAddress(street, city, postalCode, country);
     }
+
+
 
     protected override IEnumerable<object> GetEqualityComponents()
     {

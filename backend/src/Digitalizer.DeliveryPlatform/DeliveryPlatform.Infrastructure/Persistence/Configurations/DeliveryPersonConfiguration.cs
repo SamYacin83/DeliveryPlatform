@@ -23,10 +23,10 @@ public class DeliveryPersonConfiguration : BaseConfiguration<DeliveryPerson>
         builder.Property(d => d.LastName)
                .HasMaxLength(100)
                .IsRequired();
-       
+
         var phoneNumberConverter = new ValueConverter<PhoneNumber, string>(
-            phoneNumber => phoneNumber.Value,  
-            value => PhoneNumber.Create(value)   
+            phoneNumber => phoneNumber != null ? phoneNumber.Value : string.Empty,
+            value => string.IsNullOrEmpty(value) ? null : PhoneNumber.Create(value) // Retourne null si vide
         );
 
         builder.Property(d => d.PhoneNumber)
@@ -34,11 +34,11 @@ public class DeliveryPersonConfiguration : BaseConfiguration<DeliveryPerson>
                .HasMaxLength(15)
                .IsRequired();
 
-        
         var emailConverter = new ValueConverter<Email, string>(
-     email => email.Value, 
-     value => Email.Create(value) 
-     );
+            email => email != null ? email.Value : string.Empty,
+            value => string.IsNullOrEmpty(value) ? null : Email.Create(value) // Retourne null si vide       
+         );
+
         builder.Property(d => d.Email)
        .HasConversion(emailConverter) 
        .HasMaxLength(255)

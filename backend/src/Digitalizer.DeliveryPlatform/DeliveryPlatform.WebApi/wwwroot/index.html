@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Suivi en temps réel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+</head>
+<body>
+    <h1>Tracking en temps réel</h1>
+    <div id="output"></div>
+
+    <button onclick="sendTestLocation()">Envoyer une localisation test</button>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:28109/trackingHub", {
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .withAutomaticReconnect()
+            .build();
+
+
+        connection.on("ReceiveLocationUpdate", (id, lat, lon) => {
+            document.getElementById("output").innerHTML = `Livreur ${id} : ${lat}, ${lon}`;
+        });
+
+        // Écoute les événements de reconnexion
+        connection.onreconnecting(error => {
+            console.warn("🔄 Tentative de reconnexion SignalR...", error);
+        });
+
+        connection.onreconnected(() => {
+            console.log("✅ SignalR reconnecté !");
+        });
+
+        connection.onclose(error => {
+            console.error("❌ SignalR déconnecté ! Tentative de reconnexion...", error);
+            setTimeout(() => connection.start().catch(err => console.error("❌ Échec de reconnexion SignalR :", err)), 5000);
+        });
+
+        console.log("Tentative de connexion à SignalR...");
+
+        connection.start()
+            .then(() => console.log("✅ SignalR est connecté !"))
+            .catch(err => console.error("❌ Échec de connexion SignalR :", err));
+
+        function sendTestLocation() {
+            if (connection.state !== signalR.HubConnectionState.Connected) {
+                console.error("❌ SignalR n'est pas connecté !");
+                return;
+            }
+
+            const deliveryPersonId = "550e8400-e29b-41d4-a716-446655440000"; // ID fictif
+            const latitude = parseFloat((Math.random() * 180 - 90).toFixed(6));
+            const longitude = parseFloat((Math.random() * 360 - 180).toFixed(6));
+
+            console.log("📡 Envoi de la localisation :", { deliveryPersonId, latitude, longitude });
+
+            connection.invoke("SendLocationUpdate", deliveryPersonId, latitude, longitude)
+                .then(() => console.log("📡 Localisation envoyée !"))
+                .catch(err => console.error("❌ Erreur d'envoi SignalR :", err));
+        }
+
+    </script>
+</body>
+</html>
