@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "./contexts/CartContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import App from './App';
 import "./index.css";
 import { I18nextProvider } from 'react-i18next';
@@ -29,8 +30,10 @@ const Main = () => {
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <CartProvider>
-            <App />
-            <Toaster />
+            <AuthProvider>
+              <App />
+              <Toaster />
+            </AuthProvider>
           </CartProvider>
         </QueryClientProvider>
       </I18nextProvider>
