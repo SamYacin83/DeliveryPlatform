@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useStepsConfig } from './hooks/useStepsConfig';
 import { createAuthSchema, createLoginSchema } from './validation/validation';
 
@@ -51,7 +51,7 @@ const ConfirmationStepWrapper = ({ form }: ConfirmationStepProps) => {
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);    // Mode connexion ou inscription
-  const [isLoading, setIsLoading] = useState(false);
+  //const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);             // Étape courante (0..3)
   const [rememberMe, setRememberMe] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
@@ -59,7 +59,7 @@ export default function AuthPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
-  const { login, error: authError, isLoading: isAuthLoading } = useAuth();
+  const { login, logout, isLoading, isAuthenticated } = useAuth();
   const { steps } = useStepsConfig();
   
   // Création des schémas avec traduction  
@@ -68,7 +68,9 @@ export default function AuthPage() {
   // ─────────────────────────────────────────────────────────────────────────────
 // 2. Définition des 4 étapes (pour TOUS les rôles)
 // ─────────────────────────────────────────────────────────────────────────────
-
+if (isAuthenticated) {
+  return <div>Already logged in!</div>;
+}
 // Creds de démo (pour la Connexion)
 const TEMP_CREDENTIALS = {
   username: "admin",
@@ -244,7 +246,7 @@ const TEMP_CREDENTIALS = {
         password: data.password
       };
       console.log("Sending login request with:", loginData);
-      await login(loginData);
+      await login(data.email, data.password);
       console.log("Login successful");
       
       toast({
@@ -341,7 +343,7 @@ const TEMP_CREDENTIALS = {
                       type="submit"
                       className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                     >
-                      {isAuthLoading ? (
+                      {isLoading ? (
                         <>
 
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />

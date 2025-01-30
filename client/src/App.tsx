@@ -1,6 +1,6 @@
 import { Switch, Route } from "wouter";
 import { Loader2 } from "lucide-react";
-import { useUser } from "./hooks/use-user";
+import { useAuth } from "@/contexts/AuthContext";
 import Navigation from "./components/Navigation";
 import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/Footer";
@@ -27,7 +27,7 @@ import OrdersPage from "./pages/orders/OrdersPage";
 import OrderDetailsPage from "./pages/orders/OrderDetailsPage";
 
 function App() {
-  const { user, isLoading, logout } = useUser();
+  const { user, isLoading, logout } = useAuth();
 
   if (isLoading) {
     return (

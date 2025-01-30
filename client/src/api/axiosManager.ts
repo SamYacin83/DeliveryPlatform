@@ -12,14 +12,24 @@ export const headers = {
 class AxiosInstanceManager {
   private readonly instances: Map<ServiceAPI, AxiosInstance> = new Map();
 
-  private readonly defaultConfig: CreateAxiosDefaults = {
+  /*private readonly defaultConfig: CreateAxiosDefaults = {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
     withCredentials: true
+  };*/
+  private readonly defaultConfig: CreateAxiosDefaults = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    withCredentials: true,
+    // Ajout des configurations pour les cookies
+    xsrfCookieName: '.AspNetCore.Identity.Application',
+    xsrfHeaderName: 'X-XSRF-TOKEN'
   };
-
   createInstance(name: ServiceAPI, config: AxiosRequestConfig): AxiosInstance {
     const instance = axios.create({ 
       ...this.defaultConfig, 
@@ -31,27 +41,32 @@ class AxiosInstanceManager {
     });
 
     instance.interceptors.request.use(request => {
-      if (request.headers && 'set' in request.headers) {
-        (request.headers as AxiosHeaders).set('X-Use-Cookies', 'true');
-      }
+      console.log('Request details:', {
+        url: request.url,
+        method: request.method,
+        data: request.data,
+        headers: request.headers
+      });
       return request;
     });
 
     // Log les réponses
     instance.interceptors.response.use(
       response => {
-        console.log('Response:', {
+        console.log('Response details:', {
           url: response.config.url,
           status: response.status,
+          data: response.data, // Ajout du log des données
           cookies: response.headers['set-cookie']
         });
         return response;
       },
       error => {
-        console.error('Error:', {
+        console.error('Error details:', {
           url: error.config?.url,
           status: error.response?.status,
-          data: error.response?.data
+          data: error.response?.data,
+          message: error.message
         });
         throw error;
       }
