@@ -5,6 +5,7 @@ import Navigation from "./components/Navigation";
 import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Pages
 import AuthPage from "./pages/Authentification/AuthPage";
@@ -48,6 +49,7 @@ function App() {
       {/* Contenu principal (routing) */}
       <main className="flex-1 container mx-auto px-4 py-8">
         <Switch>
+          {/* Routes publiques */}
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/auth/forgot-password" component={ForgotPasswordForm} />
@@ -56,24 +58,76 @@ function App() {
           <Route path="/how-it-works" component={HowItWorksPage} />
           <Route path="/testimonials" component={TestimonialsPage} />
           <Route path="/articles" component={ArticlesPage} />
-          <Route path="/dashboard" component={DashboardPage} />
-          <Route path="/checkout" component={CheckoutPage} />
 
-          {user && (
-            <>
-              <Route path="/profile" component={ProfilePage} />
-              {/* Routes Produits */}
-              <Route path="/products" component={ProductsPage} />
-              <Route path="/products/add" component={ProductForm} />
-              <Route path="/products/edit/:id" component={ProductForm} />
-              <Route path="/product-types" component={ProductTypesPage} />
-              <Route path="/product-types/add" component={ProductTypeForm} />
-              <Route path="/product-types/edit/:id" component={ProductTypeForm} />
-              {/* Routes Commandes */}
-              <Route path="/orders" component={OrdersPage} />
-              <Route path="/orders/:id" component={OrderDetailsPage} />
-            </>
-          )}
+          {/* Routes protégées */}
+          <Route path="/dashboard">
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/profile">
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/checkout">
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          </Route>
+
+          {/* Routes Produits */}
+          <Route path="/products">
+            <ProtectedRoute>
+              <ProductsPage />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/products/add">
+            <ProtectedRoute>
+              <ProductForm />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/products/edit/:id">
+            <ProtectedRoute>
+              <ProductForm />
+            </ProtectedRoute>
+          </Route>
+
+          {/* Routes Types de Produits */}
+          <Route path="/product-types">
+            <ProtectedRoute>
+              <ProductTypesPage />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/product-types/add">
+            <ProtectedRoute>
+              <ProductTypeForm />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/product-types/edit/:id">
+            <ProtectedRoute>
+              <ProductTypeForm />
+            </ProtectedRoute>
+          </Route>
+
+          {/* Routes Commandes */}
+          <Route path="/orders">
+            <ProtectedRoute>
+              <OrdersPage />
+            </ProtectedRoute>
+          </Route>
+
+          <Route path="/orders/:id">
+            <ProtectedRoute>
+              <OrderDetailsPage />
+            </ProtectedRoute>
+          </Route>
         </Switch>
       </main>
 

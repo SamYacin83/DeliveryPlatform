@@ -15,11 +15,29 @@ export const productsKeys = {
   byId: (id: string) => ['products', id] as QueryKey,
 };
 
+const mapBackendProductToFrontend = (backendProduct: any): Product => ({
+  id: backendProduct.id,
+  name: backendProduct.name,
+  description: backendProduct.description,
+  price: backendProduct.priceAmount, 
+  quantity: backendProduct.stockQuantity,
+  typeId: backendProduct.categoryId,
+  type: {
+    id: backendProduct.categoryId,
+    name: backendProduct.nameCategory,
+    createdAt: new Date(), // À remplacer par la vraie valeur si disponible
+    updatedAt: new Date()  // À remplacer par la vraie valeur si disponible
+  },
+  imageUrl: backendProduct.pictureUrl,
+  createdAt: new Date(), // À remplacer par la vraie valeur si disponible
+  updatedAt: new Date()  // À remplacer par la vraie valeur si disponible
+});
+
 // Fonction pour récupérer tous les produits
 // Cette fonction sera utilisée comme queryFn dans useQuery
 export const getProducts = async () => {
   const { data } = await productsApi.get<Product[]>('GetAllProduct');
-  return data;
+  return data.map(mapBackendProductToFrontend);
 };
 
 // Fonction pour récupérer un produit spécifique par son ID
@@ -29,7 +47,7 @@ export const getProductById = async (id: string) => {
       productId: id
     }
   });
-  return data;
+  return mapBackendProductToFrontend(data);
 };
 
 // Options de configuration pour les requêtes de produits

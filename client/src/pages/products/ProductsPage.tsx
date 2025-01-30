@@ -24,12 +24,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Product } from "@/types/product";
-import { Edit, MoreHorizontal, Plus, Trash, Package } from "lucide-react";
+import { Edit, MoreHorizontal, Plus, Trash, Package, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { getProducts } from "@/api/Queries/getAllProducts";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -50,7 +50,9 @@ export default function ProductsPage() {
       try {
         // TODO: Remplacer par votre appel API réel
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
-        setProducts([]); // Pour l'instant on met un tableau vide
+        //setProducts([]); // Pour l'instant on met un tableau vide
+        const products = await getProducts();
+        setProducts(products);
       } catch (error) {
         console.error('Erreur lors du chargement des produits:', error);
         toast({

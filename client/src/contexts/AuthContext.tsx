@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { login as apiLogin, logout as apiLogout, refreshToken as apiRefreshToken } from '../api/mutation/auth';
 import axiosManager, { ServiceAPI } from '../api/axiosManager';
+import { validateStoredUser } from '@/utils/authValidation';
 import { AppError, errorMessages } from '../utils/errorHandler';
 
 interface User {
@@ -91,10 +92,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // D'abord, on essaie de valider l'utilisateur stocké
+        const validatedUser = await validateStoredUser();
+        if (validatedUser) {
+          setUser(validatedUser);
+          setIsLoading(false);
+          return;
+        }
+
+        // Si pas d'utilisateur valide stocké, on essaie de rafraîchir le token
         const userData = await apiRefreshToken();
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
       } catch (error) {
+        // En cas d'erreur, on nettoie l'état
         setUser(null);
         localStorage.removeItem('user');
       } finally {
@@ -110,12 +121,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) {
       const refreshInterval = setInterval(async () => {
         try {
+          // Valide d'abord l'utilisateur actuel
+          const validatedUser = await validateStoredUser();
+          if (validatedUser) {
+            setUser(validatedUser);
+            return;
+          }
+
+          // Si la validation échoue, essaie de rafraîchir le token
           const userData = await apiRefreshToken();
           setUser(userData);
           localStorage.setItem('user', JSON.stringify(userData));
         } catch (error) {
-          setUser(null);
-          localStorage.removeItem('user');
+          if (error instanceof AppError) {
+            // Si c'est une erreur de session expirée, on nettoie tout
+            setUser(null);
+            localStorage.removeItem('user');
+          }
         }
       }, 4 * 60 * 1000); // Refresh every 4 minutes
 
