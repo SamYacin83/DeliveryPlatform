@@ -11,14 +11,6 @@ export const headers = {
 
 class AxiosInstanceManager {
   private readonly instances: Map<ServiceAPI, AxiosInstance> = new Map();
-
-  /*private readonly defaultConfig: CreateAxiosDefaults = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    withCredentials: true
-  };*/
   private readonly defaultConfig: CreateAxiosDefaults = {
     headers: {
       'Content-Type': 'application/json',
@@ -26,9 +18,6 @@ class AxiosInstanceManager {
       'X-Requested-With': 'XMLHttpRequest'
     },
     withCredentials: true,
-    // Ajout des configurations pour les cookies
-    xsrfCookieName: '.AspNetCore.Identity.Application',
-    xsrfHeaderName: 'X-XSRF-TOKEN'
   };
   createInstance(name: ServiceAPI, config: AxiosRequestConfig): AxiosInstance {
     const instance = axios.create({ 

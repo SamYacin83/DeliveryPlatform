@@ -28,8 +28,11 @@ import { useTranslation } from "react-i18next";
 
 // Typage minimaliste d'un user
 interface User {
-  id: number | string;
-  username: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
 }
 
 interface NavigationProps {
@@ -253,7 +256,7 @@ export default function Navigation({ user, logout }: NavigationProps) {
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary/10 text-primary">
                           {/* Première lettre du pseudo */}
-                          {user.username.charAt(0).toUpperCase()}
+                          {user.firstName.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>

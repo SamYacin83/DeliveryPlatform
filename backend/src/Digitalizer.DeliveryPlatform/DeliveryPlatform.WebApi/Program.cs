@@ -27,6 +27,15 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
        .AddRoles<IdentityRole>()
        .AddEntityFrameworkStores<DeliveryDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Autoriser l’envoi du cookie en cross-site
+    options.Cookie.SameSite = SameSiteMode.None;
+
+    // Exiger HTTPS (idéalement en production) :
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 var app = builder.Build();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
