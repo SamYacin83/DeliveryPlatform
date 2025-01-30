@@ -1,5 +1,5 @@
-import axios from 'axios';
 import axiosManager, { ServiceAPI } from '../axiosManager';
+import { AppError, errorMessages } from '../../utils/errorHandler';
 
 interface LoginRequest {
   email: string;
@@ -43,14 +43,23 @@ export const login = async (credentials: LoginRequest): Promise<User> => {
     // 4) Stocker l'utilisateur si on l'a récupéré
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
-      return user; // On retourne l'objet User
+      return user;
     }
 
-    // Si on n'a pas pu récupérer l'utilisateur, on lance une erreur
-    throw new Error('No user info returned from login or GetUserInfo.');
+    // Si on n'a pas pu récupérer l'utilisateur, on lance une erreur personnalisée
+    throw new AppError('No user info returned from login or GetUserInfo.', {
+      userMessage: errorMessages.auth.noUserInfo,
+      logError: true
+    });
   } catch (error) {
-    console.error('Login error:', error);
-    throw error;
+    if (error instanceof AppError) {
+      throw error;
+    }
+    // Pour les autres types d'erreurs
+    throw new AppError('Login failed', {
+      userMessage: errorMessages.auth.loginFailed,
+      logError: true
+    });
   }
 };
 

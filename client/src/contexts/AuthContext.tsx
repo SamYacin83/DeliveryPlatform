@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { login as apiLogin, logout as apiLogout, refreshToken as apiRefreshToken } from '../api/mutation/auth';
 import axiosManager, { ServiceAPI } from '../api/axiosManager';
+import { AppError, errorMessages } from '../utils/errorHandler';
 
 interface User {
   id: string;
@@ -74,7 +75,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // If refresh fails, logout
             setUser(null);
             localStorage.removeItem('user');
-            return Promise.reject(refreshError);
+            throw new AppError('Session expirée', {
+              userMessage: 'Votre session a expiré. Veuillez vous reconnecter.',
+              logError: true
+            });
           }
         }
 
@@ -127,19 +131,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      setUser(null);
+      localStorage.removeItem('user');
+      if (error instanceof AppError) {
+        throw error;
+      }
+      throw new AppError('Erreur de connexion', {
+        userMessage: errorMessages.auth.loginFailed,
+        logError: true
+      });
     }
   };
 
   const logout = async () => {
     try {
       await apiLogout();
+    } catch (error) {
+      // On log l'erreur technique mais on ne la propage pas
+      if (error instanceof AppError) {
+        console.error('Logout API error:', error.message);
+      } else {
+        console.error('Logout API error:', error);
+      }
+    } finally {
+      // On nettoie toujours les données locales, que l'API ait réussi ou non
       setUser(null);
       localStorage.removeItem('user');
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useMemo,useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStepsConfig } from './hooks/useStepsConfig';
 import { createAuthSchema, createLoginSchema } from './validation/validation';
+import { handleError } from "@/utils/errorHandler";
 
 import { ClientConfirmationStep } from "@/components/steps/components/Confirmation/ClientConfirmationStep";
 import { DeliveryConfirmationStep } from "../../components/steps/components/Confirmation/DeliveryConfirmationStep";
@@ -257,11 +258,7 @@ const TEMP_CREDENTIALS = {
       // Rediriger vers la page d'accueil après la connexion
       setLocation("/");
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: t("pages.auth.login.error"),
-        description: t("pages.auth.login.errorDescription"),
-      });
+      handleError(error, toast);
     }
   };
 
