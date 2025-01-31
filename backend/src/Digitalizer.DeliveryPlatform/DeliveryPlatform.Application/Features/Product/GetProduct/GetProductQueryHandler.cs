@@ -20,7 +20,7 @@ public class GetProductQueryHandler(IProductRepository productRepository) : IQue
                    Description = product.Description,
                    PriceAmount = product.Price.Amount,
                    Currency = product.Price.Currency,
-                   CategoryId = product.Id,
+                   CategoryId = product.CategoryId,
                    StockQuantity = product.StockQuantity,
                    IsAvailable = product.IsAvailable
                };

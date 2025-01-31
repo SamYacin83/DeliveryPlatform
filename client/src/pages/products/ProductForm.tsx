@@ -67,6 +67,7 @@ export default function ProductForm() {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
         const categories = await getAllCatProduct();
+        console.log("Categories:", categories);
         setProductTypes(categories);
       } catch (error) {
         console.error('Erreur lors du chargement des categories:', error);
@@ -90,6 +91,7 @@ export default function ProductForm() {
       try {
         setIsLoading(true);
         const response = await getProductById(params.id);
+        console.log("Product:", response);
         if (!response) {
           toast({
             title: "Erreur",
@@ -105,7 +107,7 @@ export default function ProductForm() {
           description: response.description,
           price: response.price,
           quantity: response.quantity,
-          typeId: response.typeId
+          typeId: response.categoryId
         });
         
         if (response.imageUrl) {
@@ -214,7 +216,7 @@ export default function ProductForm() {
                         <FormLabel>Type de produit</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value || ""}
                         >
                           <FormControl>
                             <SelectTrigger>
