@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   // Periodic token refresh
-  useEffect(() => {
+  /*useEffect(() => {
     if (user) {
       const refreshInterval = setInterval(async () => {
         try {
@@ -143,7 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return () => clearInterval(refreshInterval);
     }
-  }, [user]);
+  }, [user]);*/
 
   const login = async (email: string, password: string) => {
     try {

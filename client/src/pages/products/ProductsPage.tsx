@@ -48,9 +48,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // TODO: Remplacer par votre appel API réel
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
-        //setProducts([]); // Pour l'instant on met un tableau vide
         const products = await getProducts();
         setProducts(products);
       } catch (error) {

@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useLocation, useRoute } from "wouter";
+import { useLocation, useParams } from "wouter";
+import { getProductById } from "@/api/Queries/getAllProducts";
+import { getAllCatProduct } from "@/api/Queries/getAllCategory";
+import { productSchema, ProductFormData, defaultProductValues } from "./product.schema";
+import { ProductType } from "@/types/product";
+
 import {
   Form,
   FormControl,
@@ -34,34 +38,13 @@ import { useDropzone } from "react-dropzone";
 import { Upload, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const productSchema = z.object({
-  name: z.string()
-    .min(2, "Le nom doit contenir au moins 2 caractères")
-    .max(100, "Le nom ne peut pas dépasser 100 caractères"),
-  description: z.string()
-    .min(10, "La description doit contenir au moins 10 caractères")
-    .max(1000, "La description ne peut pas dépasser 1000 caractères"),
-  price: z.number()
-    .min(0, "Le prix doit être positif")
-    .max(1000000, "Le prix ne peut pas dépasser 1,000,000"),
-  quantity: z.number()
-    .min(0, "La quantité doit être positive")
-    .max(1000000, "La quantité ne peut pas dépasser 1,000,000"),
-  typeId: z.string().min(1, "Le type de produit est requis"),
-});
-
-type ProductFormData = z.infer<typeof productSchema>;
-
-interface ProductType {
-  id: string;
-  name: string;
-}
-
 export default function ProductForm() {
-  const [params] = useRoute("/products/:id");
+  const params = useParams<{ id: string }>();
+  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [productImage, setProductImage] = useState<{
     file: File | null;
     preview: string | null;
@@ -69,23 +52,82 @@ export default function ProductForm() {
     file: null,
     preview: null,
   });
-  const [productTypes] = useState<ProductType[]>([
-    { id: "1", name: "Particulier" },
-    { id: "2", name: "SOGIK" },
-  ]);
+
   const isEditing = !!params?.id;
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      quantity: 0,
-      typeId: "",
-    },
+    defaultValues: defaultProductValues,
     mode: "onChange", // Validation en temps réel
   });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
+        const categories = await getAllCatProduct();
+        setProductTypes(categories);
+      } catch (error) {
+        console.error('Erreur lors du chargement des categories:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les categories",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [toast]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!params?.id) return;
+      
+      try {
+        setIsLoading(true);
+        const response = await getProductById(params.id);
+        if (!response) {
+          toast({
+            title: "Erreur",
+            description: "Produit non trouvé",
+            variant: "destructive",
+          });
+          setLocation("/products");
+          return;
+        }
+        // Mettre à jour les valeurs du formulaire
+        form.reset({
+          name: response.name,
+          description: response.description,
+          price: response.price,
+          quantity: response.quantity,
+          typeId: response.typeId
+        });
+        
+        if (response.imageUrl) {
+          setProductImage({
+            file: null,
+            preview: response.imageUrl
+          });
+        }
+      } catch (error) {
+        console.error("Erreur:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les données du produit",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [params?.id, form, toast, setLocation]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -112,7 +154,6 @@ export default function ProductForm() {
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
-      // TODO: Implémenter la soumission
       console.log("Submit product", data, productImage);
       toast({
         title: isEditing ? "Produit modifié" : "Produit créé",
@@ -315,8 +356,11 @@ export default function ProductForm() {
                 >
                   Annuler
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting || isLoading}>
                   {isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   {isEditing ? "Modifier" : "Créer"}

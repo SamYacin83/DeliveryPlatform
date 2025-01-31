@@ -25,12 +25,12 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => ({
   type: {
     id: backendProduct.categoryId,
     name: backendProduct.nameCategory,
-    createdAt: new Date(), // À remplacer par la vraie valeur si disponible
-    updatedAt: new Date()  // À remplacer par la vraie valeur si disponible
+    createdAt: new Date(), 
+    updatedAt: new Date()  
   },
   imageUrl: backendProduct.pictureUrl,
-  createdAt: new Date(), // À remplacer par la vraie valeur si disponible
-  updatedAt: new Date()  // À remplacer par la vraie valeur si disponible
+  createdAt: new Date(), 
+  updatedAt: new Date()  
 });
 
 // Fonction pour récupérer tous les produits
