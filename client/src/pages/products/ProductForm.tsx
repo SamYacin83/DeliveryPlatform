@@ -5,7 +5,7 @@ import { useLocation, useParams } from "wouter";
 import { getProductById } from "@/api/Queries/getAllProducts";
 import { getAllCatProduct } from "@/api/Queries/getAllCategory";
 import { productSchema, ProductFormData, defaultProductValues } from "./product.schema";
-import { ProductType } from "@/types/product";
+import { Category } from "@/types/product";
 
 import {
   Form,
@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 
 export default function ProductForm() {
   const params = useParams<{ id: string }>();
-  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
+  const [productTypes, setProductTypes] = useState<Category[]>([]);
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,7 +105,7 @@ export default function ProductForm() {
           description: response.description,
           price: response.price,
           quantity: response.quantity,
-          typeId: response.categoryId
+          categoryId: response.categoryId
         });
         
         if (response.imageUrl) {
@@ -208,22 +208,22 @@ export default function ProductForm() {
 
                   <FormField
                     control={form.control}
-                    name="typeId"
+                    name="categoryId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Type de produit</FormLabel>
+                        <FormLabel>Catégorie du produit</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value || ""}
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Sélectionnez un type" />
+                              <SelectValue placeholder="Sélectionnez une catégorie" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {productTypes.map((type) => (
-                              <SelectItem key={type.id} value={type.id}>
+                              <SelectItem key={type.categoryId} value={type.categoryId}>
                                 {type.name}
                               </SelectItem>
                             ))}
@@ -410,7 +410,7 @@ export default function ProductForm() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Type:{" "}
-                  {productTypes.find((t) => t.id === form.watch("typeId"))?.name ||
+                  {productTypes.find((t) => t.categoryId === form.watch("categoryId"))?.name ||
                     "Non spécifié"}
                 </p>
               </div>

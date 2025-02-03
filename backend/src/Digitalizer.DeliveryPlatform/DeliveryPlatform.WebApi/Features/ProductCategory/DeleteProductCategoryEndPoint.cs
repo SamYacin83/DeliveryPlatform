@@ -24,7 +24,7 @@ internal sealed class DeleteProductCategoryEndPoint : IEndpoint
 
     private static async Task<IResult> DeleteProductCatAsync(IMediator mediator, [FromBody] ProductCategoryDto productDto)
     {
-        var query = new DeleteProductCategoryCommand(productDto.Id);
+        var query = new DeleteProductCategoryCommand(productDto.CategoryId);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.NoContent, ApiResults.Problem);

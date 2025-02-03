@@ -36,7 +36,7 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => {
     quantity: backendProduct.stockQuantity,
     categoryId: backendProduct.categoryId, // Devrait être "45b3315a-3795-4f2c-98e9-13ee1eb7cb92"
     category: {
-      id: backendProduct.categoryId, // Même ID
+      categoryId: backendProduct.categoryId, // Même ID
       name: backendProduct.nameCategory,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -51,6 +51,7 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => {
 // Cette fonction sera utilisée comme queryFn dans useQuery
 export const getProducts = async () => {
   const { data } = await productsApi.get<BackendProduct[]>('GetAllProduct');
+  console.log("Data getAllProducts: ", data);
   return data.map(mapBackendProductToFrontend);
 };
 
@@ -61,6 +62,7 @@ export const getProductById = async (id: string) => {
       productId: id
     }
   });
+  console.log("Data getProductById: ", data);
   return mapBackendProductToFrontend(data);
 };
 

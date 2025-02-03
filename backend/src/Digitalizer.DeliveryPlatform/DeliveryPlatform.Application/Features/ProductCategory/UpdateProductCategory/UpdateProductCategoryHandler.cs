@@ -18,7 +18,7 @@ public class UpdateProductCategoryHandler(IProductCategoryRepository repositoryC
 
         return Result.Success(new ProductCategoryDto
         {
-            Id = category.Id,
+            CategoryId = category.Id,
             Name = category.Name,
             Description = category.Description
         });

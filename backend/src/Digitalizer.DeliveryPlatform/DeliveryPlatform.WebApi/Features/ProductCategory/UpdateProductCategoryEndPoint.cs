@@ -24,7 +24,7 @@ internal sealed class UpdateProductCategoryEndPoint : IEndpoint
 
     private static async Task<IResult> UpdateProductCatAsync(IMediator mediator, [FromBody] ProductCategoryDto productCatDto)
     {
-        var query = new UpdateProductCategoryCommand(productCatDto.Id, productCatDto.Name, productCatDto.Description);
+        var query = new UpdateProductCategoryCommand(productCatDto.CategoryId, productCatDto.Name, productCatDto.Description);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.Ok, ApiResults.Problem);

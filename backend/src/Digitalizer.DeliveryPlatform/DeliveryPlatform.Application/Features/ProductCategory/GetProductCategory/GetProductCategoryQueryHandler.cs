@@ -15,7 +15,7 @@ public class GetProductCategoryQueryHandler(IProductCategoryRepository repositor
 
         return new ProductCategoryDto
         {
-            Id = productCategory.Id,
+            CategoryId = productCategory.Id,
             Name = productCategory.Name,
             Description = productCategory.Description
         };

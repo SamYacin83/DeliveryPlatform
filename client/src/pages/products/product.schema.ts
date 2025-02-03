@@ -13,7 +13,7 @@ export const productSchema = z.object({
   quantity: z.number()
     .min(0, "La quantité doit être positive")
     .max(1000000, "La quantité ne peut pas dépasser 1,000,000"),
-  typeId: z.string().min(1, "Le type de produit est requis"),
+    categoryId: z.string().min(1, "Le type de produit est requis"),
 });
 
 // Types générés à partir du schéma
@@ -25,5 +25,5 @@ export const defaultProductValues: ProductFormData = {
   description: "",
   price: 0,
   quantity: 0,
-  typeId: "",
+  categoryId: "",
 };
