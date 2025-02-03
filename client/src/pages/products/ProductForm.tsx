@@ -66,9 +66,8 @@ export default function ProductForm() {
       setIsLoading(true);
       try {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
-        const categories = await getAllCatProduct();
-        console.log("Categories:", categories);
-        setProductTypes(categories);
+        const productTypes = await getAllCatProduct();
+        setProductTypes(productTypes);
       } catch (error) {
         console.error('Erreur lors du chargement des categories:', error);
         toast({
@@ -91,7 +90,6 @@ export default function ProductForm() {
       try {
         setIsLoading(true);
         const response = await getProductById(params.id);
-        console.log("Product:", response);
         if (!response) {
           toast({
             title: "Erreur",
