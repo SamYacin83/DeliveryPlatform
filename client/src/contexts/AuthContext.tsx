@@ -149,7 +149,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const credentials: LoginRequest = { email, password };
       const userData = await apiLogin(credentials);
-      console.log('Logged in user:', userData);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {

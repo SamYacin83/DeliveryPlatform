@@ -48,7 +48,6 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
         const products = await getProducts();
         setProducts(products);
       } catch (error) {
@@ -102,7 +101,7 @@ export default function ProductsPage() {
   const filteredProducts = products
     .filter(product => 
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.type?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.category?.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       if (!sortConfig.key) return 0;
@@ -146,8 +145,8 @@ export default function ProductsPage() {
                   <TableHead onClick={() => handleSort('name')} className="cursor-pointer hover:bg-muted/50">
                     Nom {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </TableHead>
-                  <TableHead onClick={() => handleSort('type')} className="cursor-pointer hover:bg-muted/50">
-                    Type {sortConfig.key === 'type' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  <TableHead onClick={() => handleSort('category')} className="cursor-pointer hover:bg-muted/50">
+                    Catégorie {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </TableHead>
                   <TableHead className="text-right cursor-pointer hover:bg-muted/50" onClick={() => handleSort('price')}>
                     Prix {sortConfig.key === 'price' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
@@ -192,7 +191,7 @@ export default function ProductsPage() {
                   filteredProducts.map((product) => (
                     <TableRow key={product.id}>
                       <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.type?.name}</TableCell>
+                      <TableCell>{product.category?.name}</TableCell>
                       <TableCell className="text-right">
                         {product.price.toFixed(2)} €
                       </TableCell>

@@ -30,24 +30,12 @@ class AxiosInstanceManager {
     });
 
     instance.interceptors.request.use(request => {
-      console.log('Request details:', {
-        url: request.url,
-        method: request.method,
-        data: request.data,
-        headers: request.headers
-      });
       return request;
     });
 
     // Log les réponses
     instance.interceptors.response.use(
       response => {
-        console.log('Response details:', {
-          url: response.config.url,
-          status: response.status,
-          data: response.data, // Ajout du log des données
-          cookies: response.headers['set-cookie']
-        });
         return response;
       },
       error => {

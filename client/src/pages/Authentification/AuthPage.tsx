@@ -103,7 +103,6 @@ const TEMP_CREDENTIALS = {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      console.log("Form values changed:", value);
     });
     return () => subscription.unsubscribe();
   }, [form]);
@@ -152,21 +151,16 @@ const TEMP_CREDENTIALS = {
     const currentRole = form.watch("role");
     const currentFields = steps[step].fields(currentRole);
     const errors = form.formState.errors;
-    
-    console.log("Current Role:", currentRole);
-    console.log("Current Fields:", currentFields);
-    console.log("Form Errors:", errors);
+  
   
     // Vérifie s'il y a des erreurs sur les champs de l'étape en cours
     const hasErrors = currentFields.some((field) => {
       if (field === "address") {
         if (currentRole === "delivery") {
-          console.log("Address Errors:", errors.address);
           return errors.address;
         }
       }
       if (field === "documents" && currentRole === "delivery") {
-        console.log("Documents Errors:", errors.documents);
         return errors.documents;
       }
       return errors[field as keyof typeof errors];
@@ -178,7 +172,6 @@ const TEMP_CREDENTIALS = {
     const isComplete = currentFields.every((field) => {
       if (field === "address") {
         const address = form.watch("address");
-        console.log("Address Values:", address);
         if (!address) return false;
         
         const requiredFields = currentRole === "delivery" 
@@ -188,35 +181,23 @@ const TEMP_CREDENTIALS = {
         const addressComplete = requiredFields.every(key => {
           const value = address[key as keyof typeof address];
           const isValid = value !== undefined && value !== null && String(value).trim() !== '';
-          console.log(`Address field ${key}:`, value, "isValid:", isValid);
           return isValid;
         });
-        
-        console.log("Address Complete:", addressComplete);
         return addressComplete;
       }
       if (field === "documents" && currentRole === "delivery") {
         const documents = form.watch("documents");
-        console.log("Documents Values:", documents);
         if (!documents) return false;
         
         const docsComplete = ['identityCard', 'driversLicense', 'vehicleRegistration', 'insurance'].every(key => {
           const hasDoc = documents[key as keyof typeof documents];
-          console.log(`Document ${key}:`, hasDoc);
           return hasDoc;
         });
-        
-        console.log("Documents Complete:", docsComplete);
         return docsComplete;
       }
       const value = form.watch(field as keyof AuthForm);
-      console.log(`Field ${field}:`, value);
       return value;
     });
-    
-    console.log("Is Complete:", isComplete);
-    console.log("Can Proceed:", !hasErrors && isComplete);
-  
     return !hasErrors && isComplete;
   };
   // ──────────────────────────────────────────────────────────────────────────
@@ -238,18 +219,13 @@ const TEMP_CREDENTIALS = {
 
   // Gérer la soumission du formulaire de connexion
   const handleLogin = async (data: AuthForm) => {
-    console.log("handleLogin called with data:", data);
     try {
-      console.log("Attempting login...");
       // S'assurer que les données sont dans le bon format pour l'API
       const loginData = {
         email: data.email,
         password: data.password
       };
-      console.log("Sending login request with:", loginData);
       await login(data.email, data.password);
-      console.log("Login successful");
-      
       toast({
         title: t("pages.auth.login.success"),
         description: t("pages.auth.login.successDescription"),

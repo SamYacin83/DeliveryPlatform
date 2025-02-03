@@ -65,12 +65,3 @@ export const getProductById = async (id: string) => {
   console.log("Data getProductById: ", data);
   return mapBackendProductToFrontend(data);
 };
-
-// Options de configuration pour les requêtes de produits
-export const productsOptions = {
-  // Durée pendant laquelle les données sont considérées comme "fraîches"
-  staleTime: 1000 * 60 * 5, // 5 minutes
-  
-  // Durée pendant laquelle les données inactives restent en cache
-  cacheTime: 1000 * 60 * 30, // 30 minutes
-};

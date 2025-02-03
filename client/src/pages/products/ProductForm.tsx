@@ -62,28 +62,6 @@ export default function ProductForm() {
   });
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      setIsLoading(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation d'un délai
-        const productTypes = await getAllCatProduct();
-        setProductTypes(productTypes);
-      } catch (error) {
-        console.error('Erreur lors du chargement des categories:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les categories",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, [toast]);
-
-  useEffect(() => {
     const fetchProduct = async () => {
       if (!params?.id) return;
       
@@ -129,6 +107,27 @@ export default function ProductForm() {
     fetchProduct();
   }, [params?.id, form, toast, setLocation]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      try {
+        const productTypes = await getAllCatProduct();
+        setProductTypes(productTypes);
+      } catch (error) {
+        console.error('Erreur lors du chargement des categories:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les categories",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [toast]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
@@ -154,7 +153,6 @@ export default function ProductForm() {
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
-      console.log("Submit product", data, productImage);
       toast({
         title: isEditing ? "Produit modifié" : "Produit créé",
         description: isEditing
@@ -214,7 +212,8 @@ export default function ProductForm() {
                         <FormLabel>Catégorie du produit</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          value={field.value || ""}
+                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -421,3 +420,4 @@ export default function ProductForm() {
     </div>
   );
 }
+

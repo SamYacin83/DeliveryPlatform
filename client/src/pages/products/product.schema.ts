@@ -13,7 +13,7 @@ export const productSchema = z.object({
   quantity: z.number()
     .min(0, "La quantité doit être positive")
     .max(1000000, "La quantité ne peut pas dépasser 1,000,000"),
-    categoryId: z.string().min(1, "Le type de produit est requis"),
+    categoryId: z.string().min(1, "Le catégorie est requis"),
 });
 
 // Types générés à partir du schéma
