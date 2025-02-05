@@ -31,7 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { getProductsOptions } from "@/api/Queries/getProducts";
 import { useQuery } from '@tanstack/react-query';
-import  useProduct  from "@/api/mutation/addProduct";
+import  useDeleteProduct  from "@/api/mutation/deleteProduct";
 
 
 export default function ProductsPage() {
@@ -41,8 +41,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
-  const { saveProduct, isPending } = useProduct();
-  
+  const { deleteProduct } = useDeleteProduct();
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<{
     key: keyof Product | null;
@@ -60,6 +59,7 @@ export default function ProductsPage() {
       try {
         // TODO: Implémenter la suppression
         console.log("Delete product", productToDelete);
+        await deleteProduct(productToDelete);
         toast({
           title: "Produit supprimé",
           description: "Le produit a été supprimé avec succès",

@@ -22,9 +22,9 @@ internal sealed class DeleteProductEndPoint : IEndpoint
            }).RequireAuthorization();
     }
 
-    private static async Task<IResult> DeleteProductAsync(IMediator mediator, [FromBody] ProductDto productDto)
+    private static async Task<IResult> DeleteProductAsync(IMediator mediator, Guid id)
     {
-        var query = new DeleteProductCommand(productDto.Id);
+        var query = new DeleteProductCommand(id);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.NoContent, ApiResults.Problem);

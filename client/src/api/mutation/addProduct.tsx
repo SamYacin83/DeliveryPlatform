@@ -3,8 +3,8 @@ import axios, { AxiosError, HttpStatusCode } from 'axios';
 import { Product, BackendProduct } from '../Interfaces/Product';
 import axiosManager, { ServiceAPI } from '../axiosManager';
 import { toast } from '@/components/ui/use-toast';
-import { NotFoundError } from './errors/NotFoundError';
-import { handleBadRequestStatus, handleConflictStatus } from './errors/errorHandlers';
+import { NotFoundError } from '../errors/NotFoundError';
+import { handleBadRequestStatus, handleConflictStatus } from '../errors/errorHandlers';
 
 interface UseProductMutationResult {
   saveProduct: (product: Product) => Promise<void>;
@@ -31,6 +31,11 @@ export default function useProduct(): UseProductMutationResult {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast({
+        title: "Succès",
+        description: "Le produit a été sauvegardé avec succès",
+        variant: "default",
+      });
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error)) {
