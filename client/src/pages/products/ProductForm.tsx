@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useParams } from "wouter";
 import { getProductById } from "@/api/Queries/getAllProducts";
-import { getAllCatProduct } from "@/api/Queries/getAllCategory";
+import { getCategoriesOptions } from "@/api/Queries/getAllCategory";
 import { productSchema, ProductFormData, defaultProductValues } from "./product.schema";
 import { Category } from "@/types/product";
-
+import { useQuery } from '@tanstack/react-query';
 import {
   Form,
   FormControl,
@@ -39,8 +39,8 @@ import { Upload, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ProductForm() {
+  const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
   const params = useParams<{ id: string }>();
-  const [productTypes, setProductTypes] = useState<Category[]>([]);
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,6 +54,8 @@ export default function ProductForm() {
   });
 
   const isEditing = !!params?.id;
+  
+  const categories = categoriesData?.items ?? [];
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -107,27 +109,6 @@ export default function ProductForm() {
     fetchProduct();
   }, [params?.id, form, toast, setLocation]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setIsLoading(true);
-      try {
-        const productTypes = await getAllCatProduct();
-        setProductTypes(productTypes);
-      } catch (error) {
-        console.error('Erreur lors du chargement des categories:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les categories",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, [toast]);
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
@@ -153,6 +134,9 @@ export default function ProductForm() {
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
+
+      //ajouter un produit 
+      //await addProduct(data);
       toast({
         title: isEditing ? "Produit modifié" : "Produit créé",
         description: isEditing
@@ -221,7 +205,7 @@ export default function ProductForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {productTypes.map((type) => (
+                            {categories.map((type) => (
                               <SelectItem key={type.categoryId} value={type.categoryId}>
                                 {type.name}
                               </SelectItem>
@@ -409,7 +393,7 @@ export default function ProductForm() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Type:{" "}
-                  {productTypes.find((t) => t.categoryId === form.watch("categoryId"))?.name ||
+                  {categories.find((t) => t.categoryId === form.watch("categoryId"))?.name ||
                     "Non spécifié"}
                 </p>
               </div>
@@ -420,4 +404,3 @@ export default function ProductForm() {
     </div>
   );
 }
-

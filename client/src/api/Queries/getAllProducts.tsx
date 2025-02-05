@@ -1,19 +1,9 @@
-// Importation des dépendances nécessaires de React Query
-import { QueryKey } from '@tanstack/react-query';
 import axiosManager, { ServiceAPI } from '../axiosManager';
 import { Product } from '@/types/product';
 
 // Récupération de l'instance axios configurée pour l'API de livraison
 const productsApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
 
-// Définition des clés de requête pour les produits
-// Ces clés sont utilisées par React Query pour la mise en cache et l'invalidation
-export const productsKeys = {
-  // Clé pour tous les produits
-  all: ['products'] as QueryKey,
-  // Clé pour un produit spécifique par ID
-  byId: (id: string) => ['products', id] as QueryKey,
-};
 interface BackendProduct {
   id: string;
   name: string;
@@ -47,21 +37,38 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => {
   };
   return mappedProduct;
 };
-// Fonction pour récupérer tous les produits
-// Cette fonction sera utilisée comme queryFn dans useQuery
+
+/*const mapFrontendProductToBackend = (frontendProduct: Product): BackendProduct => {
+  const mappedProduct = {
+    id: frontendProduct.id,
+    name: frontendProduct.name,
+    description: frontendProduct.description,
+    priceAmount: frontendProduct.price,
+    currency: 'FDJ',
+    pictureUrl: frontendProduct.imageUrl,
+    categoryId: frontendProduct.categoryId,
+    nameCategory: frontendProduct.category?.name || '',
+    stockQuantity: frontendProduct.quantity,
+    isAvailable: true,
+  };
+  return mappedProduct;
+};*/
+
 export const getProducts = async () => {
   const { data } = await productsApi.get<BackendProduct[]>('GetAllProduct');
-  console.log("Data getAllProducts: ", data);
   return data.map(mapBackendProductToFrontend);
 };
 
-// Fonction pour récupérer un produit spécifique par son ID
 export const getProductById = async (id: string) => {
   const { data } = await productsApi.get<BackendProduct>(`GetProduct`, {
     params: {
       productId: id
     }
   });
-  console.log("Data getProductById: ", data);
+  return mapBackendProductToFrontend(data);
+};
+
+export const addProduct = async (product: Product) => {
+  const { data } = await productsApi.post<BackendProduct>('AddProduct', product);
   return mapBackendProductToFrontend(data);
 };
