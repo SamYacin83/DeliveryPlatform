@@ -10,3 +10,14 @@ export interface BackendProduct {
     stockQuantity: number;
     isAvailable: boolean;
   }
+  
+  export interface Product {
+    id: string;
+    name: string;
+    description: string;
+    priceAmount: string;
+    currency: string;
+    pictureUrl: string;
+    categoryId: string;       
+    stockQuantity: number;
+  }

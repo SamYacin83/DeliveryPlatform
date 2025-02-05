@@ -30,6 +30,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DropdownComponent } from "@/components/ui/DropdownComponent";
+import  useProduct  from "@/api/mutation/addProduct";
 
 export default function ProductForm() {
   const params = useParams<{ id: string }>();
@@ -37,7 +38,7 @@ export default function ProductForm() {
   const { data: productData, isLoading: productIsLoading, error: productError } = useQuery(queryOptionsGetProductById(params.id));
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { saveProduct, isPending } = useProduct();
   const isEditing = !!params?.id;
   const categories = categoriesData?.items ?? [];
 
@@ -108,26 +109,23 @@ export default function ProductForm() {
   });
 
   const onSubmit = async (data: ProductFormData) => {
-    setIsSubmitting(true);
     try {
+      const productData = {
+        id: isEditing ? params.id : '',
+        name: data.name,
+        description: data.description,
+        priceAmount: data.price.toString(),
+        currency: 'FDJ',
+        pictureUrl: productImage.preview || '',
+        categoryId: data.categoryId,
+        stockQuantity: data.quantity
+      };
 
-      //ajouter un produit 
-      //await addProduct(data);
-      toast({
-        title: isEditing ? "Produit modifié" : "Produit créé",
-        description: isEditing
-          ? "Le produit a été modifié avec succès"
-          : "Le produit a été créé avec succès",
-      });
+      await saveProduct(productData);
       setLocation("/products");
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la sauvegarde",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
+      // Error handling is managed by the mutation
+      console.error('Error submitting product:', error);
     }
   };
 
@@ -292,11 +290,8 @@ export default function ProductForm() {
                 >
                   Annuler
                 </Button>
-                <Button type="submit" disabled={isSubmitting || productIsLoading}>
-                  {isSubmitting && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  {productIsLoading && (
+                <Button type="submit" disabled={isPending}>
+                  {isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   {isEditing ? "Modifier" : "Créer"}
