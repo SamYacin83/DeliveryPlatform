@@ -93,6 +93,22 @@ public class DeliveryPerson : AggregateRoot
 
         AddDomainEvent(new DeliveryPersonOrderDeliveredEvent(Id, orderId));
     }
+    public void UpdatePersonalInfo(string firstName, string lastName, PhoneNumber phoneNumber, Email email)
+    {
+        if (string.IsNullOrWhiteSpace(firstName))
+            throw new ArgumentNullException(nameof(firstName), "Le prénom ne peut pas être vide.");
+
+        if (string.IsNullOrWhiteSpace(lastName))
+            throw new ArgumentNullException(nameof(lastName), "Le nom ne peut pas être vide.");
+
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber ?? throw new ArgumentNullException(nameof(phoneNumber), "Le numéro de téléphone ne peut pas être nul.");
+        Email = email ?? throw new ArgumentNullException(nameof(email), "L'email ne peut pas être nul.");
+
+        AddDomainEvent(new DeliveryPersonUpdatedEvent(Id, firstName, lastName, phoneNumber, email));
+    }
+
 }
 
 
