@@ -1,21 +1,44 @@
 import axiosManager, { ServiceAPI } from '../axiosManager';
 import { Product } from '@/types/product';
+import { queryOptions } from '@tanstack/react-query';
+import { BackendProduct } from '../Interfaces/Product';
+
+const queryKeys: string[] = ['products'];
+
+const getProducts = async () => {
+  const axios = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
+  const response = await axios.get('GetAllProduct');
+  const data: BackendProduct[] = response.data;
+
+  return {
+    items: data.map((product: BackendProduct) => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.priceAmount,
+      quantity: product.stockQuantity,
+      categoryId: product.categoryId,
+      category: {
+        categoryId: product.categoryId,
+        name: product.nameCategory,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      imageUrl: product.pictureUrl,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })),
+  };
+ };
+
+export const getProductsOptions = () =>
+  queryOptions({
+    queryKey: queryKeys,
+    queryFn: getProducts,
+  });
 
 // Récupération de l'instance axios configurée pour l'API de livraison
 const productsApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
-
-interface BackendProduct {
-  id: string;
-  name: string;
-  description: string;
-  priceAmount: number;
-  currency: string;
-  pictureUrl: string;
-  categoryId: string;      // Le vrai ID de catégorie
-  nameCategory: string;    // Le vrai nom de catégorie
-  stockQuantity: number;
-  isAvailable: boolean;
-}
 
 const mapBackendProductToFrontend = (backendProduct: any): Product => {
   const mappedProduct = {
@@ -24,9 +47,9 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => {
     description: backendProduct.description,
     price: backendProduct.priceAmount, 
     quantity: backendProduct.stockQuantity,
-    categoryId: backendProduct.categoryId, // Devrait être "45b3315a-3795-4f2c-98e9-13ee1eb7cb92"
+    categoryId: backendProduct.categoryId, 
     category: {
-      categoryId: backendProduct.categoryId, // Même ID
+      categoryId: backendProduct.categoryId, 
       name: backendProduct.nameCategory,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -54,11 +77,7 @@ const mapBackendProductToFrontend = (backendProduct: any): Product => {
   return mappedProduct;
 };*/
 
-export const getProducts = async () => {
-  const { data } = await productsApi.get<BackendProduct[]>('GetAllProduct');
-  return data.map(mapBackendProductToFrontend);
-};
-
+/*
 export const getProductById = async (id: string) => {
   const { data } = await productsApi.get<BackendProduct>(`GetProduct`, {
     params: {
@@ -67,7 +86,7 @@ export const getProductById = async (id: string) => {
   });
   return mapBackendProductToFrontend(data);
 };
-
+*/
 export const addProduct = async (product: Product) => {
   const { data } = await productsApi.post<BackendProduct>('AddProduct', product);
   return mapBackendProductToFrontend(data);

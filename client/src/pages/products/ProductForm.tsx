@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useParams } from "wouter";
-import { getProductById } from "@/api/Queries/getAllProducts";
-import { getCategoriesOptions } from "@/api/Queries/getAllCategory";
+import { getCategoriesOptions } from "@/api/Queries/getCategories";
+import { queryOptionsGetProductById } from "@/api/Queries/getProductById";
 import { productSchema, ProductFormData, defaultProductValues } from "./product.schema";
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -32,12 +32,21 @@ import { cn } from "@/lib/utils";
 import { DropdownComponent } from "@/components/ui/DropdownComponent";
 
 export default function ProductForm() {
-  const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
   const params = useParams<{ id: string }>();
+  const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
+  const { data: productData, isLoading: productIsLoading, error: productError } = useQuery(queryOptionsGetProductById(params.id));
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const isEditing = !!params?.id;
+  const categories = categoriesData?.items ?? [];
+
+  const form = useForm<ProductFormData>({
+    resolver: zodResolver(productSchema),
+    defaultValues: defaultProductValues,
+    mode: "onChange",
+  });
+
   const [productImage, setProductImage] = useState<{
     file: File | null;
     preview: string | null;
@@ -46,61 +55,35 @@ export default function ProductForm() {
     preview: null,
   });
 
-  const isEditing = !!params?.id;
-  
-  const categories = categoriesData?.items ?? [];
-
-  const form = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-    defaultValues: defaultProductValues,
-    mode: "onChange", // Validation en temps réel
-  });
+  useEffect(() => {
+    if (productError) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les données du produit",
+        variant: "destructive",
+      });
+      setLocation("/products");
+    }
+  }, [productError, toast, setLocation]);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!params?.id) return;
-      
-      try {
-        setIsLoading(true);
-        const response = await getProductById(params.id);
-        if (!response) {
-          toast({
-            title: "Erreur",
-            description: "Produit non trouvé",
-            variant: "destructive",
-          });
-          setLocation("/products");
-          return;
-        }
-        // Mettre à jour les valeurs du formulaire
-        form.reset({
-          name: response.name,
-          description: response.description,
-          price: response.price,
-          quantity: response.quantity,
-          categoryId: response.categoryId
-        });
-        
-        if (response.imageUrl) {
-          setProductImage({
-            file: null,
-            preview: response.imageUrl
-          });
-        }
-      } catch (error) {
-        console.error("Erreur:", error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les données du produit",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (productData && isEditing) {
+      form.reset({
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        quantity: productData.quantity,
+        categoryId: productData.categoryId
+      });
 
-    fetchProduct();
-  }, [params?.id, form, toast, setLocation]);
+      if (productData.imageUrl) {
+        setProductImage({
+          file: null,
+          preview: productData.imageUrl
+        });
+      }
+    }
+  }, [productData, isEditing, form]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -309,11 +292,11 @@ export default function ProductForm() {
                 >
                   Annuler
                 </Button>
-                <Button type="submit" disabled={isSubmitting || isLoading}>
+                <Button type="submit" disabled={isSubmitting || productIsLoading}>
                   {isSubmitting && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {isLoading && (
+                  {productIsLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   {isEditing ? "Modifier" : "Créer"}

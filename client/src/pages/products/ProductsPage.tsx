@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,12 +29,13 @@ import { Input } from "@/components/ui/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
-import { getProducts } from "@/api/Queries/getAllProducts";
+import { getProductsOptions } from "@/api/Queries/getProducts";
+import { useQuery } from '@tanstack/react-query';
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const { data: productsData, isLoading: productsIsLoading, error: productsError } = useQuery(getProductsOptions());
   const [location, setLocation] = useLocation();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
@@ -44,27 +45,7 @@ export default function ProductsPage() {
     direction: 'asc' | 'desc';
   }>({ key: null, direction: 'asc' });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const products = await getProducts();
-        setProducts(products);
-      } catch (error) {
-        console.error('Erreur lors du chargement des produits:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les produits",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [toast]);
-
+  const products = productsData?.items ?? [];
   const handleDelete = async (id: string) => {
     setProductToDelete(id);
     setDeleteDialogOpen(true);
