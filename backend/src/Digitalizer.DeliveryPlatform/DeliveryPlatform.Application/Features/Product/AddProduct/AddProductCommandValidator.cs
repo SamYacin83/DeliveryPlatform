@@ -20,6 +20,11 @@ public class AddProductCommandValidator : AbstractValidator<AddProductCommand>
             .WithErrorCode("Duplicate")
             .WithMessage("A product with this name already exists");
 
+        RuleFor(x => x.PictureUrl)
+            .NotEmpty()
+            .WithErrorCode("Required")
+            .WithMessage("Picture URL cannot be empty");
+
         RuleFor(x => x.Description)
             .MaximumLength(500)
             .WithMessage("Description cannot exceed 500 characters");

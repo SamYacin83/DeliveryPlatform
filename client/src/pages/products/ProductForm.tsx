@@ -35,7 +35,7 @@ import  useProduct  from "@/api/mutation/addProduct";
 export default function ProductForm() {
   const params = useParams<{ id: string }>();
   const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
-  const { data: productData, isLoading: productIsLoading, error: productError } = useQuery(queryOptionsGetProductById(params.id));
+  const { data: productData, isLoading: productIsLoading, error: productError } = useQuery(queryOptionsGetProductById(params?.id));
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const { saveProduct, isPending } = useProduct();
@@ -57,7 +57,7 @@ export default function ProductForm() {
   });
 
   useEffect(() => {
-    if (productError) {
+    if (productError && isEditing) {
       toast({
         title: "Erreur",
         description: "Impossible de charger les données du produit",
@@ -65,7 +65,7 @@ export default function ProductForm() {
       });
       setLocation("/products");
     }
-  }, [productError, toast, setLocation]);
+  }, [productError, isEditing, toast, setLocation]);
 
   useEffect(() => {
     if (productData && isEditing) {

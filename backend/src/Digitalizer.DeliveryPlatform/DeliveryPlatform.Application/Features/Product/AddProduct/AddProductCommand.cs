@@ -7,4 +7,5 @@ public record AddProductCommand(
     decimal Price,
     string Currency,
     Guid CategoryId,
+    Uri PictureUrl,
     int StockQuantity) : ICommand<ProductDto>;

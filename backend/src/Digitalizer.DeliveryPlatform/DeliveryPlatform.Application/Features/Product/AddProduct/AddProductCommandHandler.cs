@@ -16,6 +16,7 @@ public class AddProductCommandHandler(
         var product = DomainProduct.Create(
             request.Name,
             request.Description,
+            request.PictureUrl,
             money,
             request.CategoryId,
             request.StockQuantity);

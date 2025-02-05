@@ -13,6 +13,7 @@ interface UseProductMutationResult {
 
 const addProduct = async (product: Product) => {
   const axiosInstance = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
+  console.log(' AddProduct ',product);
   const { data } = await axiosInstance.post<BackendProduct>('AddProduct', product);
   return data;
 };

@@ -19,6 +19,7 @@ public class Product : AggregateRoot
     public static Product Create(
         string name,
         string description,
+        Uri pictureUrl,
         Money price,
         Guid categoryId,
         int stockQuantity)
@@ -35,6 +36,7 @@ public class Product : AggregateRoot
                           Name = name,
                           Description = description,
                           Price = price,
+                          PictureUrl = pictureUrl,
                           CategoryId = categoryId,
                           StockQuantity = stockQuantity
                       };

@@ -24,7 +24,7 @@ internal sealed class AddProductEndPoint : IEndpoint
 
     private static async Task<IResult> AddProductAsync(IMediator mediator, [FromBody] ProductDto productDto)
     {
-        var query = new AddProductCommand(productDto.Name, productDto.Description, productDto.PriceAmount, productDto.Currency,productDto.CategoryId, productDto.StockQuantity);
+        var query = new AddProductCommand(productDto.Name, productDto.Description, productDto.PriceAmount, productDto.Currency,productDto.CategoryId, productDto.PictureUrl,productDto.StockQuantity);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.Ok, ApiResults.Problem);

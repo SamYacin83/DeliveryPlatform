@@ -1,10 +1,11 @@
 import axiosManager, { ServiceAPI } from '../axiosManager';
-import { queryOptions } from '@tanstack/react-query';
 import { BackendProduct } from '../Interfaces/Product';
 
 const queryKey = 'product';
 
-const getProductById = async (id: string) => {
+const getProductById = async (id: string | undefined) => {
+    if (!id) return null;
+    
     const axios = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
     const response = await axios.get<BackendProduct>(`GetProduct`,
         {
@@ -34,9 +35,8 @@ const getProductById = async (id: string) => {
     };
 };
 
-export const queryOptionsGetProductById = (id: string) => {
-    return queryOptions({
-        queryKey: [queryKey, id],
-        queryFn: () => getProductById(id),
-    });
-};
+export const queryOptionsGetProductById = (id: string | undefined) => ({
+    queryKey: [queryKey, id],
+    queryFn: () => getProductById(id),
+    enabled: !!id
+});

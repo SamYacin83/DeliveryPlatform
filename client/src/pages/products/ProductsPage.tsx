@@ -31,6 +31,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { getProductsOptions } from "@/api/Queries/getProducts";
 import { useQuery } from '@tanstack/react-query';
+import  useProduct  from "@/api/mutation/addProduct";
+
 
 export default function ProductsPage() {
   const { data: productsData, isLoading: productsIsLoading, error: productsError } = useQuery(getProductsOptions());
@@ -39,6 +41,8 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const { saveProduct, isPending } = useProduct();
+  
   const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<{
     key: keyof Product | null;
@@ -102,7 +106,7 @@ export default function ProductsPage() {
               <CardTitle>Produits</CardTitle>
               <CardDescription>Gérez vos produits ici</CardDescription>
             </div>
-            <Button onClick={() => setLocation("/products/add")}>
+            <Button onClick={() => setLocation("/products/edit")}>
               <Plus className="mr-2 h-4 w-4" /> Ajouter
             </Button>
           </div>
@@ -161,7 +165,7 @@ export default function ProductsPage() {
                         <div className="flex flex-col items-center justify-center text-muted-foreground">
                           <Package className="h-8 w-8 mb-2" />
                           <p>Aucun produit n'a été ajouté</p>
-                          <Button variant="link" onClick={() => setLocation("/products/add")}>
+                          <Button variant="link" onClick={() => setLocation("/products/edit")}>
                             Ajouter un produit
                           </Button>
                         </div>

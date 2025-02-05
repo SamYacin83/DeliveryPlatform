@@ -91,6 +91,12 @@ function App() {
             </ProtectedRoute>
           </Route>
 
+          <Route path="/products/edit">
+            <ProtectedRoute>
+              <ProductForm />
+            </ProtectedRoute>
+          </Route>
+
           <Route path="/products/edit/:id">
             <ProtectedRoute>
               <ProductForm />
