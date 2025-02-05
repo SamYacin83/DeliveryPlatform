@@ -5,7 +5,6 @@ import { useLocation, useParams } from "wouter";
 import { getProductById } from "@/api/Queries/getAllProducts";
 import { getCategoriesOptions } from "@/api/Queries/getAllCategory";
 import { productSchema, ProductFormData, defaultProductValues } from "./product.schema";
-import { Category } from "@/types/product";
 import { useQuery } from '@tanstack/react-query';
 import {
   Form,
@@ -25,18 +24,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useDropzone } from "react-dropzone";
 import { Upload, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DropdownComponent } from "@/components/ui/DropdownComponent";
 
 export default function ProductForm() {
   const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
@@ -188,36 +181,13 @@ export default function ProductForm() {
                     )}
                   />
 
-                  <FormField
+                  <DropdownComponent 
                     control={form.control}
                     name="categoryId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Catégorie du produit</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Sélectionnez une catégorie" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {categories.map((type) => (
-                              <SelectItem key={type.categoryId} value={type.categoryId}>
-                                {type.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          La catégorie du produit
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    options={categories?.map(cat => ({ id: cat.categoryId, label: cat.name })) || []}
+                    isLoading={categoriesIsLoading}
+                    error={!!categoriesError}
+                    label="Catégorie"
                   />
 
                   <div className="grid grid-cols-2 gap-4">
