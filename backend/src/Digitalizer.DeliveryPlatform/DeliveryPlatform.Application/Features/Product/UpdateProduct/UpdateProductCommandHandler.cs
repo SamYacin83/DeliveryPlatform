@@ -10,7 +10,11 @@ public class UpdateProductCommandHandler(IProductRepository repository, IProduct
 {
     public async Task<Result<ProductDto>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await repository.GetByIdAsync(request.Id).ConfigureAwait(false);
+        if (request.Id == null)
+            return (Result<ProductDto>)Result.Failure(new ErrorResult("InvalidId", "Product Id cannot be null", ErrorType.Validation));
+
+        var product = await repository.GetByIdAsync(request.Id.Value).ConfigureAwait(false);
+
         if (product == null)
             return Result.Failure<ProductDto>(ErrorResult.NotFound("ProductNotFound", $"Product with ID {request.Id} not found."));
 

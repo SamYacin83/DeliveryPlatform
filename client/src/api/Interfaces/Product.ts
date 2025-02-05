@@ -10,9 +10,9 @@ export interface BackendProduct {
     stockQuantity: number;
     isAvailable: boolean;
   }
-  
+
   export interface Product {
-    id: string;
+    id: string | null;
     name: string;
     description: string;
     priceAmount: string;

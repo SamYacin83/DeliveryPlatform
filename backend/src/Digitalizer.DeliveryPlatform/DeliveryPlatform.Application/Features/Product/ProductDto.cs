@@ -1,7 +1,7 @@
 ﻿namespace Digitalizer.DeliveryPlatform.Application.Features.Product;
 public class ProductDto
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public decimal PriceAmount { get; set; }

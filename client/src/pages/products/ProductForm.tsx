@@ -111,12 +111,12 @@ export default function ProductForm() {
   const onSubmit = async (data: ProductFormData) => {
     try {
       const productData = {
-        id: isEditing ? params.id : '',
+        id: isEditing ? params.id : null,
         name: data.name,
         description: data.description,
         priceAmount: data.price.toString(),
         currency: 'FDJ',
-        pictureUrl: productImage.preview || '',
+        pictureUrl: '/images/products/sb-core1.png',//productImage.preview || '',
         categoryId: data.categoryId,
         stockQuantity: data.quantity
       };
