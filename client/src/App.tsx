@@ -10,7 +10,6 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 // Pages
 import AuthPage from "./pages/Authentification/AuthPage";
 import HomePage from "./pages/HomePage";
-import SupplierDashboard from "./pages/SupplierDashboard";
 import AboutPage from "./pages/AboutPage";
 import ProfilePage from "./pages/ProfilePage";
 import HowItWorksPage from "./pages/HowItWorksPage";

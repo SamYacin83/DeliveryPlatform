@@ -1,4 +1,5 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Interfaces;
+﻿using Digitalizer.DeliveryPlatform.Application.Features.Product;
+using Digitalizer.DeliveryPlatform.Application.Interfaces;
 using Digitalizer.DeliveryPlatform.Common.Messaging;
 using Digitalizer.DeliveryPlatform.Common.Results;
 using Digitalizer.DeliveryPlatform.Domain.Aggregates.ProductCategory;
@@ -8,7 +9,11 @@ public class UpdateProductCategoryHandler(IProductCategoryRepository repositoryC
 {
     public async Task<Result<ProductCategoryDto>> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
     {
-       var category = await repositoryCategory.GetByIdAsync(request.Id).ConfigureAwait(false);
+        if(request.Id == null)
+          return (Result<ProductCategoryDto>)Result.Failure(new ErrorResult("InvalidId", "Category Id cannot be null", ErrorType.Validation));
+
+        var category = await repositoryCategory.GetByIdAsync(request.Id.Value).ConfigureAwait(false);
+
         if (category == null)
             return Result.Failure<ProductCategoryDto>(ErrorResult.NotFound("CategoryNotFound", $"Category with ID {request.Id} not found."));
 

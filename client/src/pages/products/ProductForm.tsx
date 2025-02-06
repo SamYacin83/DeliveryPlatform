@@ -341,7 +341,7 @@ export default function ProductForm() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Type:{" "}
-                  {categories.find((t) => t.categoryId === form.watch("categoryId"))?.name ||
+                  {categories.find((t) => t.categoryId === form.watch("categoryId"))?.name ??
                     "Non spécifié"}
                 </p>
               </div>
