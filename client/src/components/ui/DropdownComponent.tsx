@@ -3,7 +3,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Control, FieldValues, Path } from "react-hook-form";
 
 interface Option {
-  id: string;
+  id: string | null ;
   label: string;
 }
 
