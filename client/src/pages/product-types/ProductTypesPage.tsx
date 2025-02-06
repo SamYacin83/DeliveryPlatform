@@ -27,12 +27,13 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import  useDeleteCategory  from "@/api/mutation/deleteCategory";
 
 export default function ProductTypesPage() {
   const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-
+  const { deleteCategory } = useDeleteCategory();
   const categories = categoriesData?.items ?? [];
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function ProductTypesPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      // TODO: Implement category deletion
+      await deleteCategory(id);
       toast({
         title: "Succès",
         description: "Catégorie supprimée avec succès",

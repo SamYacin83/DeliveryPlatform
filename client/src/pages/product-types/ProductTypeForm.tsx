@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Category, CreateProductTypeDto } from "@/types/product";
+import { Category } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +27,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queryOptionsGetCategoryById } from "@/api/Queries/getCategorieById";
 import  useCategory  from "@/api/mutation/addCategory";
 import { CategoryDto } from "@/api/Interfaces/Category";
+import  useDeleteCategory  from "@/api/mutation/deleteCategory";
 
 const productTypeSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
