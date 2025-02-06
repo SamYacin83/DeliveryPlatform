@@ -22,12 +22,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getCategoriesOptions } from "@/api/Queries/getCategories";
-import { Edit, MoreHorizontal, Plus, Trash } from "lucide-react";
+import { Edit, IdCard, MoreHorizontal, Plus, Trash } from "lucide-react";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import  useDeleteCategory  from "@/api/mutation/deleteCategory";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useState } from "react";
 
 export default function ProductTypesPage() {
   const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
@@ -35,6 +37,8 @@ export default function ProductTypesPage() {
   const { toast } = useToast();
   const { deleteCategory } = useDeleteCategory();
   const categories = categoriesData?.items ?? [];
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (categoriesError) {
@@ -47,19 +51,28 @@ export default function ProductTypesPage() {
   }, [categoriesError, toast]);
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteCategory(id);
-      toast({
-        title: "Succès",
-        description: "Catégorie supprimée avec succès",
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la catégorie",
-        variant: "destructive",
-      });
+    setCategoryToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (categoryToDelete) {
+      try {
+        await deleteCategory(categoryToDelete);
+        toast({
+          title: "Succès",
+          description: "Catégorie supprimée avec succès",
+        });
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de supprimer la catégorie",
+          variant: "destructive",
+        });
+      }
     }
+    setDeleteDialogOpen(false);
+    setCategoryToDelete(null);
   };
 
   return (
@@ -124,7 +137,7 @@ export default function ProductTypesPage() {
                               <span>Modifier</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleDelete(category.categoryId)}
+                              onClick={() => category.categoryId && handleDelete(category.categoryId)}
                               className="text-red-600"
                             >
                               <Trash className="mr-2 h-4 w-4" />
@@ -141,6 +154,20 @@ export default function ProductTypesPage() {
           </div>
         </CardContent>
       </Card>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Cela supprimera définitivement la catégorie.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">Supprimer</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
