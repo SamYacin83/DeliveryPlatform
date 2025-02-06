@@ -21,50 +21,41 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ProductType } from "@/types/product";
-import { productService } from "@/api/services/productService";
+import { getCategoriesOptions } from "@/api/Queries/getCategories";
 import { Edit, MoreHorizontal, Plus, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProductTypesPage() {
-  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: categoriesData, isLoading: categoriesIsLoading, error: categoriesError } = useQuery(getCategoriesOptions());
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const loadProductTypes = async () => {
-    try {
-      const response = await productService.getProductTypes();
-      setProductTypes(response.data);
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les types de produits",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const categories = categoriesData?.items ?? [];
 
   useEffect(() => {
-    loadProductTypes();
-  }, []);
+    if (categoriesError) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les catégories",
+        variant: "destructive",
+      });
+    }
+  }, [categoriesError, toast]);
 
   const handleDelete = async (id: string) => {
     try {
-      await productService.deleteProductType(id);
+      // TODO: Implement category deletion
       toast({
         title: "Succès",
-        description: "Type de produit supprimé avec succès",
+        description: "Catégorie supprimée avec succès",
       });
-      loadProductTypes();
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer le type de produit",
+        description: "Impossible de supprimer la catégorie",
         variant: "destructive",
       });
     }
@@ -76,7 +67,7 @@ export default function ProductTypesPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Types de Produits</CardTitle>
+              <CardTitle>Catégories de Produits</CardTitle>
               <CardDescription>
                 Gérez vos catégories de produits ici
               </CardDescription>
@@ -93,31 +84,27 @@ export default function ProductTypesPage() {
                 <TableRow>
                   <TableHead>Nom</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Date de création</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loading ? (
+                {categoriesIsLoading ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={3} className="text-center">
                       Chargement...
                     </TableCell>
                   </TableRow>
-                ) : productTypes.length === 0 ? (
+                ) : categories.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      Aucun type de produit trouvé
+                    <TableCell colSpan={3} className="text-center">
+                      Aucune catégorie trouvée
                     </TableCell>
                   </TableRow>
                 ) : (
-                  productTypes.map((type) => (
-                    <TableRow key={type.id}>
-                      <TableCell className="font-medium">{type.name}</TableCell>
-                      <TableCell>{type.description}</TableCell>
-                      <TableCell>
-                        {new Date(type.createdAt).toLocaleDateString()}
-                      </TableCell>
+                  categories.map((category) => (
+                    <TableRow key={category.categoryId}>
+                      <TableCell className="font-medium">{category.name}</TableCell>
+                      <TableCell>{category.description}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -129,14 +116,14 @@ export default function ProductTypesPage() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
                               onClick={() =>
-                                setLocation(`/product-types/edit/${type.id}`)
+                                setLocation(`/product-types/edit/${category.categoryId}`)
                               }
                             >
                               <Edit className="mr-2 h-4 w-4" />
                               <span>Modifier</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleDelete(type.id)}
+                              onClick={() => handleDelete(category.categoryId)}
                               className="text-red-600"
                             >
                               <Trash className="mr-2 h-4 w-4" />

@@ -21,9 +21,9 @@ internal sealed class GetByIdProductCategoryEndPoint : IEndpoint
            }).RequireAuthorization();
     }
 
-    private static async Task<IResult> GetByIdProductCatAsync(IMediator mediator, Guid productId)
+    private static async Task<IResult> GetByIdProductCatAsync(IMediator mediator, Guid categoryId)
     {
-        var query = new GetProductCategoryQuery(productId);
+        var query = new GetProductCategoryQuery(categoryId);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.Ok, ApiResults.Problem);

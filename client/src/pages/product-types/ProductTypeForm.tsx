@@ -16,14 +16,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CreateProductTypeDto, ProductType } from "@/types/product";
-import { productService } from "@/api/services/productService";
+import { Category, CreateProductTypeDto } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useRoute } from "wouter";
+import { useLocation, useParams } from "wouter";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from '@tanstack/react-query';
+import { queryOptionsGetCategoryById } from "@/api/Queries/getCategorieById";
+import  useCategory  from "@/api/mutation/addCategory";
+import { CategoryDto } from "@/api/Interfaces/Category";
 
 const productTypeSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -31,12 +34,15 @@ const productTypeSchema = z.object({
 });
 
 export default function ProductTypeForm() {
-  const [params] = useRoute("/product-types/:id");
+  const params = useParams<{ categoryId: string }>();
+  const { data: categoryData, isLoading: categoryIsLoading, error: categoryError } = useQuery(queryOptionsGetCategoryById(params?.categoryId));
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const isEditing = !!params?.id;
-
-  const form = useForm<CreateProductTypeDto>({
+  const { saveCategory, isPending } = useCategory();
+  const isEditing = !!params?.categoryId;
+  console.log('isEditing', isEditing);
+  console.log('params', params?.categoryId);
+  const form = useForm<CategoryDto>({
     resolver: zodResolver(productTypeSchema),
     defaultValues: {
       name: "",
@@ -44,54 +50,58 @@ export default function ProductTypeForm() {
     },
   });
 
+  console.log('categoryData', categoryData);
+
   useEffect(() => {
-    if (isEditing) {
-      loadProductType();
+    if (categoryError && isEditing) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les données de la catégorie",
+        variant: "destructive",
+      });
+      setLocation("/product-types");
     }
-  }, [params?.id]);
+  }, [categoryError, isEditing, setLocation, toast]);
 
-  const loadProductType = async () => {
-    try {
-      const response = await productService.getProductType(params!.id);
-      const productType = response.data;
+  useEffect(() => {
+    if (categoryData && isEditing) {
       form.reset({
-        name: productType.name,
-        description: productType.description,
+        name: categoryData.name,
+        description: categoryData.description,
       });
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger le type de produit",
-        variant: "destructive",
-      });
+    }
+  }, [categoryData, form]);
+
+  const onSubmit = async (data: CategoryDto) => {
+    try {
+      const category: Category = {
+        categoryId: params?.categoryId || null,
+        name: data.name,
+        description: data.description,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      await saveCategory(category);
       setLocation("/product-types");
+    } catch (error) {
+      // Error handling is done in the mutation
+      console.error(error);
     }
   };
 
-  const onSubmit = async (data: CreateProductTypeDto) => {
-    try {
-      if (isEditing) {
-        await productService.updateProductType(params!.id, data);
-        toast({
-          title: "Succès",
-          description: "Type de produit modifié avec succès",
-        });
-      } else {
-        await productService.createProductType(data);
-        toast({
-          title: "Succès",
-          description: "Type de produit créé avec succès",
-        });
-      }
-      setLocation("/product-types");
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'enregistrement",
-        variant: "destructive",
-      });
-    }
-  };
+  if (isEditing && categoryIsLoading) {
+    return (
+      <div className="container mx-auto p-4">
+        <Card>
+          <CardContent>
+            <div className="flex justify-center items-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -102,8 +112,8 @@ export default function ProductTypeForm() {
           </CardTitle>
           <CardDescription>
             {isEditing
-              ? "Modifiez les informations du type de produit"
-              : "Créez un nouveau type de produit"}
+              ? "Modifier les informations du type de produit"
+              : "Ajouter un nouveau type de produit"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,7 +126,7 @@ export default function ProductTypeForm() {
                   <FormItem>
                     <FormLabel>Nom</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +140,7 @@ export default function ProductTypeForm() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -142,10 +152,11 @@ export default function ProductTypeForm() {
                   type="button"
                   variant="outline"
                   onClick={() => setLocation("/product-types")}
+                  disabled={isPending}
                 >
                   Annuler
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={isPending}>
                   {isEditing ? "Modifier" : "Créer"}
                 </Button>
               </div>
