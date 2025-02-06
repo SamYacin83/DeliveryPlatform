@@ -121,17 +121,17 @@ export default function ArticleDetailModal({
                   <CustomButton
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
                     <Minus className="h-4 w-4" />
                   </CustomButton>
-                  <span className="w-12 text-center">{quantity}</span>
+                  <span className="w-12 text-center font-medium">{quantity}</span>
                   <CustomButton
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
                     onClick={() => setQuantity(Math.min(article.stock, quantity + 1))}
                     disabled={quantity >= article.stock}
                   >
