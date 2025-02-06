@@ -210,7 +210,7 @@ export default function ArticlesPage() {
                 size="sm"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
-                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center"
+                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
               >
                 <ChevronLeft className="h-4 w-4" />
                 <ChevronLeft className="h-4 w-4 -ml-2" />
@@ -220,7 +220,7 @@ export default function ArticlesPage() {
                 size="sm"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
               >
                 <ChevronLeft className="h-4 w-4" />
               </CustomButton>
@@ -248,8 +248,10 @@ export default function ArticlesPage() {
                           size="sm"
                           onClick={() => handlePageChange(page)}
                           className={cn(
-                            "h-8 w-8 p-0",
-                            currentPage === page && "bg-primary text-primary-foreground hover:bg-primary/90"
+                            "h-8 w-8 p-0 font-medium",
+                            currentPage === page 
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : "text-foreground/90 hover:bg-accent hover:text-accent-foreground"
                           )}
                         >
                           {page}
@@ -263,8 +265,10 @@ export default function ArticlesPage() {
                         size="sm"
                         onClick={() => handlePageChange(page)}
                         className={cn(
-                          "h-8 w-8 p-0",
-                          currentPage === page && "bg-primary text-primary-foreground hover:bg-primary/90"
+                          "h-8 w-8 p-0 font-medium",
+                          currentPage === page 
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                            : "text-foreground/90 hover:bg-accent hover:text-accent-foreground"
                         )}
                       >
                         {page}
@@ -278,7 +282,7 @@ export default function ArticlesPage() {
                 size="sm"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
               >
                 <ChevronRight className="h-4 w-4" />
               </CustomButton>
@@ -287,7 +291,7 @@ export default function ArticlesPage() {
                 size="sm"
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages}
-                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center"
+                className="hidden sm:inline-flex h-8 w-8 p-0 items-center justify-center text-foreground/90 hover:bg-accent hover:text-accent-foreground font-medium disabled:opacity-50"
               >
                 <ChevronRight className="h-4 w-4" />
                 <ChevronRight className="h-4 w-4 -ml-2" />
