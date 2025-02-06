@@ -29,6 +29,18 @@ const routes: Record<string, RouteInfo> = {
     label: 'Modifier le produit',
     description: 'Modifier les informations du produit'
   },
+  '/product-types': {
+    label: 'Catégories',
+    description: 'Liste de toutes les catégories'
+  },
+  '/product-types/add': {
+    label: 'Nouvelle catégorie',
+    description: 'Créer une nouvelle catégorie'
+  },
+  '/product-types/edit': {
+    label: 'Modifier la catégorie',
+    description: 'Modifier les informations de la catégorie'
+  },
   '/about': {
     label: 'À propos',
     description: 'En savoir plus sur RapidLivre et notre mission'
@@ -93,6 +105,29 @@ export default function Breadcrumb() {
         path: location,
         label: 'Modifier le produit',
         description: 'Modifier les informations du produit'
+      });
+    }
+  } else if (pathSegments[0] === 'product-types') {
+    breadcrumbItems.push({
+      path: '/product-types',
+      label: 'Catégories',
+      description: 'Liste de toutes les catégories'
+    });
+
+    // Gérer les cas d'édition et de création
+    if (pathSegments[1] === 'add') {
+      // Mode création d'une nouvelle catégorie
+      breadcrumbItems.push({
+        path: location,
+        label: 'Nouvelle catégorie',
+        description: 'Créer une nouvelle catégorie'
+      });
+    } else if (pathSegments[1] === 'edit' && pathSegments[2]) {
+      // Mode édition d'une catégorie existante
+      breadcrumbItems.push({
+        path: location,
+        label: 'Modifier la catégorie',
+        description: 'Modifier les informations de la catégorie'
       });
     }
   } else {
