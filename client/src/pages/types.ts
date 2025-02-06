@@ -16,6 +16,7 @@ export interface DocumentProgress {
 export interface AuthForm {
   username: string;
   password: string;
+  confirmPassword?: string;
   firstName: string;
   lastName: string;
   email: string;

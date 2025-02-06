@@ -67,6 +67,9 @@ export const createAuthSchema = (t: TFunction) => {
       .regex(/[A-Z]/, t('pages.auth.validation.password.uppercase'))
       .regex(/[a-z]/, t('pages.auth.validation.password.lowercase'))
       .regex(/\d/, t('pages.auth.validation.password.number')),
+    confirmPassword: z
+      .string()
+      .min(1, t('pages.auth.validation.confirmPassword.required')),
     firstName: z
       .string()
       .min(2, t('pages.auth.validation.firstName.required')),
@@ -103,7 +106,10 @@ export const createAuthSchema = (t: TFunction) => {
       address: createClientAddressSchema(t).optional(),
       documents: createOptionalDocumentSchema().optional(),
     }),
-  ]);
+  ]).refine((data) => data.password === data.confirmPassword, {
+    message: t('pages.auth.validation.password.match'),
+    path: ['confirmPassword'],
+  });
 };
 
 // Schéma de connexion simplifié

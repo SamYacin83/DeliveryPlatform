@@ -113,15 +113,26 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
           </div>
 
           <div>
-            <label htmlFor="password-register" className="sr-only">{t('auth:fields.password')}</label>
+            <label htmlFor="password" className="sr-only">{t('auth:fields.password')}</label>
             <Input
-              id="password-register"
+              id="password"
               type="password"
               placeholder={t('auth:fields.password')}
               {...register("password")}
               className="h-9"
             />
             {formState.errors.password && <p className="text-red-500 text-xs mt-1">{formState.errors.password.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="confirmPassword" className="sr-only">{t('auth:fields.confirmPassword')}</label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder={t('auth:fields.confirmPassword')}
+              {...register("confirmPassword")}
+              className="h-9"
+            />
+            {formState.errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{formState.errors.confirmPassword.message}</p>}
           </div>
         </>
       )}

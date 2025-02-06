@@ -402,9 +402,9 @@ const TEMP_CREDENTIALS = {
                         <Button
                           type="submit"
                           className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
-                          disabled={isAuthLoading}
+                          disabled={isLoading}
                         >
-                          {isAuthLoading ? (
+                          {isLoading ? (
                             <>
 
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
