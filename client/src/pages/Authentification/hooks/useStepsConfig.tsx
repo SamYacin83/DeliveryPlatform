@@ -14,7 +14,7 @@ export const useStepsConfig = () => {
   const steps = useMemo(() => [
     {
       titleKey: "auth:steps.personalInfo",
-      fields: () => ["firstName", "lastName", "email", "phone"],
+      fields: () => ["firstName", "lastName", "email", "phone", "birthDate", "password", "confirmPassword"],
     },
     {
       titleKey: "auth:steps.role",
