@@ -14,14 +14,13 @@ export interface Customer {
   firstName: string;
   lastName: string;
   birthDate: string;
-  address: Address;
+  adress: Address;
   account: Account;
 }
 
 export interface CustomerFormData {
     email: string;
     password: string;
-    confirmPassword: string;
     firstName: string;
     lastName: string;
     birthDate: string;

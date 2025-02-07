@@ -7,7 +7,7 @@ import { handleBadRequestStatus, handleConflictStatus } from '../errors/errorHan
 import { Customer, CustomerFormData } from '../Interfaces/Customer';
 
 interface UseCustomerMutationResult {
-  saveCustomer: (customer: Customer) => Promise<void>;
+  saveCustomer: (customer: CustomerFormData) => Promise<void>;
   isPending: boolean;
 }
 
@@ -16,7 +16,7 @@ const mapFormDataToCustomer = (formData: CustomerFormData): Customer => {
     firstName: formData.firstName,
     lastName: formData.lastName,
     birthDate: formData.birthDate,
-    address: {
+    adress: {
       street: formData.address.street,
       city: formData.address.city,
       postalCode: formData.address.postalCode,
@@ -33,17 +33,16 @@ const mapCustomerToFormData = (customer: Customer): CustomerFormData => {
   return {
     email: customer.account.email,
     password: customer.account.password,
-    confirmPassword: customer.account.password,
     firstName: customer.firstName,
     lastName: customer.lastName,
     birthDate: customer.birthDate,
     phone: '',
     role: 'customer',
     address: {
-      street: customer.address.street,
-      city: customer.address.city,
-      postalCode: customer.address.postalCode,
-      country: customer.address.country
+      street: customer.adress.street,
+      city: customer.adress.city,
+      postalCode: customer.adress.postalCode,
+      country: customer.adress.country
     }
   };
 };
@@ -86,9 +85,8 @@ export default function useCustomer(): UseCustomerMutationResult {
     },
   });
 
-  const saveCustomer = async (customer: Customer) => {
-    const formData = mapCustomerToFormData(customer);
-    return mutation.mutateAsync(formData);
+  const saveCustomer = async (customer: CustomerFormData) => {
+    return mutation.mutateAsync(customer);
   };
 
   return {

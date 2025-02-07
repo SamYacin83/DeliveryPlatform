@@ -15,12 +15,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useStepsConfig } from './hooks/useStepsConfig';
 import { createAuthSchema, createLoginSchema } from './validation/validation';
 import { handleError } from "@/utils/errorHandler";
-
+import  useCustomer  from "@/api/mutation/addCustomer";
 import { ClientConfirmationStep } from "@/components/steps/components/Confirmation/ClientConfirmationStep";
 import { DeliveryConfirmationStep } from "../../components/steps/components/Confirmation/DeliveryConfirmationStep";
 import { SupplierConfirmationStep } from "../../components/steps/components/Confirmation/SupplierConfirmationStep"; 
 // Vos types (utilisés dans le schéma et le formulaire)
 import { AuthForm, DocumentProgress, UserRole } from "../types";
+import { CustomerFormData } from "@/api/Interfaces/Customer";
 
 // Vos composants d'étapes + la barre de progression
 import ProgressBar from "@/components/ProgressBar";
@@ -51,6 +52,8 @@ const ConfirmationStepWrapper = ({ form }: ConfirmationStepProps) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function AuthPage() {
+  const { saveCustomer, isPending } = useCustomer();
+
   const [isLogin, setIsLogin] = useState(true);    // Mode connexion ou inscription
   //const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);             // Étape courante (0..3)
@@ -238,12 +241,49 @@ const TEMP_CREDENTIALS = {
 
   // Gérer la soumission du formulaire d'inscription
   const handleSignup = async (data: AuthForm) => {
-    // Pour l'instant, nous n'implémentons que la connexion
-    toast({
-      variant: "destructive",
-      title: t("pages.auth.signup.notImplemented"),
-      description: t("pages.auth.signup.notImplementedDescription"),
-    });
+    try {
+      if (data.role === "client") {
+        // Ensure address exists before accessing its properties
+        if (!data.address) {
+          throw new Error(t("pages.auth.validation.address.required"));
+        }
+
+        // Convertir les données pour le format attendu par l'API
+        const customerData: CustomerFormData = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          birthDate: data.birthDate,
+          password: data.password,
+          role: data.role,
+          address: {
+            street: data.address.street,
+            city: data.address.city,
+            postalCode: data.address.postalCode,
+            country: data.address.country
+          }
+        };
+        
+        await saveCustomer(customerData);
+        toast({
+          title: t("pages.auth.signup.success"),
+          description: t("pages.auth.signup.successDescription"),
+        });
+        
+        // Rediriger vers la page de connexion
+        setIsLogin(true);
+      } else {
+        // Pour les autres rôles (delivery, supplier)
+        toast({
+          variant: "destructive",
+          title: t("pages.auth.signup.notImplemented"),
+          description: t("pages.auth.signup.notImplementedDescription"),
+        });
+      }
+    } catch (error) {
+      handleError(error, toast);
+    }
   };
 
   // Gérer la soumission du formulaire (connexion ou inscription)
@@ -279,10 +319,15 @@ const TEMP_CREDENTIALS = {
               </div>
             )}
            <form 
-              onSubmit={form.handleSubmit((data) => {
-                console.log("Form data:", data);
-                onSubmit(data);  // Utiliser onSubmit pour router vers login/signup
-              })} 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (isLogin || step === steps.length - 1) {
+                  form.handleSubmit((data) => {
+                    console.log("Form data:", data);
+                    onSubmit(data);
+                  })(e);
+                }
+              }} 
             >
               <AnimatePresence mode="wait">
                 {isLogin ? (
@@ -388,7 +433,10 @@ const TEMP_CREDENTIALS = {
                       {step < steps.length - 1 ? (
                         <Button
                           type="button"
-                          onClick={nextStep}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            nextStep();
+                          }}
                           disabled={!canProceed()}
                           className="flex items-center gap-2"
                         >
