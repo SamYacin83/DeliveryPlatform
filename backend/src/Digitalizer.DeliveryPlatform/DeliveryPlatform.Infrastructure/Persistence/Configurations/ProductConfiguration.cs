@@ -30,6 +30,9 @@ public class ProductConfiguration : BaseConfiguration<Product>
                  .IsRequired();
         });
 
+        builder.Property(p => p.PictureUrl)
+               .HasMaxLength(500);
+
         builder.HasOne<ProductCategory>()
                .WithMany()
                .HasForeignKey("CategoryId")

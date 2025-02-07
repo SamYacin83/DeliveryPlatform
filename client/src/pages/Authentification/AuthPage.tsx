@@ -1,107 +1,50 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
+import { useToast } from "@/components/ui/use-toast";
+import { useForm,UseFormReturn } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2} from "lucide-react";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
+import { useStepsConfig } from './hooks/useStepsConfig';
+import { createAuthSchema, createLoginSchema } from './validation/validation';
+import { handleError } from "@/utils/errorHandler";
+
+import { ClientConfirmationStep } from "@/components/steps/components/Confirmation/ClientConfirmationStep";
+import { DeliveryConfirmationStep } from "../../components/steps/components/Confirmation/DeliveryConfirmationStep";
+import { SupplierConfirmationStep } from "../../components/steps/components/Confirmation/SupplierConfirmationStep"; 
 // Vos types (utilisés dans le schéma et le formulaire)
-import { AuthForm, DocumentProgress, UserRole } from "./types";
+import { AuthForm, DocumentProgress, UserRole } from "../types";
 
 // Vos composants d'étapes + la barre de progression
 import ProgressBar from "@/components/ProgressBar";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import RoleStep from "@/components/steps/RoleStep";
 import DetailsStep from "@/components/steps/DetailsStep";
-import ConfirmationStep from "@/components/steps/ConfirmationStep";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 1. Schémas de validation Zod
-// ─────────────────────────────────────────────────────────────────────────────
+interface ConfirmationStepProps {
+  form: UseFormReturn<AuthForm>;
+}
 
-// (Exemple) : Vous pouvez adapter si vous avez déjà vos propres schémas
-const addressSchema = z.object({
-  street: z.string().min(1, "La rue est requise"),
-  streetNumber: z.string().min(1, "Le numéro est requis"),
-  apartment: z.string().optional(),
-  building: z.string().optional(),
-  floor: z.string().optional(),
-  additionalInfo: z.string().optional(),
-  city: z.string().min(1, "La ville est requise"),
-  postalCode: z.string().min(1, "Le code postal est requis"),
-  country: z.string().min(1, "Le pays est requis"),
-  region: z.string().optional(),
-});
+const ConfirmationStepWrapper = ({ form }: ConfirmationStepProps) => {
+  const role = form.watch("role");
 
-const documentSchema = z.object({
-  identityCard: z.any().optional(),
-  driversLicense: z.any().optional(),
-  vehicleRegistration: z.any().optional(),
-  insurance: z.any().optional(),
-});
+  const ComponentMap = {
+    delivery: DeliveryConfirmationStep,
+    supplier: SupplierConfirmationStep,
+    client: ClientConfirmationStep
+  };
 
-const authSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères")
-    .max(20, "Le nom d'utilisateur ne doit pas dépasser 20 caractères"),
-  password: z
-    .string()
-    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
-    .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
-    .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
-    .regex(/\d/, "Le mot de passe doit contenir au moins un chiffre"),
-  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  email: z.string().email("L'email est invalide"),
-  phone: z
-    .string()
-    .regex(
-      /^\+?\d{3}[-\s.]?\d{3}[-\s.]?\d{4,6}$/,
-      "Le numéro de téléphone est invalide"
-    ),
-  role: z.enum(["client", "delivery", "supplier"], {
-    required_error: "Le rôle est requis",
-    invalid_type_error: "Le rôle sélectionné est invalide",
-  }),
-  address: addressSchema.optional(),
-  documents: documentSchema.optional(),
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 2. Définition des 4 étapes (pour TOUS les rôles)
-// ─────────────────────────────────────────────────────────────────────────────
-
-const steps = [
-  {
-    title: "Informations personnelles",
-    fields: ["firstName", "lastName", "email", "phone", "username", "password"],
-  },
-  {
-    title: "Choisir votre rôle",
-    fields: ["role"],
-  },
-  {
-    title: "Détails supplémentaires",
-    fields: ["address", "documents"],
-  },
-  {
-    title: "Confirmation",
-    fields: [],
-  },
-] as const;
-
-// Creds de démo (pour la Connexion)
-const TEMP_CREDENTIALS = {
-  username: "admin",
-  password: "Samatar1983",
+  const StepComponent = ComponentMap[role as keyof typeof ComponentMap] || ClientConfirmationStep;
+  return <StepComponent form={form} />;
 };
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. Composant principal AuthPage
@@ -109,23 +52,40 @@ const TEMP_CREDENTIALS = {
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);    // Mode connexion ou inscription
-  const [isLoading, setIsLoading] = useState(false);
+  //const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);             // Étape courante (0..3)
   const [rememberMe, setRememberMe] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({}); // Avancement upload doc
+  const [uploadProgress, setUploadProgress] = useState<DocumentProgress>({});
 
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
+  const { login, logout, isLoading, isAuthenticated } = useAuth();
+  const { steps } = useStepsConfig();
+  
+  // Création des schémas avec traduction  
+  const validationSchema = useMemo(() => isLogin ? createLoginSchema(t) : createAuthSchema(t), [t, isLogin]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+// 2. Définition des 4 étapes (pour TOUS les rôles)
+// ─────────────────────────────────────────────────────────────────────────────
+if (isAuthenticated) {
+  return <div>Already logged in!</div>;
+}
+// Creds de démo (pour la Connexion)
+const TEMP_CREDENTIALS = {
+  username: "admin",
+  password: "Samatar1983",
+};
 
   // Simuler des articles dans le panier
   const cartItemCount = 3; // Simulation de 2 articles dans le panier
   
   // Instanciation du formulaire
   const form = useForm<AuthForm>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
-      username: "",
       password: "",
       firstName: "",
       lastName: "",
@@ -134,13 +94,18 @@ export default function AuthPage() {
       role: "client" as UserRole,
       address: {
         street: "",
-        streetNumber: "",
         city: "",
         postalCode: "",
         country: "",
       },
     },
   });
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   // ──────────────────────────────────────────────────────────────────────────
   // 3.1. Simulation de l'upload des documents
@@ -151,6 +116,10 @@ export default function AuthPage() {
       const file = e.target.files?.[0];
       if (!file) return;
 
+      // Mettre à jour le formulaire avec le fichier
+      form.setValue(`documents.${documentType}`, file);
+
+      // Mettre à jour la progression
       setUploadProgress((prev) => ({
         ...prev,
         [documentType]: { progress: 0, status: "uploading" },
@@ -177,35 +146,58 @@ export default function AuthPage() {
   // 3.2. Autorisation de passer à l’étape suivante (formulaire valide ?)
   // ──────────────────────────────────────────────────────────────────────────
   const canProceed = () => {
-    // En mode login, on ne fait pas le multi-step
     if (isLogin) return true;
-
-    const currentFields = steps[step].fields;
+  
+    const currentRole = form.watch("role");
+    const currentFields = steps[step].fields(currentRole);
     const errors = form.formState.errors;
-
-    // Vérifie s’il y a des erreurs sur les champs de l’étape en cours
+  
+  
+    // Vérifie s'il y a des erreurs sur les champs de l'étape en cours
     const hasErrors = currentFields.some((field) => {
       if (field === "address") {
-        return form.watch("role") === "delivery" && errors.address;
+        if (currentRole === "delivery") {
+          return errors.address;
+        }
       }
-      if (field === "documents") {
-        return form.watch("role") === "delivery" && errors.documents;
+      if (field === "documents" && currentRole === "delivery") {
+        return errors.documents;
       }
       return errors[field as keyof typeof errors];
     });
-
+    
     // Vérifie si tous les champs sont remplis
     const isComplete = currentFields.every((field) => {
-      if (field === "address" || field === "documents") {
-        // On laisse la validation zod s’en charger
-        return true;
+      if (field === "address") {
+        const address = form.watch("address");
+        if (!address) return false;
+        
+        const requiredFields = currentRole === "delivery" 
+          ? ['street', 'streetNumber', 'city', 'postalCode', 'country']
+          : ['street', 'city', 'postalCode', 'country'];
+          
+        const addressComplete = requiredFields.every(key => {
+          const value = address[key as keyof typeof address];
+          const isValid = value !== undefined && value !== null && String(value).trim() !== '';
+          return isValid;
+        });
+        return addressComplete;
       }
-      return form.watch(field as keyof AuthForm);
+      if (field === "documents" && currentRole === "delivery") {
+        const documents = form.watch("documents");
+        if (!documents) return false;
+        
+        const docsComplete = ['identityCard', 'driversLicense', 'vehicleRegistration', 'insurance'].every(key => {
+          const hasDoc = documents[key as keyof typeof documents];
+          return hasDoc;
+        });
+        return docsComplete;
+      }
+      const value = form.watch(field as keyof AuthForm);
+      return value;
     });
-
     return !hasErrors && isComplete;
   };
-
   // ──────────────────────────────────────────────────────────────────────────
   // 3.3. Navigation entre les étapes
   // ──────────────────────────────────────────────────────────────────────────
@@ -223,68 +215,44 @@ export default function AuthPage() {
     }
   };
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 3.4. Soumission finale du formulaire
-  // ──────────────────────────────────────────────────────────────────────────
-  const onSubmit = async (data: AuthForm) => {
-    if (isLoading) return;
-
-    // En mode inscription, on vérifie qu'on est bien à la dernière étape
-    if (!isLogin && step !== steps.length - 1) {
-        nextStep();
-          return;
-      }
-
-    setIsLoading(true);
-
+  // Gérer la soumission du formulaire de connexion
+  const handleLogin = async (data: AuthForm) => {
     try {
-      // -- Mode Connexion --
-      if (isLogin) {
-        if (
-          data.username === TEMP_CREDENTIALS.username &&
-          data.password === TEMP_CREDENTIALS.password
-        ) {
-          toast({
-            title: "🎉 Connexion réussie !",
-            description: `Bienvenue, ${data.username} !`,
-            variant: "default",
-            duration: 3000,
-            className: "bg-primary text-primary-foreground",
-          });
-          setLocation("/dashboard");
-        } else {
-          toast({
-            title: "Erreur",
-            description: "Identifiants invalides (utilisez admin / Samatar1983)",
-            variant: "destructive",
-            duration: 3000,
-          });
-        }
-      }
-      // -- Mode Inscription --
-      else {
-        // Simuler un délai de 10 secondes
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        toast({
-          title: "✨ Inscription réussie !",
-          description: `Rôle choisi : ${data.role}. Vous pouvez maintenant vous connecter.`,
-          variant: "default",
-          duration: 5000,
-          className: "bg-primary text-primary-foreground",
-        });
-        // On repasse en mode login après l’inscription
-        setIsLogin(true);
-        form.reset();
-        setStep(0);
-      }
-    } catch (error: any) {
+      // S'assurer que les données sont dans le bon format pour l'API
+      const loginData = {
+        email: data.email,
+        password: data.password
+      };
+      await login(data.email, data.password);
       toast({
-        title: "Erreur",
-        description: error.message || "Une erreur s'est produite",
-        variant: "destructive",
+        title: t("pages.auth.login.success"),
+        description: t("pages.auth.login.successDescription"),
       });
-    } finally {
-      setIsLoading(false);
+
+      // Rediriger vers la page d'accueil après la connexion
+      setLocation("/");
+    } catch (error) {
+      handleError(error, toast);
+    }
+  };
+
+  // Gérer la soumission du formulaire d'inscription
+  const handleSignup = async (data: AuthForm) => {
+    // Pour l'instant, nous n'implémentons que la connexion
+    toast({
+      variant: "destructive",
+      title: t("pages.auth.signup.notImplemented"),
+      description: t("pages.auth.signup.notImplementedDescription"),
+    });
+  };
+
+  // Gérer la soumission du formulaire (connexion ou inscription)
+  const onSubmit = async (data: AuthForm) => {
+    console.log("onSubmit called with data:", data);
+    if (isLogin) {
+      await handleLogin(data);
+    } else {
+      await handleSignup(data);
     }
   };
 
@@ -296,7 +264,7 @@ export default function AuthPage() {
       <Card className={`w-full ${isLogin ? "max-w-sm" : "max-w-2xl"} shadow-sm`}>
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl text-center">
-            {isLogin ? "Me connecter" : "Inscription"}
+            {t(isLogin ? "pages.auth.title.login" : "pages.auth.title.register")}
           </CardTitle>
         </CardHeader>
 
@@ -305,13 +273,17 @@ export default function AuthPage() {
           {isLogin && cartItemCount > 0 && (
               <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
                 <p className="text-sm text-orange-800">
-                  <span className="font-medium">Articles en attente ! </span>
-                  Vous avez {cartItemCount} article{cartItemCount > 1 ? 's' : ''} dans votre panier. 
-                  Connectez-vous pour finaliser votre commande.
+                  <span className="font-medium">{t("pages.auth.login.cart.title")}</span>
+                  {t("pages.auth.login.cart.description", { count: cartItemCount })}
                 </p>
               </div>
             )}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+           <form 
+              onSubmit={form.handleSubmit((data) => {
+                console.log("Form data:", data);
+                onSubmit(data);  // Utiliser onSubmit pour router vers login/signup
+              })} 
+            >
               <AnimatePresence mode="wait">
                 {isLogin ? (
                   // ──────────────────────────────────────────────────────────
@@ -335,18 +307,27 @@ export default function AuthPage() {
                         htmlFor="remember" 
                         className="text-sm text-muted-foreground cursor-pointer"
                       >
-                        Se souvenir de moi
+                        {t("pages.auth.login.rememberMe")}
                       </Label>
                     </div>
                     <Button
                       type="submit"
                       className="w-full mb-2 bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
                     >
-                      Connexion
+                      {isLoading ? (
+                        <>
+
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          {t("pages.auth.login.submitting")}
+                        </>
+
+                      ) : (
+                        t("pages.auth.login.submit")
+                      )}
                     </Button>
                     <div className="text-center">
                       <Link href="/auth/forgot-password" className="text-[hsl(252,85%,60%)] text-sm hover:underline">
-                        Mot de passe oublié ?
+                        {t("pages.auth.login.forgotPassword")}
                       </Link>
                     </div>
                   </motion.div>
@@ -386,7 +367,7 @@ export default function AuthPage() {
                             handleFileChange={handleFileChange}
                           />
                         )}
-                        {step === 3 && <ConfirmationStep form={form} />}
+                        {step === 3 && <ConfirmationStepWrapper form={form} />}
                       </motion.div>
                     </AnimatePresence>
 
@@ -400,7 +381,7 @@ export default function AuthPage() {
                         className="flex items-center gap-2"
                       >
                         <ChevronLeft className="w-4 h-4" />
-                        Retour
+                        {t("pages.auth.steps.back")}
                       </Button>
 
                       {/* Si on n'est pas à la dernière étape → Bouton Suivant */}
@@ -411,25 +392,27 @@ export default function AuthPage() {
                           disabled={!canProceed()}
                           className="flex items-center gap-2"
                         >
-                          Suivant
+                          {t("pages.auth.steps.next")}
                           <ChevronRight className="w-4 h-4" />
                         </Button>
                       ) : (
                         // Si on est à la dernière étape (Confirmation) → Soumission
                         <Button
-                        type="submit"
-                        className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Inscription en cours...
-                          </>
-                        ) : (
-                          "Confirmer l'inscription"
-                        )}
-                      </Button>
+                          type="submit"
+                          className="bg-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,55%)] text-white transition-colors"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {t("pages.auth.register.submitting")}
+                            </>
+
+                          ) : (
+                            t("pages.auth.register.submit")
+                          )}
+                        </Button>
                       )}
                     </div>
                   </motion.div>
@@ -440,11 +423,15 @@ export default function AuthPage() {
               <div className={`${isLogin ? "mt-6 pt-6 border-t border-gray-200" : "mt-4"}`}>
                 {isLogin ? (
                   <>
-                    <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">Pas encore de compte?</h3>
+
+                    <h3 className="text-lg font-semibold text-[hsl(252,85%,60%)]">
+                      {t("pages.auth.login.noAccount")}
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-2">
-                      L'Espace livreur, votre accès requis une présence au siège afin de valider vos documents et activer votre compte.
+                      {t("pages.auth.login.noAccountDescription")}
                     </p>
                   </>
+
                 ) : null}
                 <Button
                   type="button"
@@ -459,7 +446,7 @@ export default function AuthPage() {
                     setUploadProgress({});
                   }}
                 >
-                  {isLogin ? "Créer un compte" : "Retour à la connexion"}
+                  {isLogin ? t("pages.auth.login.signupLink") : t("pages.auth.register.login")}
                 </Button>
               </div>
             </form>

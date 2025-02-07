@@ -1,0 +1,34 @@
+{
+  "title": "My Profile",
+  "userType": "Supplier",
+  "username": "Username",
+  "email": "Email",
+  "phone": "Phone",
+  "address": "Address",
+  "uploadPhoto": "Upload Photo",
+  "changePhoto": "Change Photo",
+  "removePhoto": "Remove Photo",
+  "save": "Save Changes",
+  "uploadInstructions": "Click or drop a photo here",
+  "uploadSizeLimit": "Max size: 5 MB",
+  "uploadFormats": "Accepted formats: JPG, PNG",
+  "successUpdate": "Profile updated successfully",
+  "errorUpdate": "Error updating profile",
+  "password": {
+    "title": "Change Password",
+    "current": "Current Password",
+    "new": "New Password",
+    "confirm": "Confirm New Password",
+    "update": "Update Password",
+    "success": "Password updated successfully",
+    "error": "Error updating password",
+    "rules": {
+      "minLength": "At least 8 characters",
+      "uppercase": "At least one uppercase letter",
+      "lowercase": "At least one lowercase letter",
+      "number": "At least one number",
+      "special": "At least one special character",
+      "match": "Passwords must match"
+    }
+  }
+}

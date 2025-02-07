@@ -27,7 +27,7 @@ public class AddProductCategoryHandler(IProductCategoryRepository repository,
     {
         return new ProductCategoryDto
         {
-                   Id = productCategory.Id,
+                   CategoryId = productCategory.Id,
                    Name = productCategory.Name,
                    Description = productCategory.Description
         };

@@ -14,7 +14,7 @@ import { Link } from "wouter";
 
 export default function CartDropdown() {
   const { items, removeItem, getItemCount } = useCart();
-  const total = items.reduce((sum, item) => sum + Number(item.price), 0);
+  const total = items.reduce((sum, item) => sum + Number(item.price) * (item.quantity || 1), 0);
 
   return (
     <DropdownMenu>
@@ -67,8 +67,13 @@ export default function CartDropdown() {
                     <ShoppingCart className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div className="flex-1 space-y-1 cursor-pointer">
-                    <p className="text-sm font-medium leading-none">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">{Number(item.price).toFixed(2)} DJF</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium leading-none">{item.title}</p>
+                      <span className="text-xs text-muted-foreground">×{item.quantity || 1}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {Number(item.price).toFixed(2)} DJF × {item.quantity || 1} = {(Number(item.price) * (item.quantity || 1)).toFixed(2)} DJF
+                    </p>
                   </div>
                   <Button
                     variant="ghost"

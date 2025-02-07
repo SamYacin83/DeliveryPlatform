@@ -1,9 +1,7 @@
-﻿using Digitalizer.DeliveryPlatform.Application.Features.ProductCategory;
-using Digitalizer.DeliveryPlatform.Application.Features.ProductCategory.DeleteProductCategory;
+﻿using Digitalizer.DeliveryPlatform.Application.Features.ProductCategory.DeleteProductCategory;
 using Digitalizer.DeliveryPlatform.WebApi.EndPoints;
 using Digitalizer.DeliveryPlatform.WebApi.ResultsApi;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Digitalizer.DeliveryPlatform.WebApi.Features.ProductCategory;
 
@@ -19,12 +17,12 @@ internal sealed class DeleteProductCategoryEndPoint : IEndpoint
                operation.Summary = "Delete an existing product category";
                operation.Description = "Allows deleting an existing product category from the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           }).RequireAuthorization(policy => policy.RequireRole("Supplier", "Admin"));
     }
 
-    private static async Task<IResult> DeleteProductCatAsync(IMediator mediator, [FromBody] ProductCategoryDto productDto)
+    private static async Task<IResult> DeleteProductCatAsync(IMediator mediator, Guid categoryId)
     {
-        var query = new DeleteProductCategoryCommand(productDto.Id);
+        var query = new DeleteProductCategoryCommand(categoryId);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.NoContent, ApiResults.Problem);

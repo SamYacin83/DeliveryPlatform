@@ -19,12 +19,12 @@ internal sealed class DeleteProductEndPoint : IEndpoint
                operation.Summary = "Delete an existing product";
                operation.Description = "Allows deleting an existing product from the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           }).RequireAuthorization(policy => policy.RequireRole("Supplier", "Admin"));
     }
 
-    private static async Task<IResult> DeleteProductAsync(IMediator mediator, [FromBody] ProductDto productDto)
+    private static async Task<IResult> DeleteProductAsync(IMediator mediator, Guid id)
     {
-        var query = new DeleteProductCommand(productDto.Id);
+        var query = new DeleteProductCommand(id);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.NoContent, ApiResults.Problem);

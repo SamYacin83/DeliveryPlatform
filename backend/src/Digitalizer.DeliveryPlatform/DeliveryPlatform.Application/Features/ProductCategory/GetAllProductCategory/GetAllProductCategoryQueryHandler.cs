@@ -12,7 +12,7 @@ public class GetAllProductCategoryQueryHandler(IProductCategoryRepository reposi
 
         var productCategoryDto = productCategory.Select(p => new ProductCategoryDto
                                                           {
-                                                              Id = p.Id,
+                                                              CategoryId = p.Id,
                                                               Name = p.Name,
                                                               Description = p.Description
                                                           });

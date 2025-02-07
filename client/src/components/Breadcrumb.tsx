@@ -17,6 +17,30 @@ const routes: Record<string, RouteInfo> = {
     label: 'Accueil',
     description: 'Page d\'accueil de RapidLivre'
   },
+  '/products': {
+    label: 'Produits',
+    description: 'Liste de tous les produits'
+  },
+  '/products/add': {
+    label: 'Nouveau produit',
+    description: 'Créer un nouveau produit'
+  },
+  '/products/edit': {
+    label: 'Modifier le produit',
+    description: 'Modifier les informations du produit'
+  },
+  '/product-types': {
+    label: 'Catégories',
+    description: 'Liste de toutes les catégories'
+  },
+  '/product-types/add': {
+    label: 'Nouvelle catégorie',
+    description: 'Créer une nouvelle catégorie'
+  },
+  '/product-types/edit': {
+    label: 'Modifier la catégorie',
+    description: 'Modifier les informations de la catégorie'
+  },
   '/about': {
     label: 'À propos',
     description: 'En savoir plus sur RapidLivre et notre mission'
@@ -57,11 +81,66 @@ export default function Breadcrumb() {
   if (location === '/') return null;
   
   const pathSegments = location.split('/').filter(Boolean);
-  const breadcrumbItems = pathSegments.map((_, index) => {
-    const path = '/' + pathSegments.slice(0, index + 1).join('/');
-    const routeInfo = routes[path] || { label: path, description: '' };
-    return { path, ...routeInfo };
-  });
+  const breadcrumbItems = [];
+
+  // Toujours ajouter le lien vers les produits s'il est dans le chemin
+  if (pathSegments[0] === 'products') {
+    breadcrumbItems.push({
+      path: '/products',
+      label: 'Produits',
+      description: 'Liste de tous les produits'
+    });
+
+    // Gérer les cas d'édition et de création
+    if (pathSegments[1] === 'add') {
+      // Mode création d'un nouveau produit
+      breadcrumbItems.push({
+        path: location,
+        label: 'Nouveau produit',
+        description: 'Créer un nouveau produit'
+      });
+    } else if (pathSegments[1] === 'edit' && pathSegments[2]) {
+      // Mode édition d'un produit existant
+      breadcrumbItems.push({
+        path: location,
+        label: 'Modifier le produit',
+        description: 'Modifier les informations du produit'
+      });
+    }
+  } else if (pathSegments[0] === 'product-types') {
+    breadcrumbItems.push({
+      path: '/product-types',
+      label: 'Catégories',
+      description: 'Liste de toutes les catégories'
+    });
+
+    // Gérer les cas d'édition et de création
+    if (pathSegments[1] === 'add') {
+      // Mode création d'une nouvelle catégorie
+      breadcrumbItems.push({
+        path: location,
+        label: 'Nouvelle catégorie',
+        description: 'Créer une nouvelle catégorie'
+      });
+    } else if (pathSegments[1] === 'edit' && pathSegments[2]) {
+      // Mode édition d'une catégorie existante
+      breadcrumbItems.push({
+        path: location,
+        label: 'Modifier la catégorie',
+        description: 'Modifier les informations de la catégorie'
+      });
+    }
+  } else {
+    // Pour les autres routes, utiliser la logique existante
+    pathSegments.forEach((segment, index) => {
+      const path = '/' + pathSegments.slice(0, index + 1).join('/');
+      const routeInfo = routes[path] || {
+        label: segment.charAt(0).toUpperCase() + segment.slice(1),
+        description: ''
+      };
+      breadcrumbItems.push({ path, ...routeInfo });
+    });
+  }
 
   return (
     <div className="bg-gradient-to-r from-primary/5 to-background border-b">

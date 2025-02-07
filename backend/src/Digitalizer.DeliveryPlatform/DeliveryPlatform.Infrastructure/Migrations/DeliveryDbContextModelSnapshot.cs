@@ -239,6 +239,12 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("name");
 
+                    b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("picture_url");
+
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int")
                         .HasColumnName("stock_quantity");
@@ -418,25 +424,25 @@ namespace Digitalizer.DeliveryPlatform.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "13f3bcce-2718-4eb9-8e1f-368a301903c4",
+                            Id = "aa1ac283-6c26-4847-bf6c-9800f72d758e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "e8d774d1-c356-495f-a6af-08c6aa023d17",
+                            Id = "50c062cb-0fba-4882-aea3-e38fac0df185",
                             Name = "Driver",
                             NormalizedName = "DRIVER"
                         },
                         new
                         {
-                            Id = "de5e589d-6612-42cf-9cd6-0c99c870989d",
+                            Id = "38544f7e-68c1-4f78-9a00-6872ba71d378",
                             Name = "Supplier",
                             NormalizedName = "SUPPLIER"
                         },
                         new
                         {
-                            Id = "20c32258-2c66-4f8e-a5f0-76695070b77b",
+                            Id = "d000daac-2024-4369-9c94-6d952d99551b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

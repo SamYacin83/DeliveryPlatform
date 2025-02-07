@@ -2,7 +2,7 @@
 
 namespace Digitalizer.DeliveryPlatform.Application.Features.Product.UpdateProduct;
 public record UpdateProductCommand(
-    Guid Id,
+    Guid? Id,
     string Name,
     string Description,
     decimal Price,

@@ -1,82 +1,198 @@
-import { useUser } from "../hooks/use-user";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDropzone } from "react-dropzone";
+import { 
+  Camera, 
+  Upload, 
+  X, 
+  Eye, 
+  EyeOff, 
+  ShoppingBag, 
+  Lock, 
+  Home, 
+  CreditCard, 
+  Gift, 
+  MessageSquare,
+  Settings,
+  LayoutDashboard
+} from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Form } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
-const profileSchema = z.object({
-  username: z.string().min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères"),
-  email: z.string().email("Email invalide"),
-});
-
-type ProfileFormData = z.infer<typeof profileSchema>;
+interface ProfileSection {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  link: string;
+}
 
 export default function ProfilePage() {
-  const { user } = useUser();
+  const { t } = useTranslation();
   const { toast } = useToast();
-  const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      username: user?.username || "",
-      email: user?.email || "",
-    },
+  const [profileImage, setProfileImage] = useState<{
+    file: File | null;
+    preview: string | null;
+  }>({
+    file: null,
+    preview: null,
   });
 
-  const onSubmit = async (data: ProfileFormData) => {
-    toast({
-      title: "Profil mis à jour",
-      description: "Vos informations ont été enregistrées avec succès.",
+  const sections: ProfileSection[] = [
+    {
+      title: "Tableau de bord",
+      description: "Vue d'ensemble de votre activité et statistiques",
+      icon: <LayoutDashboard className="h-8 w-8 text-primary" />,
+      link: "/dashboard"
+    },
+    {
+      title: "Commandes",
+      description: "Historique et suivi de vos commandes",
+      icon: <ShoppingBag className="h-8 w-8 text-primary" />,
+      link: "/orders"
+    },
+    {
+      title: "Sécurité",
+      description: "Gérer le mot de passe et les informations de connexion",
+      icon: <Lock className="h-8 w-8 text-primary" />,
+      link: "/security"
+    },
+    {
+      title: "Adresses",
+      description: "Gérer vos adresses de livraison",
+      icon: <Home className="h-8 w-8 text-primary" />,
+      link: "/addresses"
+    },
+    {
+      title: "Paiements",
+      description: "Gérer vos modes de paiement",
+      icon: <CreditCard className="h-8 w-8 text-primary" />,
+      link: "/payments"
+    },
+    {
+      title: "Cartes cadeaux",
+      description: "Consulter le solde ou échanger une carte",
+      icon: <Gift className="h-8 w-8 text-primary" />,
+      link: "/gift-cards"
+    },
+    {
+      title: "Messages",
+      description: "Voir vos messages et notifications",
+      icon: <MessageSquare className="h-8 w-8 text-primary" />,
+      link: "/messages"
+    }
+  ];
+
+  const onDrop = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage({
+          file,
+          preview: reader.result as string,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png']
+    },
+    maxSize: 5 * 1024 * 1024,
+    maxFiles: 1,
+  });
+
+  const removeImage = () => {
+    setProfileImage({
+      file: null,
+      preview: null,
     });
   };
 
-  if (!user) return null;
-
   return (
-    <div className="max-w-2xl mx-auto">
-      <Card>
+    <div className="container mx-auto p-4 space-y-6">
+      <h1 className="text-3xl font-bold mb-8">Votre compte</h1>
+
+      {/* Profile Image Section */}
+      <Card className="mb-8">
         <CardHeader>
-          <CardTitle className="text-2xl">Mon Profil</CardTitle>
+          <CardTitle>Photo de profil</CardTitle>
+          <CardDescription>
+            Ajoutez une photo pour personnaliser votre profil
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent>
           <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarFallback className="text-2xl">
-                {user.username.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              {profileImage.preview ? (
+                <div className="relative">
+                  <img
+                    src={profileImage.preview}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 rounded-full"
+                    onClick={removeImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  {...getRootProps()}
+                  className="w-24 h-24 rounded-full bg-muted flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
+                >
+                  <input {...getInputProps()} />
+                  <Camera className="h-8 w-8 text-muted-foreground" />
+                </div>
+              )}
+            </div>
             <div>
-              <h2 className="text-xl font-semibold">{user.username}</h2>
-              <p className="text-muted-foreground">
-                {user.role === 'client' ? 'Client' : 
-                 user.role === 'delivery' ? 'Livreur' : 'Fournisseur'}
-              </p>
+              <h3 className="font-medium">John Doe</h3>
+              <p className="text-sm text-muted-foreground">john.doe@example.com</p>
             </div>
           </div>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Nom d'utilisateur</label>
-                <Input {...form.register("username")} />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Email</label>
-                <Input {...form.register("email")} type="email" />
-              </div>
-
-              <Button type="submit" className="w-full">
-                Enregistrer les modifications
-              </Button>
-            </form>
-          </Form>
         </CardContent>
       </Card>
+
+      {/* Profile Sections Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sections.map((section, index) => (
+          <Link key={index} href={section.link}>
+            <Card className="cursor-pointer hover:bg-accent/50 transition-colors">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  {section.icon}
+                  <div>
+                    <h3 className="font-medium">{section.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {section.description}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

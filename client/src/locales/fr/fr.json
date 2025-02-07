@@ -1,0 +1,29 @@
+{
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Gérez vos commandes et suivez vos livraisons",
+    "selectPeriod": "Sélectionner une période",
+    "lastWeek": "7 derniers jours",
+    "lastMonth": "30 derniers jours",
+    "last3Months": "3 derniers mois",
+    "lastYear": "12 derniers mois",
+    "totalOrders": "Total des commandes",
+    "ordersPeriod": "Commandes sur la période",
+    "totalSpent": "Total dépensé",
+    "spentPeriod": "Montant dépensé sur la période",
+    "pendingOrders": "Commandes en attente",
+    "needsAction": "Nécessitent une action",
+    "deliveredOrders": "Commandes livrées",
+    "completed": "Commandes terminées",
+    "recentOrders": "Commandes récentes",
+    "lastOrders": "Dernières commandes passées",
+    "allStatuses": "Tous les statuts",
+    "pending": "En attente",
+    "delivered": "Livré",
+    "cancelled": "Annulé",
+    "viewDetails": "Voir détails",
+    "deliveryMap": "Carte des livraisons",
+    "activeDeliveries": "Livraisons en cours",
+    "last3Mo": "3 derniers mois"
+  }
+}

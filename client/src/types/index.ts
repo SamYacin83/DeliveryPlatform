@@ -1,10 +1,10 @@
-export type UserRole = 'client' | 'delivery' | 'supplier';
+export type UserRole = 'Customer' | 'Supplier' | 'Admin';
 
 export interface User {
   id: number;
-  username: string;
+  firstName: string;
   email: string;
-  role: UserRole;
+  roles: UserRole;
 }
 
 export interface Article {
@@ -14,11 +14,13 @@ export interface Article {
   price: number;
   supplierId: number;
   stock: number;
+  type: "Particulier" | "SOGIK";
+  imageUrl: string;
 }
 
 export interface Order {
   id: number;
-  userId: number;
+  userId: string;
   status: 'pending' | 'accepted' | 'in_delivery' | 'delivered' | 'canceled';
   items: Article[];
   total: number;
@@ -41,4 +43,41 @@ export interface DeliveryTracking {
     lng: number;
   };
   estimatedDelivery: string;
+}
+
+export interface Supplier {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
+
+export interface OrderItem {
+  id: string;
+  articleId: string;
+  title: string;
+  quantity: number;
+  price: number;
+  type: "SOGIK" | "Particulier";
+}
+
+export interface DeliveryDriver {
+  id: string;
+  name: string;
+  phone: string;
+  currentLocation: [number, number];
+}
+
+export interface DashboardOrder {
+  id: string;
+  date: string;
+  status: "pending" | "delivered" | "cancelled";
+  total: number;
+  items: OrderItem[];
+  deliveryAddress: string;
+  coordinates: [number, number];
+  trackingNumber: string;
+  estimatedDelivery?: string;
+  driver?: DeliveryDriver;
 }

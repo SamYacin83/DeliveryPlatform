@@ -1,200 +1,293 @@
-import { useQuery } from "@tanstack/react-query";
-import { Order } from "../types";
-import DeliveryMap from "../components/DeliveryMap";
-import { mockOrders } from "../mocks/data";
-import { Button } from "@/components/ui/button";
-import { Package, ChevronDown, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { useEffect, useState, Suspense } from "react";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CustomButton from "@/components/ui/custom-button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Package,
+  Clock,
+  CheckCircle,
+  XCircle,
+  FileText,
+  TrendingUp,
+  MapPin,
+  Calendar,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { lazy } from "react";
+import { mockOrders } from "../mocks/orderData";
+import { DashboardOrder } from "@/types";
+import OrderDetailsModal from "@/components/OrderDetailsModal";
+import { Button } from "@/components/ui/button";
+
+// Import dynamique du composant Map
+const MapComponent = lazy(() => import("../components/Map"));
+
+// Configuration des couleurs et icônes pour les statuts
+const statusColors = {
+  pending: "bg-yellow-500",
+  delivered: "bg-green-500",
+  cancelled: "bg-red-500",
+};
+
+const statusIcons = {
+  pending: Clock,
+  delivered: CheckCircle,
+  cancelled: XCircle,
+};
+
+const ITEMS_PER_PAGE = 5;
 
 export default function DashboardPage() {
-  const { data: orders } = useQuery<Order[]>({
-    queryKey: ['/api/orders'],
-    queryFn: async () => mockOrders
-  });
+  const [timeFilter, setTimeFilter] = useState("3months");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const { t } = useTranslation();
+  const [orders, setOrders] = useState<DashboardOrder[]>(mockOrders);
+  const [selectedOrder, setSelectedOrder] = useState<DashboardOrder | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+  // Filtrer les commandes en fonction du timeFilter
+  useEffect(() => {
+    const now = new Date();
+    let filterDate = new Date();
+    
+    switch (timeFilter) {
+      case "week":
+        filterDate.setDate(filterDate.getDate() - 7);
+        break;
+      case "month":
+        filterDate.setMonth(filterDate.getMonth() - 1);
+        break;
+      case "3months":
+        filterDate.setMonth(filterDate.getMonth() - 3);
+        break;
+      case "year":
+        filterDate.setFullYear(filterDate.getFullYear() - 1);
+        break;
+    }
+
+    const filteredOrders = mockOrders.filter(order => {
+      const orderDate = new Date(order.date);
+      if (statusFilter !== "all" && order.status !== statusFilter) {
+        return false;
+      }
+      return orderDate >= filterDate && orderDate <= now;
     });
+
+    setOrders(filteredOrders);
+    setCurrentPage(1); // Réinitialiser la page lors du filtrage
+  }, [timeFilter, statusFilter]);
+
+  // Statistiques calculées à partir des commandes filtrées
+  const stats = {
+    totalOrders: orders.length,
+    totalSpent: orders.reduce((acc, order) => acc + order.total, 0),
+    pendingOrders: orders.filter((order) => order.status === "pending").length,
+    deliveredOrders: orders.filter((order) => order.status === "delivered").length,
   };
 
-  const getStatusInfo = (status: string) => {
-    switch (status) {
-      case 'delivered':
-        return {
-          icon: <CheckCircle2 className="h-5 w-5 text-green-500" />,
-          text: "Livré",
-          bgColor: "bg-green-50",
-          textColor: "text-green-700",
-          borderColor: "border-l-green-500"
-        };
-      case 'pending':
-        return {
-          icon: <Clock className="h-5 w-5 text-orange-500" />,
-          text: "En attente",
-          bgColor: "bg-orange-50",
-          textColor: "text-orange-700",
-          borderColor: "border-l-orange-500"
-        };
-      case 'accepted':
-        return {
-          icon: <CheckCircle2 className="h-5 w-5 text-blue-500" />,
-          text: "Accepté",
-          bgColor: "bg-blue-50",
-          textColor: "text-blue-700",
-          borderColor: "border-l-blue-500"
-        };
-      case 'in_delivery':
-        return {
-          icon: <Package className="h-5 w-5 text-indigo-500" />,
-          text: "En cours de livraison",
-          bgColor: "bg-indigo-50",
-          textColor: "text-indigo-700",
-          borderColor: "border-l-indigo-500"
-        };
-      case 'canceled':
-        return {
-          icon: <XCircle className="h-5 w-5 text-red-500" />,
-          text: "Annulé",
-          bgColor: "bg-red-50",
-          textColor: "text-red-700",
-          borderColor: "border-l-red-500"
-        };
-      default:
-        return {
-          icon: <Package className="h-5 w-5 text-gray-500" />,
-          text: status,
-          bgColor: "bg-gray-50",
-          textColor: "text-gray-700",
-          borderColor: "border-l-gray-500"
-        };
-    }
+  // Pagination
+  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedOrders = orders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Tableau de bord</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">{t("dashboard:title")}</h1>
+          <p className="text-muted-foreground">{t("dashboard:subtitle")}</p>
+        </div>
+        <div className="flex gap-2">
+          <Select value={timeFilter} onValueChange={setTimeFilter}>
+            <SelectTrigger className="w-[180px] hover:bg-primary/5">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder={t("dashboard:selectPeriod")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="week">{t("dashboard:lastWeek")}</SelectItem>
+              <SelectItem value="month">{t("dashboard:lastMonth")}</SelectItem>
+              <SelectItem value="3months">{t("dashboard:last3Months")}</SelectItem>
+              <SelectItem value="year">{t("dashboard:lastYear")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Statistiques */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StatsCard
+          title={t("dashboard:totalOrders")}
+          value={stats.totalOrders}
+          icon={Package}
+          description={t("dashboard:ordersPeriod")}
+        />
+        <StatsCard
+          title={t("dashboard:totalSpent")}
+          value={`${stats.totalSpent.toFixed(2)} DJF`}
+          icon={TrendingUp}
+          description={t("dashboard:spentPeriod")}
+        />
+        <StatsCard
+          title={t("dashboard:pendingOrders")}
+          value={stats.pendingOrders}
+          icon={Clock}
+          description={t("dashboard:needsAction")}
+        />
+        <StatsCard
+          title={t("dashboard:deliveredOrders")}
+          value={stats.deliveredOrders}
+          icon={CheckCircle}
+          description={t("dashboard:completed")}
+        />
+      </div>
+
+      {/* Contenu principal */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Liste des commandes */}
         <Card>
           <CardHeader>
-            <CardTitle>Vos commandes</CardTitle>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle>{t("dashboard:recentOrders")}</CardTitle>
+                <CardDescription>{t("dashboard:lastOrders")}</CardDescription>
+              </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[160px] hover:bg-primary/5">
+                  <SelectValue placeholder={t("dashboard:allStatuses")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("dashboard:allStatuses")}</SelectItem>
+                  <SelectItem value="pending">{t("dashboard:pending")}</SelectItem>
+                  <SelectItem value="delivered">{t("dashboard:delivered")}</SelectItem>
+                  <SelectItem value="cancelled">{t("dashboard:cancelled")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
-          <div className="space-y-8">
-            {/* En-tête avec le nombre de commandes */}
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg">{orders?.length || 0} commande{orders?.length !== 1 ? 's' : ''}</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="text-sm">
-                    ces 3 derniers mois <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuItem>ces 30 derniers jours</DropdownMenuItem>
-                  <DropdownMenuItem>ces 3 derniers mois</DropdownMenuItem>
-                  <DropdownMenuItem>en 2024</DropdownMenuItem>
-                  <DropdownMenuItem>en 2023</DropdownMenuItem>
-                  <DropdownMenuItem>en 2022</DropdownMenuItem>
-                  <DropdownMenuItem>en 2021</DropdownMenuItem>
-                  <DropdownMenuItem>en 2020</DropdownMenuItem>
-                  <DropdownMenuItem>en 2019</DropdownMenuItem>
-                  <DropdownMenuItem>en 2018</DropdownMenuItem>
-                  <DropdownMenuItem>en 2017</DropdownMenuItem>
-                  <DropdownMenuItem>en 2016</DropdownMenuItem>
-                  <DropdownMenuItem>en 2015</DropdownMenuItem>
-                  <DropdownMenuItem>Commandes archivées</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* Liste des commandes */}
             <div className="space-y-4">
-              {orders?.map((order) => {
-                const statusInfo = getStatusInfo(order.status);
-                return (
-                  <div key={order.id} className={`rounded-lg space-y-6 ${statusInfo.bgColor} border border-l-4 ${statusInfo.borderColor}`}>
-                    {/* En-tête de la commande */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white shadow-100 p-4 md:p-6 rounded-t-lg">
-                      <div>
-                        <div className="text-muted-foreground text-sm">COMMANDE EFFECTUÉE LE</div>
-                        <div className="font-medium">{formatDate(order.createdAt)}</div>
-                      </div>
-                      <div className="md:text-center">
-                        <div className="text-muted-foreground text-sm">TOTAL</div>
-                        <div className="font-medium">{order.total.toFixed(2)} DJF</div>
-                      </div>
-                      <div className="md:text-right">
-                        <div className="text-muted-foreground text-sm">COMMANDE N°</div>
-                        <div className="font-medium">{order.id}-{Math.random().toString().slice(2, 10)}</div>
-                      </div>
+              {paginatedOrders.map((order) => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-primary/5 transition-colors cursor-pointer"
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-full ${statusColors[order.status]}`}>
+                      {(() => {
+                        const StatusIcon = statusIcons[order.status];
+                        return StatusIcon ? <StatusIcon className="w-4 h-4 text-white" /> : null;
+                      })()}
                     </div>
-
-                    {/* Détails de la commande */}
-                    <div className="flex flex-col md:flex-row items-start gap-6 px-4 md:px-6 pb-6">
-                      <div className="w-full md:w-24 h-24 flex items-center justify-center">
-                        <Package className={`h-12 w-12 ${statusInfo.textColor}`} />
-                      </div>
-                      <div className="flex-grow space-y-2">
-                        <div className="flex items-center gap-2 mb-2">
-                          {statusInfo.icon}
-                          <h3 className={`font-medium text-lg ${statusInfo.textColor}`}>
-                            {statusInfo.text} le {formatDate(new Date(Date.now() + 3*24*60*60*1000).toISOString())}
-                          </h3>
-                        </div>
-                        {order.items.map((item) => (
-                          <div key={item.id} className="text-muted-foreground">
-                            {item.title}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="w-full md:w-auto space-y-2">
-                        <Button 
-                          variant="outline" 
-                          className="w-full border-[hsl(252,85%,60%)] text-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,60%)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                          disabled={order.status === 'in_delivery' || order.status === 'canceled'}
-                        >
-                          Retourner les articles
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full border-[hsl(252,85%,60%)] text-[hsl(252,85%,60%)] hover:bg-[hsl(252,85%,60%)] hover:text-white"
-                        >
-                          Facture
-                        </Button>
-                      </div>
+                    <div>
+                      <p className="font-medium">Commande #{order.id}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(order.date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-4">
+                    <Badge variant="outline">{order.total.toLocaleString()} DJF</Badge>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="sticky bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t p-4 shadow-sm">
+                  <div className="flex justify-center items-center gap-4 max-w-sm mx-auto">
+                    <Button
+                      variant="outline"
+                      size="default"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="flex-1"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      {t("dashboard:previous")}
+                    </Button>
+                    <span className="text-sm font-medium">
+                      {currentPage} / {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="default"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="flex-1"
+                    >
+                      {t("dashboard:next")}
+                      <ChevronRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
           </CardContent>
         </Card>
 
+        {/* Carte de livraison */}
         <Card>
           <CardHeader>
-            <CardTitle>Carte de livraison</CardTitle>
+            <CardTitle>{t("dashboard:deliveryMap")}</CardTitle>
+            <CardDescription>{t("dashboard:activeDeliveries")}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <DeliveryMap orders={orders || []} />
+          <CardContent className="h-[400px]">
+            <Suspense fallback={<div>Loading...</div>}>
+              <MapComponent deliveries={orders.filter(o => o.status === "pending")} />
+            </Suspense>
           </CardContent>
         </Card>
       </div>
+      {/* Modal de détails de commande */}
+      <OrderDetailsModal
+        order={selectedOrder}
+        isOpen={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+      />
     </div>
+  );
+}
+
+function StatsCard({ title, value, icon: Icon, description }) {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+          </div>
+          <div className="p-3 bg-primary/10 rounded-full">
+            <Icon className="w-5 h-5 text-primary" />
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground mt-4">{description}</p>
+      </CardContent>
+    </Card>
   );
 }

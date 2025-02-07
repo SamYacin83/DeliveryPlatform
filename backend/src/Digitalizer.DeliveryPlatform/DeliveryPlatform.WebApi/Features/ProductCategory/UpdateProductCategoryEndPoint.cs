@@ -19,12 +19,12 @@ internal sealed class UpdateProductCategoryEndPoint : IEndpoint
                operation.Summary = "Update an existing product";
                operation.Description = "Allows updating an existing product in the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           }).RequireAuthorization(policy => policy.RequireRole("Supplier", "Admin"));
     }
 
     private static async Task<IResult> UpdateProductCatAsync(IMediator mediator, [FromBody] ProductCategoryDto productCatDto)
     {
-        var query = new UpdateProductCategoryCommand(productCatDto.Id, productCatDto.Name, productCatDto.Description);
+        var query = new UpdateProductCategoryCommand(productCatDto.CategoryId, productCatDto.Name, productCatDto.Description);
         var result = await mediator.Send(query).ConfigureAwait(false);
 
         return result.Match(Results.Ok, ApiResults.Problem);
