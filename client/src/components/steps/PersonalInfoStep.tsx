@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 const getInputClassName = (
   formState: any, 
-  fieldName: "firstName" | "lastName" | "phone" | "email" | "password"
+  fieldName: "firstName" | "lastName" | "phone" | "email" | "password" | "birthDate"
 ): string => {
   if (formState.errors[fieldName]) {
     return "border-red-500 focus:ring-red-500";
@@ -110,6 +110,26 @@ export default function PersonalInfoStep({ form, isLogin = false }: Readonly<Per
               className="h-9"
             />
             {formState.errors.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="birthdate" className="sr-only">{t('auth:fields.birthdate')}</label>
+            <div className="group relative">
+              <Input
+                id="birthdate"
+                type="date"
+                placeholder={t('auth:fields.birthdate')}
+                {...register("birthDate")}
+                className={`h-9 ${getInputClassName(formState, "birthDate")}`}
+                required
+              />
+              <div className="absolute left-0 -top-8 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1">
+                {t('auth:fields.birthdateFormat')}
+              </div>
+            </div>
+            {formState.errors.birthDate && (
+              <p className="text-red-500 text-xs mt-1">{formState.errors.birthDate.message}</p>
+            )}
           </div>
 
           <div>

@@ -61,6 +61,20 @@ export const createAuthSchema = (t: TFunction) => {
       .string()
       .min(1, t('pages.auth.validation.email.required'))
       .email(t('pages.auth.validation.email.invalid')),
+    birthDate: z
+      .string()
+      .min(1, t('pages.auth.validation.birthDate.required'))
+      .refine((value) => {
+        if (!value) return false;
+        const birthDate = new Date(value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age >= 18;
+      }, t('pages.auth.validation.birthDate.tooYoung')),
     password: z
       .string()
       .min(8, t('pages.auth.validation.password.min'))

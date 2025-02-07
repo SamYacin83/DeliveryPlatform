@@ -21,7 +21,8 @@ export interface AuthForm {
   lastName: string;
   email: string;
   phone: string;
-  role: UserRole;
+  birthDate: string;
+  role?: UserRole;
   address?: Address;
   documents?: Documents;
 }
