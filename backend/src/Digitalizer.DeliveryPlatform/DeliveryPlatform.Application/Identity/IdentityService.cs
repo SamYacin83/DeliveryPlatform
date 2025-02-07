@@ -12,7 +12,7 @@ public class IdentityService(SignInManager<ApplicationUser> signInManager, UserM
     {
         var existingUser = await userManager.FindByEmailAsync(request.Email).ConfigureAwait(false);
         if (existingUser != null)
-            return Result.Failure<string>(ErrorResult.Conflict("EmailAlreadyRegistered", "Email already registered"));
+            return Result.Failure<string>(ErrorResult.Conflict("DuplicateEmail", "Email already registered"));
 
         var user = new ApplicationUser
         {
@@ -25,7 +25,10 @@ public class IdentityService(SignInManager<ApplicationUser> signInManager, UserM
         var result = await userManager.CreateAsync(user, request.Password).ConfigureAwait(false);
 
         if (!result.Succeeded)
-            return Result.Failure<string>(ErrorResult.Problem("UserCreationFailed", string.Join(", ", result.Errors.Select(e => e.Description))));
+        {
+            var error = result.Errors.First();
+            return Result.Failure<string>(ErrorResult.Problem(error.Code, string.Join(", ", result.Errors.Select(e => e.Description))));
+        }
 
         await userManager.AddToRoleAsync(user, request.Role.ToString()).ConfigureAwait(false);
 

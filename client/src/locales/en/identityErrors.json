@@ -1,0 +1,124 @@
+{
+    "IdentityErrors": {
+      "DefaultError": {
+        "code": "DefaultError",
+        "description": "An unknown error has occurred.",
+        "message": "Default identity system error."
+      },
+      "ConcurrencyFailure": {
+        "code": "ConcurrencyFailure",
+        "description": "Optimistic concurrency failure, object has been modified.",
+        "message": "The object has been modified by another user."
+      },
+      "PasswordMismatch": {
+        "code": "PasswordMismatch",
+        "description": "Incorrect password.",
+        "message": "The provided password is invalid."
+      },
+      "InvalidToken": {
+        "code": "InvalidToken",
+        "description": "Invalid token.",
+        "message": "The provided token is invalid."
+      },
+      "RecoveryCodeRedemptionFailed": {
+        "code": "RecoveryCodeRedemptionFailed",
+        "description": "Recovery code redemption failed.",
+        "message": "The recovery code could not be redeemed."
+      },
+      "LoginAlreadyAssociated": {
+        "code": "LoginAlreadyAssociated",
+        "description": "A user with this external login already exists.",
+        "message": "This external login is already associated with an account."
+      },
+      "InvalidUserName": {
+        "code": "InvalidUserName",
+        "description": "Username '{0}' is invalid.",
+        "message": "This username contains invalid characters.",
+        "parameters": ["userName"]
+      },
+      "InvalidEmail": {
+        "code": "InvalidEmail",
+        "description": "Email '{0}' is invalid.",
+        "message": "The provided email address is invalid.",
+        "parameters": ["email"]
+      },
+      "DuplicateUserName": {
+        "code": "DuplicateUserName",
+        "description": "Username '{0}' is already taken.",
+        "message": "This username is already in use.",
+        "parameters": ["userName"]
+      },
+      "DuplicateEmail": {
+        "code": "DuplicateEmail",
+        "description": "Email '{0}' is already taken.",
+        "message": "This email address is already in use.",
+        "parameters": ["email"]
+      },
+      "InvalidRoleName": {
+        "code": "InvalidRoleName",
+        "description": "Role name '{0}' is invalid.",
+        "message": "This role name contains invalid characters.",
+        "parameters": ["role"]
+      },
+      "DuplicateRoleName": {
+        "code": "DuplicateRoleName",
+        "description": "Role name '{0}' is already taken.",
+        "message": "This role name is already in use.",
+        "parameters": ["role"]
+      },
+      "UserAlreadyHasPassword": {
+        "code": "UserAlreadyHasPassword",
+        "description": "User already has a password set.",
+        "message": "A password already exists for this user."
+      },
+      "UserLockoutNotEnabled": {
+        "code": "UserLockoutNotEnabled",
+        "description": "Lockout is not enabled for this user.",
+        "message": "The lockout feature is not enabled."
+      },
+      "UserAlreadyInRole": {
+        "code": "UserAlreadyInRole",
+        "description": "User is already in role '{0}'.",
+        "message": "The user already has this role.",
+        "parameters": ["role"]
+      },
+      "UserNotInRole": {
+        "code": "UserNotInRole",
+        "description": "User is not in role '{0}'.",
+        "message": "The user does not have this role.",
+        "parameters": ["role"]
+      },
+      "PasswordTooShort": {
+        "code": "PasswordTooShort",
+        "description": "Password must be at least {0} characters.",
+        "message": "The password is too short.",
+        "parameters": ["length"]
+      },
+      "PasswordRequiresUniqueChars": {
+        "code": "PasswordRequiresUniqueChars",
+        "description": "Password must use at least {0} different characters.",
+        "message": "The password requires more unique characters.",
+        "parameters": ["uniqueChars"]
+      },
+      "PasswordRequiresNonAlphanumeric": {
+        "code": "PasswordRequiresNonAlphanumeric",
+        "description": "Password must contain at least one special character.",
+        "message": "A special character is required in the password."
+      },
+      "PasswordRequiresDigit": {
+        "code": "PasswordRequiresDigit",
+        "description": "Password must contain at least one digit.",
+        "message": "A digit is required in the password."
+      },
+      "PasswordRequiresLower": {
+        "code": "PasswordRequiresLower",
+        "description": "Password must contain at least one lowercase letter.",
+        "message": "A lowercase letter is required in the password."
+      },
+      "PasswordRequiresUpper": {
+        "code": "PasswordRequiresUpper",
+        "description": "Password must contain at least one uppercase letter.",
+        "message": "An uppercase letter is required in the password."
+      }
+    }
+  }

@@ -1,0 +1,124 @@
+{
+    "IdentityErrors": {
+      "DefaultError": {
+        "code": "DefaultError",
+        "description": "Une erreur inconnue s'est produite.",
+        "message": "Erreur par défaut du système d'identité."
+      },
+      "ConcurrencyFailure": {
+        "code": "ConcurrencyFailure",
+        "description": "Échec de concurrence optimiste, l'objet a été modifié.",
+        "message": "L'objet a été modifié par un autre utilisateur."
+      },
+      "PasswordMismatch": {
+        "code": "PasswordMismatch",
+        "description": "Mot de passe incorrect.",
+        "message": "Le mot de passe fourni est invalide."
+      },
+      "InvalidToken": {
+        "code": "InvalidToken",
+        "description": "Jeton invalide.",
+        "message": "Le jeton fourni n'est pas valide."
+      },
+      "RecoveryCodeRedemptionFailed": {
+        "code": "RecoveryCodeRedemptionFailed",
+        "description": "Échec de l'utilisation du code de récupération.",
+        "message": "Le code de récupération n'a pas pu être utilisé."
+      },
+      "LoginAlreadyAssociated": {
+        "code": "LoginAlreadyAssociated",
+        "description": "Un utilisateur avec cette connexion externe existe déjà.",
+        "message": "Cette connexion externe est déjà associée à un compte."
+      },
+      "InvalidUserName": {
+        "code": "InvalidUserName",
+        "description": "Le nom d'utilisateur '{0}' est invalide.",
+        "message": "Ce nom d'utilisateur contient des caractères invalides.",
+        "parameters": ["userName"]
+      },
+      "InvalidEmail": {
+        "code": "InvalidEmail",
+        "description": "L'email '{0}' est invalide.",
+        "message": "L'adresse email fournie n'est pas valide.",
+        "parameters": ["email"]
+      },
+      "DuplicateUserName": {
+        "code": "DuplicateUserName",
+        "description": "Le nom d'utilisateur '{0}' est déjà utilisé.",
+        "message": "Ce nom d'utilisateur est déjà pris.",
+        "parameters": ["userName"]
+      },
+      "DuplicateEmail": {
+        "code": "DuplicateEmail",
+        "description": "L'email '{0}' est déjà utilisé.",
+        "message": "Cette adresse email est déjà utilisée.",
+        "parameters": ["email"]
+      },
+      "InvalidRoleName": {
+        "code": "InvalidRoleName",
+        "description": "Le nom de rôle '{0}' est invalide.",
+        "message": "Ce nom de rôle contient des caractères invalides.",
+        "parameters": ["role"]
+      },
+      "DuplicateRoleName": {
+        "code": "DuplicateRoleName",
+        "description": "Le nom de rôle '{0}' existe déjà.",
+        "message": "Ce nom de rôle est déjà utilisé.",
+        "parameters": ["role"]
+      },
+      "UserAlreadyHasPassword": {
+        "code": "UserAlreadyHasPassword",
+        "description": "L'utilisateur a déjà un mot de passe défini.",
+        "message": "Un mot de passe existe déjà pour cet utilisateur."
+      },
+      "UserLockoutNotEnabled": {
+        "code": "UserLockoutNotEnabled",
+        "description": "Le verrouillage n'est pas activé pour cet utilisateur.",
+        "message": "La fonction de verrouillage n'est pas activée."
+      },
+      "UserAlreadyInRole": {
+        "code": "UserAlreadyInRole",
+        "description": "L'utilisateur est déjà dans le rôle '{0}'.",
+        "message": "L'utilisateur possède déjà ce rôle.",
+        "parameters": ["role"]
+      },
+      "UserNotInRole": {
+        "code": "UserNotInRole",
+        "description": "L'utilisateur n'est pas dans le rôle '{0}'.",
+        "message": "L'utilisateur ne possède pas ce rôle.",
+        "parameters": ["role"]
+      },
+      "PasswordTooShort": {
+        "code": "PasswordTooShort",
+        "description": "Le mot de passe doit comporter au moins {0} caractères.",
+        "message": "Le mot de passe est trop court.",
+        "parameters": ["length"]
+      },
+      "PasswordRequiresUniqueChars": {
+        "code": "PasswordRequiresUniqueChars",
+        "description": "Le mot de passe doit comporter au moins {0} caractères différents.",
+        "message": "Le mot de passe nécessite plus de caractères uniques.",
+        "parameters": ["uniqueChars"]
+      },
+      "PasswordRequiresNonAlphanumeric": {
+        "code": "PasswordRequiresNonAlphanumeric",
+        "description": "Le mot de passe doit contenir au moins un caractère spécial.",
+        "message": "Un caractère spécial est requis dans le mot de passe."
+      },
+      "PasswordRequiresDigit": {
+        "code": "PasswordRequiresDigit",
+        "description": "Le mot de passe doit contenir au moins un chiffre.",
+        "message": "Un chiffre est requis dans le mot de passe."
+      },
+      "PasswordRequiresLower": {
+        "code": "PasswordRequiresLower",
+        "description": "Le mot de passe doit contenir au moins une lettre minuscule.",
+        "message": "Une lettre minuscule est requise dans le mot de passe."
+      },
+      "PasswordRequiresUpper": {
+        "code": "PasswordRequiresUpper",
+        "description": "Le mot de passe doit contenir au moins une lettre majuscule.",
+        "message": "Une lettre majuscule est requise dans le mot de passe."
+      }
+    }
+  }
