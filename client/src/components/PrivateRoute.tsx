@@ -24,7 +24,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     />;
   }
 
-  if (requiredRole.length > 0 && user && !requiredRole.includes(user.role)) {
+  if (requiredRole.length > 0 && user && !requiredRole.includes(user.roles)) {
     return <Redirect to="/unauthorized" />;
   }
 

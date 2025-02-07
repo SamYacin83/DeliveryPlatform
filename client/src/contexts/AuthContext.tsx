@@ -3,14 +3,7 @@ import { login as apiLogin, logout as apiLogout } from '../api/mutation/auth';
 import axiosManager, { ServiceAPI } from '../api/axiosManager';
 import { validateStoredUser } from '@/utils/authValidation';
 import { AppError, errorMessages } from '../utils/errorHandler';
-
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-}
+import { User } from '@/types/index';
 
 interface LoginRequest {
   email: string;

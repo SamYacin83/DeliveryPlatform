@@ -1,10 +1,10 @@
-export type UserRole = 'client' | 'delivery' | 'supplier';
+export type UserRole = 'Customer' | 'Supplier' | 'Admin';
 
 export interface User {
   id: number;
-  username: string;
+  firstName: string;
   email: string;
-  role: UserRole;
+  roles: UserRole;
 }
 
 export interface Article {
@@ -20,7 +20,7 @@ export interface Article {
 
 export interface Order {
   id: number;
-  userId: number;
+  userId: string;
   status: 'pending' | 'accepted' | 'in_delivery' | 'delivered' | 'canceled';
   items: Article[];
   total: number;

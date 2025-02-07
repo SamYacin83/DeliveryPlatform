@@ -1,16 +1,6 @@
 import { User } from '@/types';
 import { AppError } from './errorHandler';
-import axiosManager, { ServiceAPI } from '../api/axiosManager';
-
-export const isValidToken = async (): Promise<boolean> => {
-  try {
-    const authApi = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
-    await authApi.get('validate-token', { withCredentials: true });
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
+import 	{ getAuthStatusOptions } from '../api/Queries/getAuthState';
 
 export const validateStoredUser = async (): Promise<User | null> => {
   try {
@@ -21,8 +11,8 @@ export const validateStoredUser = async (): Promise<User | null> => {
 
     const user = JSON.parse(storedUserData) as User;
     
-    // Vérifie si le token est toujours valide
-    const isValid = await isValidToken();
+    // Vérifie si le statut du connexions est toujours valide
+    const isValid = getAuthStatusOptions();
     if (!isValid) {
       localStorage.removeItem('user');
       throw new AppError('Session expirée', {

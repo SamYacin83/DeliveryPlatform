@@ -25,7 +25,7 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
 
         // Si on a déjà un utilisateur dans le contexte, on vérifie les rôles
         if (user) {
-          if (allowedRoles && !allowedRoles.includes(user.role)) {
+          if (allowedRoles && !allowedRoles.includes(user.roles)) {
             handleToast(
               toast,
               "Accès refusé",
@@ -53,7 +53,7 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
         }
 
         // Vérifier les rôles pour l'utilisateur validé
-        if (allowedRoles && !allowedRoles.includes(validatedUser.role)) {
+        if (allowedRoles && !allowedRoles.includes(validatedUser.roles)) {
           handleToast(
             toast,
             "Accès refusé",

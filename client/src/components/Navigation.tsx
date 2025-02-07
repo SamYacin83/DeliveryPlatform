@@ -18,22 +18,13 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CartDropdown from "./CartDropdown";
 import { HamburgerIcon } from "./HamburgerIcon";
 import { useTranslation } from "react-i18next";
-
-// Typage minimaliste d'un user
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-}
+import { User } from "@/types";
 
 interface NavigationProps {
   readonly user: User | null; // Peut être null
@@ -154,6 +145,24 @@ export default function Navigation({ user, logout }: NavigationProps) {
               >
                 Témoignages
               </Link>
+              {user && (user.roles === "Supplier" || user.roles === "Admin") && (
+                <>
+                  <Link
+                    href="/products"
+                    className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
+                  >
+                    <Package className="h-4 w-4" />
+                    Produits
+                  </Link>
+                  <Link
+                    href="/product-types"
+                    className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
+                  >
+                    <List className="h-4 w-4" />
+                    Types de produits
+                  </Link>
+                </>
+              )}
             </nav>
 
             {/* Panier (desktop) */}
@@ -269,7 +278,7 @@ export default function Navigation({ user, logout }: NavigationProps) {
                           Profile
                         </Link>
                       </DropdownMenuItem>
-                      {(user?.role === "Supplier" || user?.role === "Admin") && (
+                      {(user.roles === "Supplier" || user.roles === "Admin") && (
                         <>
                           <DropdownMenuItem asChild>
                             <Link href="/products" className="flex items-center cursor-pointer">
@@ -323,187 +332,114 @@ export default function Navigation({ user, logout }: NavigationProps) {
 
         {/* Menu mobile (si ouvert) */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-2 border-t">
-            <div className="flex flex-col space-y-4 px-4 py-4">
-              <Link
-                href="/services"
-                className="text-foreground/80 hover:text-primary transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Services
-              </Link>
-              <Link
-                href="/how-it-works"
-                className="text-foreground/80 hover:text-primary transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Comment ça marche
-              </Link>
-              <Link
-                href="/testimonials"
-                className="text-foreground/80 hover:text-primary transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Témoignages
-              </Link>
-
-              {/* Panier (mobile) */}
-              <div className="pt-4 border-t">
-                <CartDropdown />
+          <div
+            className={`${
+              isMobileMenuOpen ? "block" : "hidden"
+            } md:hidden fixed inset-0 z-50 bg-background/95 backdrop-blur-sm`}
+          >
+            <div className="fixed inset-x-4 top-8 z-50 rounded-lg bg-white p-6 shadow-lg">
+              <div className="flex items-center justify-between">
+                <Link
+                  href="/"
+                  className="text-2xl font-bold text-primary"
+                  onClick={handleMobileLinkClick}
+                >
+                  RapidLivre
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleMenu}
+                  className="text-muted-foreground"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
               </div>
-
-              {/* Profile section in mobile menu */}
-              {user && (
-                <>
-                  <div className="pt-4 border-t">
-                    <Link
-                      href="/profile"
-                      className="text-foreground/80 hover:text-primary transition-colors"
-                      onClick={handleMobileLinkClick}
-                    >
-                      Profile
-                    </Link>
-                  </div>
-                  {(user?.role === "Supplier" || user?.role === "Admin") && (
-                    <>
-                      <div className="pt-2">
+              <nav className="mt-6 flex flex-col gap-4">
+                <Link
+                  href="/services"
+                  className="text-foreground/80 hover:text-primary transition-colors"
+                  onClick={handleMobileLinkClick}
+                >
+                  Services
+                </Link>
+                <Link
+                  href="/how-it-works"
+                  className="text-foreground/80 hover:text-primary transition-colors"
+                  onClick={handleMobileLinkClick}
+                >
+                  Comment ça marche
+                </Link>
+                <Link
+                  href="/testimonials"
+                  className="text-foreground/80 hover:text-primary transition-colors"
+                  onClick={handleMobileLinkClick}
+                >
+                  Témoignages
+                </Link>
+                {user && (
+                  <>
+                    {(user.roles === "Supplier" || user.roles === "Admin") && (
+                      <>
                         <Link
                           href="/products"
-                          className="text-foreground/80 hover:text-primary transition-colors"
+                          className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
                           onClick={handleMobileLinkClick}
                         >
+                          <Package className="h-4 w-4" />
                           Produits
                         </Link>
-                      </div>
-                      <div className="pt-2">
                         <Link
                           href="/product-types"
-                          className="text-foreground/80 hover:text-primary transition-colors"
+                          className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
                           onClick={handleMobileLinkClick}
                         >
+                          <List className="h-4 w-4" />
                           Types de produits
                         </Link>
-                      </div>
-                    </>
-                  )}
-                  <div className="pt-2">
+                      </>
+                    )}
                     <Link
                       href="/orders"
-                      className="text-foreground/80 hover:text-primary transition-colors"
+                      className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
                       onClick={handleMobileLinkClick}
                     >
+                      <ShoppingBag className="h-4 w-4" />
                       Commandes
                     </Link>
-                  </div>
-                </>
-              )}
-
-              {/* Notifications (mobile), seulement si user connecté */}
-              {user && (
-                <div className="pt-4 border-t">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="relative"
-                      >
-                        <Bell className="h-5 w-5" />
-                        {hasUnread && (
-                          <Badge
-                            variant="default"
-                            className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center bg-primary text-primary-foreground"
-                          >
-                            {notifications.length}
-                          </Badge>
-                        )}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-80">
-                      <div className="flex items-center justify-between p-2 border-b">
-                        <h2 className="font-medium">Notifications</h2>
-                        {notifications.length > 0 && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-2 text-xs"
-                            onClick={() => {
-                              setNotifications([]);
-                              setHasUnread(false);
-                            }}
-                          >
-                            Tout marquer comme lu
-                          </Button>
-                        )}
-                      </div>
-                      <DropdownMenuGroup>
-                        {notifications.length === 0 ? (
-                          <DropdownMenuItem className="text-muted-foreground text-center py-4">
-                            Aucune notification
-                          </DropdownMenuItem>
-                        ) : (
-                          notifications.map((notification) => (
-                            <div
-                              key={notification.id}
-                              className="flex items-start gap-2 p-3 hover:bg-primary/5 cursor-pointer relative group"
-                            >
-                              <div className="flex-1">
-                                <p className="text-sm font-medium">
-                                  {notification.message}
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Il y a{" "}
-                                  {Math.floor(Math.random() * 10) + 1} minutes
-                                </p>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setNotifications(prev =>
-                                    prev.filter(n => n.id !== notification.id)
-                                  );
-                                  if (notifications.length === 1) {
-                                    setHasUnread(false);
-                                  }
-                                }}
-                              >
-                                <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
-                              </Button>
-                            </div>
-                          ))
-                        )}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              )}
-
-              {/* Auth (mobile) */}
-              <div className="pt-4 border-t">
+                  </>
+                )}
+              </nav>
+              <div className="mt-6 border-t pt-4">
                 {user ? (
-                  <Button
-                    variant="outline"
-                    className="w-full mb-2"
-                    onClick={() => {
-                      logout && logout();
-                      handleMobileLinkClick();
-                    }}
-                  >
-                    Déconnexion
-                  </Button>
+                  <div className="flex flex-col gap-4">
+                    <Link
+                      href="/profile"
+                      className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-2"
+                      onClick={handleMobileLinkClick}
+                    >
+                      <UserIcon className="h-4 w-4" />
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleMobileLinkClick();
+                        logout && logout();
+                      }}
+                      className="text-destructive hover:text-destructive/80 transition-colors flex items-center gap-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Déconnexion
+                    </button>
+                  </div>
                 ) : (
-                  <Button
+                  <Link
+                    href="/login"
                     className="w-full"
-                    onClick={() => {
-                      handleMobileLinkClick();
-                      window.location.href = "/auth";
-                    }}
+                    onClick={handleMobileLinkClick}
                   >
-                    Connexion
-                  </Button>
+                    <Button className="w-full">Connexion</Button>
+                  </Link>
                 )}
               </div>
             </div>

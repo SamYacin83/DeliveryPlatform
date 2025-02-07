@@ -38,7 +38,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const ProductsPage = () => {
   const { data: productsData, isLoading: productsIsLoading, error: productsError } = useQuery(getProductsOptions());
   const { user } = useAuth();
-  const isCustomer = user?.role === "Customer";
+  const isCustomer = user?.roles === "Customer";
   const [location, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);  
   const [searchTerm, setSearchTerm] = useState("");
