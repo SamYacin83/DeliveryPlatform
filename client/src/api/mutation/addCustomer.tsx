@@ -4,20 +4,57 @@ import axiosManager, { ServiceAPI } from '../axiosManager';
 import { toast } from '@/components/ui/use-toast';
 import { NotFoundError } from '../errors/NotFoundError';
 import { handleBadRequestStatus, handleConflictStatus } from '../errors/errorHandlers';
-import { Customer } from '../Interfaces/Customer';
+import { Customer, CustomerFormData } from '../Interfaces/Customer';
 
 interface UseCustomerMutationResult {
   saveCustomer: (customer: Customer) => Promise<void>;
   isPending: boolean;
 }
 
+const mapFormDataToCustomer = (formData: CustomerFormData): Customer => {
+  return {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    birthDate: formData.birthDate,
+    address: {
+      street: formData.address.street,
+      city: formData.address.city,
+      postalCode: formData.address.postalCode,
+      country: formData.address.country
+    },
+    account: {
+      email: formData.email,
+      password: formData.password
+    }
+  };
+};
+
+const mapCustomerToFormData = (customer: Customer): CustomerFormData => {
+  return {
+    email: customer.account.email,
+    password: customer.account.password,
+    confirmPassword: customer.account.password,
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    birthDate: customer.birthDate,
+    phone: '',
+    role: 'customer',
+    address: {
+      street: customer.address.street,
+      city: customer.address.city,
+      postalCode: customer.address.postalCode,
+      country: customer.address.country
+    }
+  };
+};
+
 export default function useCustomer(): UseCustomerMutationResult {
   const queryClient = useQueryClient();
-  const mutation = useMutation<void, Error, Customer>({
-    mutationFn: async (customer) => {
+  const mutation = useMutation<void, Error, CustomerFormData>({
+    mutationFn: async (formData) => {
       const axiosInstance = axiosManager.getInstance(ServiceAPI.DeliveryPlatform);
-        await axiosInstance.post<Customer>('AddCustomer', customer);
-    
+      const customerData = mapFormDataToCustomer(formData);
+      await axiosInstance.post<Customer>('AddCustomer', customerData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
@@ -49,8 +86,13 @@ export default function useCustomer(): UseCustomerMutationResult {
     },
   });
 
+  const saveCustomer = async (customer: Customer) => {
+    const formData = mapCustomerToFormData(customer);
+    return mutation.mutateAsync(formData);
+  };
+
   return {
-    saveCustomer: mutation.mutateAsync,
+    saveCustomer,
     isPending: mutation.isPending,
   };
 }
