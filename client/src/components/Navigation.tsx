@@ -269,18 +269,22 @@ export default function Navigation({ user, logout }: NavigationProps) {
                           Profile
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/products" className="flex items-center cursor-pointer">
-                          <Package className="mr-2 h-4 w-4" />
-                          Produits
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/product-types" className="flex items-center cursor-pointer">
-                          <List className="mr-2 h-4 w-4" />
-                          Types de produits
-                        </Link>
-                      </DropdownMenuItem>
+                      {(user?.role === "Supplier" || user?.role === "Admin") && (
+                        <>
+                          <DropdownMenuItem asChild>
+                            <Link href="/products" className="flex items-center cursor-pointer">
+                              <Package className="mr-2 h-4 w-4" />
+                              Produits
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href="/product-types" className="flex items-center cursor-pointer">
+                              <List className="mr-2 h-4 w-4" />
+                              Types de produits
+                            </Link>
+                          </DropdownMenuItem>
+                        </>
+                      )}
                       <DropdownMenuItem asChild>
                         <Link href="/orders" className="flex items-center cursor-pointer">
                           <ShoppingBag className="mr-2 h-4 w-4" />
@@ -360,24 +364,28 @@ export default function Navigation({ user, logout }: NavigationProps) {
                       Profile
                     </Link>
                   </div>
-                  <div className="pt-2">
-                    <Link
-                      href="/products"
-                      className="text-foreground/80 hover:text-primary transition-colors"
-                      onClick={handleMobileLinkClick}
-                    >
-                      Produits
-                    </Link>
-                  </div>
-                  <div className="pt-2">
-                    <Link
-                      href="/product-types"
-                      className="text-foreground/80 hover:text-primary transition-colors"
-                      onClick={handleMobileLinkClick}
-                    >
-                      Types de produits
-                    </Link>
-                  </div>
+                  {(user?.role === "Supplier" || user?.role === "Admin") && (
+                    <>
+                      <div className="pt-2">
+                        <Link
+                          href="/products"
+                          className="text-foreground/80 hover:text-primary transition-colors"
+                          onClick={handleMobileLinkClick}
+                        >
+                          Produits
+                        </Link>
+                      </div>
+                      <div className="pt-2">
+                        <Link
+                          href="/product-types"
+                          className="text-foreground/80 hover:text-primary transition-colors"
+                          onClick={handleMobileLinkClick}
+                        >
+                          Types de produits
+                        </Link>
+                      </div>
+                    </>
+                  )}
                   <div className="pt-2">
                     <Link
                       href="/orders"

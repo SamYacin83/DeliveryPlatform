@@ -17,7 +17,7 @@ internal sealed class DeleteProductCategoryEndPoint : IEndpoint
                operation.Summary = "Delete an existing product category";
                operation.Description = "Allows deleting an existing product category from the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           }).RequireAuthorization(policy => policy.RequireRole("Supplier", "Admin"));
     }
 
     private static async Task<IResult> DeleteProductCatAsync(IMediator mediator, Guid categoryId)

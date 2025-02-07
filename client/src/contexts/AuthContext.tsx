@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { login as apiLogin, logout as apiLogout, refreshToken as apiRefreshToken } from '../api/mutation/auth';
+import { login as apiLogin, logout as apiLogout } from '../api/mutation/auth';
 import axiosManager, { ServiceAPI } from '../api/axiosManager';
 import { validateStoredUser } from '@/utils/authValidation';
 import { AppError, errorMessages } from '../utils/errorHandler';
@@ -56,33 +56,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     instance.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = error.config;
-
-        // If error is 401 and we haven't tried to refresh token yet
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
-
-          try {
-            // Try to refresh the token
-            const userData = await apiRefreshToken();
-            setUser(userData);
-            
-            // Update the token in the original request
-            originalRequest.headers.Authorization = `Bearer ${userData.token}`;
-            
-            // Retry the original request
-            return instance(originalRequest);
-          } catch (refreshError) {
-            // If refresh fails, logout
-            setUser(null);
-            localStorage.removeItem('user');
-            throw new AppError('Session expirée', {
-              userMessage: 'Votre session a expiré. Veuillez vous reconnecter.',
-              logError: true
-            });
-          }
+        // If error is 401, clear user state and force re-login
+        if (error.response?.status === 401) {
+          setUser(null);
+          localStorage.removeItem('user');
+          throw new AppError('Session expirée', {
+            userMessage: 'Votre session a expiré. Veuillez vous reconnecter.',
+            logError: true
+          });
         }
-
         return Promise.reject(error);
       }
     );
@@ -92,20 +74,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // D'abord, on essaie de valider l'utilisateur stocké
         const validatedUser = await validateStoredUser();
         if (validatedUser) {
           setUser(validatedUser);
-          setIsLoading(false);
-          return;
+        } else {
+          // Si pas d'utilisateur valide, nettoyer l'état
+          setUser(null);
+          localStorage.removeItem('user');
         }
-
-        // Si pas d'utilisateur valide stocké, on essaie de rafraîchir le token
-        const userData = await apiRefreshToken();
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
       } catch (error) {
-        // En cas d'erreur, on nettoie l'état
+        // En cas d'erreur, nettoyer l'état
         setUser(null);
         localStorage.removeItem('user');
       } finally {
@@ -115,35 +93,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     checkAuth();
   }, []);
-
-  // Periodic token refresh
-  /*useEffect(() => {
-    if (user) {
-      const refreshInterval = setInterval(async () => {
-        try {
-          // Valide d'abord l'utilisateur actuel
-          const validatedUser = await validateStoredUser();
-          if (validatedUser) {
-            setUser(validatedUser);
-            return;
-          }
-
-          // Si la validation échoue, essaie de rafraîchir le token
-          const userData = await apiRefreshToken();
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-        } catch (error) {
-          if (error instanceof AppError) {
-            // Si c'est une erreur de session expirée, on nettoie tout
-            setUser(null);
-            localStorage.removeItem('user');
-          }
-        }
-      }, 4 * 60 * 1000); // Refresh every 4 minutes
-
-      return () => clearInterval(refreshInterval);
-    }
-  }, [user]);*/
 
   const login = async (email: string, password: string) => {
     try {

@@ -8,9 +8,10 @@ import { validateStoredUser } from '@/utils/authValidation';
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  allowedRoles?: string[];
 }
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -22,8 +23,18 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         // Si l'authentification est en cours de chargement, on attend
         if (isLoading) return;
 
-        // Si on a déjà un utilisateur dans le contexte, pas besoin de valider
+        // Si on a déjà un utilisateur dans le contexte, on vérifie les rôles
         if (user) {
+          if (allowedRoles && !allowedRoles.includes(user.role)) {
+            handleToast(
+              toast,
+              "Accès refusé",
+              "Vous n'avez pas les permissions nécessaires pour accéder à cette page",
+              true
+            );
+            setLocation('/');
+            return;
+          }
           setIsValidating(false);
           return;
         }
@@ -38,6 +49,19 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
             true
           );
           setLocation('/auth');
+          return;
+        }
+
+        // Vérifier les rôles pour l'utilisateur validé
+        if (allowedRoles && !allowedRoles.includes(validatedUser.role)) {
+          handleToast(
+            toast,
+            "Accès refusé",
+            "Vous n'avez pas les permissions nécessaires pour accéder à cette page",
+            true
+          );
+          setLocation('/');
+          return;
         }
       } catch (error) {
         handleToast(
@@ -53,24 +77,17 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     };
 
     validateAuth();
-  }, [user, isLoading, setLocation, toast]);
+  }, [user, isLoading, setLocation, toast, allowedRoles]);
 
-  // Pendant le chargement initial ou la validation, on affiche un loader
-  if (isLoading || isValidating) {
+  if (isValidating || isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
-  // Si l'utilisateur est authentifié, on affiche le contenu
-  if (user) {
-    return <>{children}</>;
-  }
-
-  // Dans tous les autres cas, on ne rend rien
-  return null;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

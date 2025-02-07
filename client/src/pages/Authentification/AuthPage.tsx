@@ -166,8 +166,6 @@ const TEMP_CREDENTIALS = {
       return errors[field as keyof typeof errors];
     });
     
-    console.log("Has Errors:", hasErrors);
-  
     // Vérifie si tous les champs sont remplis
     const isComplete = currentFields.every((field) => {
       if (field === "address") {

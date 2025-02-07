@@ -8,9 +8,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Package, PackagePlus, Plus, List } from "lucide-react";
 import { useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProductMenu() {
   const [location, setLocation] = useLocation();
+  const { user } = useAuth();
+
+  // Ne montrer le menu que pour les Supplier et Admin
+  const hasAccess = user?.role === "Supplier" || user?.role === "Admin";
+
+  if (!hasAccess) return null;
 
   return (
     <DropdownMenu>

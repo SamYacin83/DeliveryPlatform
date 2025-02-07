@@ -32,10 +32,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { getProductsOptions } from "@/api/Queries/getProducts";
 import { useQuery } from '@tanstack/react-query';
 import  useDeleteProduct  from "@/api/mutation/deleteProduct";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
 
-
-export default function ProductsPage() {
+const ProductsPage = () => {
   const { data: productsData, isLoading: productsIsLoading, error: productsError } = useQuery(getProductsOptions());
+  const { user } = useAuth();
+  const isCustomer = user?.role === "Customer";
   const [location, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);  
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,8 +60,6 @@ export default function ProductsPage() {
   const confirmDelete = async () => {
     if (productToDelete) {
       try {
-        // TODO: Implémenter la suppression
-        console.log("Delete product", productToDelete);
         await deleteProduct(productToDelete);
         toast({
           title: "Produit supprimé",
@@ -98,139 +99,147 @@ export default function ProductsPage() {
     });
 
   return (
-    <div className="container mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Produits</CardTitle>
-              <CardDescription>Gérez vos produits ici</CardDescription>
+    <ProtectedRoute allowedRoles={["Supplier", "Admin", "Customer"]}>
+      <div className="container mx-auto p-4">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Produits</CardTitle>
+                <CardDescription>Gérez vos produits ici</CardDescription>
+              </div>
+              {!isCustomer && (
+                <Button onClick={() => setLocation("/products/edit")}>
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter
+                </Button>
+              )}
             </div>
-            <Button onClick={() => setLocation("/products/edit")}>
-              <Plus className="mr-2 h-4 w-4" /> Ajouter
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Rechercher un produit..."
-                className="pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher un produit..."
+                  className="pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead onClick={() => handleSort('name')} className="cursor-pointer hover:bg-muted/50">
-                    Nom {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </TableHead>
-                  <TableHead onClick={() => handleSort('category')} className="cursor-pointer hover:bg-muted/50">
-                    Catégorie {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </TableHead>
-                  <TableHead className="text-right cursor-pointer hover:bg-muted/50" onClick={() => handleSort('price')}>
-                    Prix {sortConfig.key === 'price' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </TableHead>
-                  <TableHead className="text-right cursor-pointer hover:bg-muted/50" onClick={() => handleSort('quantity')}>
-                    Quantité {sortConfig.key === 'quantity' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  Array(5).fill(0).map((_, index) => (
-                    <TableRow key={`skeleton-${index}`}>
-                      <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-[60px]" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-8" /></TableCell>
-                    </TableRow>
-                  ))
-                ) : filteredProducts.length === 0 ? (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      {searchTerm ? (
-                        <div className="flex flex-col items-center justify-center text-muted-foreground">
-                          <Search className="h-8 w-8 mb-2" />
-                          <p>Aucun produit ne correspond à votre recherche</p>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center text-muted-foreground">
-                          <Package className="h-8 w-8 mb-2" />
-                          <p>Aucun produit n'a été ajouté</p>
-                          <Button variant="link" onClick={() => setLocation("/products/edit")}>
-                            Ajouter un produit
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
+                    <TableHead onClick={() => handleSort('name')} className="cursor-pointer hover:bg-muted/50">
+                      Nom {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead onClick={() => handleSort('category')} className="cursor-pointer hover:bg-muted/50">
+                      Catégorie {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead className="text-right cursor-pointer hover:bg-muted/50" onClick={() => handleSort('price')}>
+                      Prix {sortConfig.key === 'price' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead className="text-right cursor-pointer hover:bg-muted/50" onClick={() => handleSort('quantity')}>
+                      Quantité {sortConfig.key === 'quantity' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ) : (
-                  filteredProducts.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.category?.name}</TableCell>
-                      <TableCell className="text-right">
-                        {product.price.toFixed(2)} €
-                      </TableCell>
-                      <TableCell className="text-right">{product.quantity}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    Array(5).fill(0).map((_, index) => (
+                      <TableRow key={`skeleton-${index}`}>
+                        <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-[60px]" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : filteredProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-24 text-center">
+                        {searchTerm ? (
+                          <div className="flex flex-col items-center justify-center text-muted-foreground">
+                            <Search className="h-8 w-8 mb-2" />
+                            <p>Aucun produit ne correspond à votre recherche</p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-muted-foreground">
+                            <Package className="h-8 w-8 mb-2" />
+                            <p>Aucun produit n'a été ajouté</p>
+                            <Button variant="link" onClick={() => setLocation("/products/edit")}>
+                              Ajouter un produit
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => setLocation(`/products/edit/${product.id}`)}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              <span>Modifier</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(product.id)}
-                              className="text-red-600"
-                            >
-                              <Trash className="mr-2 h-4 w-4" />
-                              <span>Supprimer</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                          </div>
+                        )}
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <TableRow key={product.id}>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>{product.category?.name}</TableCell>
+                        <TableCell className="text-right">
+                          {product.price.toFixed(2)} €
+                        </TableCell>
+                        <TableCell className="text-right">{product.quantity}</TableCell>
+                        {!isCustomer && (
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  onClick={() => setLocation(`/products/edit/${product.id}`)}
+                                >
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  <span>Modifier</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleDelete(product.id)}
+                                  className="text-red-600"
+                                >
+                                  <Trash className="mr-2 h-4 w-4" />
+                                  <span>Supprimer</span>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Cette action est irréversible. Le produit sera définitivement supprimé.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
-              Supprimer
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Cette action est irréversible. Le produit sera définitivement supprimé.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </ProtectedRoute>
   );
-}
+};
+
+export default ProductsPage;

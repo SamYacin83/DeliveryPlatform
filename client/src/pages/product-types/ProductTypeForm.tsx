@@ -27,7 +27,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queryOptionsGetCategoryById } from "@/api/Queries/getCategorieById";
 import  useCategory  from "@/api/mutation/addCategory";
 import { CategoryDto } from "@/api/Interfaces/Category";
-import  useDeleteCategory  from "@/api/mutation/deleteCategory";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const productTypeSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -41,8 +41,7 @@ export default function ProductTypeForm() {
   const { toast } = useToast();
   const { saveCategory, isPending } = useCategory();
   const isEditing = !!params?.categoryId;
-  console.log('isEditing', isEditing);
-  console.log('params', params?.categoryId);
+
   const form = useForm<CategoryDto>({
     resolver: zodResolver(productTypeSchema),
     defaultValues: {
@@ -50,8 +49,6 @@ export default function ProductTypeForm() {
       description: "",
     },
   });
-
-  console.log('categoryData', categoryData);
 
   useEffect(() => {
     if (categoryError && isEditing) {
@@ -105,66 +102,68 @@ export default function ProductTypeForm() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {isEditing ? "Modifier" : "Ajouter"} un type de produit
-          </CardTitle>
-          <CardDescription>
-            {isEditing
-              ? "Modifier les informations du type de produit"
-              : "Ajouter un nouveau type de produit"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nom</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isPending} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <ProtectedRoute allowedRoles={["Supplier", "Admin"]}>
+      <div className="container mx-auto p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {isEditing ? "Modifier" : "Ajouter"} un type de produit
+            </CardTitle>
+            <CardDescription>
+              {isEditing
+                ? "Modifier les informations du type de produit"
+                : "Ajouter un nouveau type de produit"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input {...field} disabled={isPending} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} disabled={isPending} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} disabled={isPending} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="flex justify-end space-x-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setLocation("/product-types")}
-                  disabled={isPending}
-                >
-                  Annuler
-                </Button>
-                <Button type="submit" disabled={isPending}>
-                  {isEditing ? "Modifier" : "Créer"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+                <div className="flex justify-end space-x-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setLocation("/product-types")}
+                    disabled={isPending}
+                  >
+                    Annuler
+                  </Button>
+                  <Button type="submit" disabled={isPending}>
+                    {isEditing ? "Modifier" : "Créer"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
+    </ProtectedRoute>
   );
 }

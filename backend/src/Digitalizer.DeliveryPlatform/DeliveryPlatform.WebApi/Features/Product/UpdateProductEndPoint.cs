@@ -19,7 +19,7 @@ internal sealed class UpdateProductEndPoint : IEndpoint
                operation.Summary = "Update an existing product";
                operation.Description = "Allows updating an existing product in the delivery platform";
                return operation;
-           }).RequireAuthorization();
+           }).RequireAuthorization(policy => policy.RequireRole("Supplier", "Admin"));
     }
 
     private static async Task<IResult> UpdateProductAsync(IMediator mediator, [FromBody] ProductDto productDto)

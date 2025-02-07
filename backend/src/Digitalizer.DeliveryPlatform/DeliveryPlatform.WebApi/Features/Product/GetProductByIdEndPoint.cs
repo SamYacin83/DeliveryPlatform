@@ -13,11 +13,11 @@ internal sealed class GetProductByIdEndPoint : IEndpoint
            .WithName("GetByIdProduct")
            .WithTags(Tags.Product)
            .WithOpenApi(operation =>
-        {
-            operation.Summary = "Get product details by ID";
-            operation.Description = "Returns the details of a product by its ID";
-            return operation;
-        }).RequireAuthorization();
+           {
+               operation.Summary = "Get product details by ID";
+               operation.Description = "Returns the details of a product by its ID";
+               return operation;
+           });
     }
 
     private static async Task<IResult> GetByIdProductAsync(IMediator mediator, Guid productId)
